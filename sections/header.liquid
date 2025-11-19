@@ -1,0 +1,99 @@
+{%- assign main_menu_linklist = linklists[section.settings.menu].links -%}
+
+<div x-data="{mobileMenu: false}" class="relative z-10 shadow-md">
+  <div class="mx-auto px-4 sm:px-6">
+    <div class="flex justify-between items-center h-16 md:justify-between md:space-x-4">
+
+      <div class="-ml-2 -my-2 mr-3 md:hidden">
+        <button @click="mobileMenu = !mobileMenu" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
+          {% render 'icon-menu' %}
+        </button>
+      </div>
+
+      <div class="flex flex-1 justify-center md:flex-1 md:justify-start truncate">
+        <h1 class="text-xl font-bold truncate text-black">{{ shop.name }}</h1>
+      </div>
+      
+      <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
+        {% for link in main_menu_linklist %}
+          <div class="relative">
+            <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150">{{ link.title }}</a>
+          </div>
+        {% endfor %}
+      </nav>
+
+      <div class="flex items-center -mr-2 -my-2 ml-3 md:hidden">
+        <a href="{{routes.cart_url}}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
+          {% render 'icon-shopping-bag' %}
+        </a>
+      </div>
+
+      <div class="hidden md:flex items-center md:flex-1 md:justify-end space-x-5">
+        <a href="{{ routes.account_login_url }}" class="text-base text-black hover:text-[#0077B6]">{% render 'account' %}</a>
+        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-base text-black hover:text-[#0077B6]">
+          {% render 'icon-shopping-bag' %}
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div x-show="mobileMenu" 
+        @click.away="mobileMenu = false" 
+        x-transition:enter="duration-200 ease-out"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="duration-100 ease-in"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute z-10 top-0 inset-x-0 p-2 transform origin-top-left md:hidden">
+    
+    <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-[#F5F5DC] w-full">
+      <div class="p-5 divide-y-2 divide-gray-100"> 
+        <div class="flex items-center justify-between pb-3">
+          <div>
+            <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title }}</h1>
+          </div>
+          <div class="-mr-2">
+            <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
+                {% render 'icon-close' %}
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-3">
+          <nav class="grid gap-y-2">
+            {% for link in main_menu_linklist %}
+              <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6]">
+                <span class="font-medium">{{ link.title }}</span>
+              </a>
+            {% endfor %}
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mobile_menu_title",
+      "label": "Mobile Menu Title",
+      "default": "Menu",
+      "info": "Title for the mobile menu drawer"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu",
+      "default": "main-menu",
+      "info": "Select the navigation menu to display"
+    }
+  ]
+}
+{% endschema %}

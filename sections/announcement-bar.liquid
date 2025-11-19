@@ -1,0 +1,79 @@
+<style>
+    @keyframes scroll-left {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-25%); }
+    }
+
+    .scrolling-banner {
+        animation: scroll-left 20s linear infinite;
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    .banner-container {
+        overflow: hidden;
+    }
+
+    /* Pause animation on hover */
+    .scrolling-banner:hover {
+        animation-play-state: paused;
+    }
+</style>
+
+<div class="bg-[#FA8072] text-white overflow-hidden font-sans sticky top-0 z-50">
+    <div class="banner-container">
+        <div class="scrolling-banner">
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! Use Code GLOW30." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! Use Code GLOW30." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+            
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! Use Code GLOW30." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! Use Code GLOW30." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+  "name": "Scrolling Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "message_1",
+      "label": "First Banner Message",
+      "default": "30% OFF! Use Code GLOW30."
+    },
+    {
+      "type": "text",
+      "id": "message_2",
+      "label": "Second Banner Message",
+      "default": "Free Shipping on Orders."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling Banner",
+      "category": "Promotional"
+    }
+  ]
+}
+{% endschema %}
