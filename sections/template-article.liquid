@@ -1,25 +1,30 @@
 <style>
-    /* 1. FIX VERTICAL SPACING AND OVERLAP */
-    .article-page-container {
-        /* Pushes the entire article down from the header/navigation bar */
-        padding-top: 50px; 
-        padding-bottom: 50px; 
-    }
+/* 1. FIX VERTICAL SPACING AND OVERLAP (The problem from your screenshot) */
+.article-page-container {
+    /* Use a large value (130px) to push content down past the red bar and navigation bar. 
+       You may need to slightly adjust this number (e.g., 100px or 150px) based on your final header height. */
+    padding-top: 130px; 
+    padding-bottom: 50px; 
+}
 
-    /* 2. FIX READABILITY (Text Color) */
-    .article-content-wrapper h1,
-    .article-content-wrapper .article-meta,
-    .article-content-wrapper .article-body {
-        /* Set text to a dark, readable color against the light background */
-        color: #333333; 
-    }
+/* 2. FIX READABILITY (Text Color) */
+.article-content-wrapper h1,
+.article-content-wrapper .article-meta,
+.article-content-wrapper .article-meta small,
+.article-content-wrapper .article-meta time,
+.article-content-wrapper .article-body,
+.article-content-wrapper .article-body p {
+    /* Set text to a dark, readable color against the light background */
+    color: #333333 !important; 
+    /* The !important tag is added temporarily to ensure this style overrides any faint text styles from your theme. */
+}
 
-    /* 3. BASIC ARTICLE STYLING */
-    .article-body {
-        /* Ensures text is legible */
-        line-height: 1.6; 
-        font-size: 16px; 
-    }
+/* 3. BASIC ARTICLE STYLING */
+.article-body {
+    /* Ensures body text is legible */
+    line-height: 1.6; 
+    font-size: 16px; 
+}
 </style>
 
 
