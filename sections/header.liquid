@@ -1,4 +1,5 @@
 {%- assign main_menu_linklist = linklists[section.settings.menu].links -%}
+{% assign logo_image = section.settings.logo %}
 
 <div x-data="{mobileMenu: false}" class="relative z-10 shadow-md">
   <div class="mx-auto px-4 sm:px-6">
@@ -10,13 +11,11 @@
         </button>
       </div>
 
-      {% comment %} <div class="flex flex-1 justify-center md:flex-1 md:justify-start truncate">
-        <h1 class="text-xl font-bold truncate text-black">{{ shop.logo }}</h1>
-      </div> {% endcomment %}
-
-      <div class="flex flex-1 justify-center md:flex-1 md:justify-start truncate">
-          <img src="{{ shop.logo_url }}" alt="Nero Life Science Logo" class="h-10 w-auto" />
-      </div>
+      {% if logo_image != blank %}
+        {{ logo_image | image_url: width: 200 | image_tag: alt: shop.name, class: "shop-logo" }}
+      {% else %}
+        <h1 class="text-xl font-bold truncate text-black">{{ shop.name }}</h1>
+      {% endif %}
       
       <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
         {% for link in main_menu_linklist %}
@@ -84,6 +83,12 @@
   "tag": "section",
   "class": "section-header",
   "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Upload the logo image"
+    },
     {
       "type": "text",
       "id": "mobile_menu_title",
