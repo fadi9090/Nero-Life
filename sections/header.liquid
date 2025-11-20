@@ -37,11 +37,11 @@
           <div class="header-logo-container">
             {{ logo_image | image_url: height: 60 | image_tag: 
               alt: shop.name, 
-              class: "header-logo" 
+              class: "shop-logo" 
             }}
           </div>
         {% else %}
-          <h1>{{ shop.name }}</h1>
+          <h1 class="header-logo-text">{{ shop.name }}</h1>
         {% endif %}
       </div>
       
