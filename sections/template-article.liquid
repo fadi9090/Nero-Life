@@ -1,28 +1,54 @@
-
 <style>
-    .article-wrapper h1,
-    .article-wrapper .article-meta,
-    .article-wrapper .article-content {
-        /* Set text to a dark, readable color */
-        color: #333333; /* Dark gray for good contrast */
-        line-height: 1.6; /* Improve readability of the body text */
+    /* 1. FIX VERTICAL SPACING AND OVERLAP */
+    .article-page-container {
+        /* Pushes the entire article down from the header/navigation bar */
+        padding-top: 50px; 
+        padding-bottom: 50px; 
+    }
+
+    /* 2. FIX READABILITY (Text Color) */
+    .article-content-wrapper h1,
+    .article-content-wrapper .article-meta,
+    .article-content-wrapper .article-body {
+        /* Set text to a dark, readable color against the light background */
+        color: #333333; 
+    }
+
+    /* 3. BASIC ARTICLE STYLING */
+    .article-body {
+        /* Ensures text is legible */
+        line-height: 1.6; 
+        font-size: 16px; 
     }
 </style>
-<div class="page-width article-wrapper" style="padding-top: 50px; padding-bottom: 50px;">
 
-    <h1>{{ article.title }}</h1>
 
-    <div class="article-meta">
-        <small>{{ article.author }}</small>
-        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%Y-%m-%d' }}</time>
+<div class="page-width article-page-container">
+
+    <div class="article-content-wrapper">
+
+        <h1>{{ article.title }}</h1>
+
+        <div class="article-meta">
+            <small>{{ article.author }}</small>
+            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%Y-%m-%d' }}</time>
+        </div>
+
+        {% if article.image %}
+            <img
+                src="{{ article.image | image_url: width: article.image.width, height: article.image.height }}"
+                alt="{{ article.image.alt }}"
+                class="article-image"
+                width="{{ article.image.width }}"
+                height="{{ article.image.height }}"
+                loading="lazy"
+            >
+        {% endif %}
+        
+        <div class="article-body">
+            {{ article.content }}
+        </div>
+
     </div>
-
-    {% if article.image %}
-        <img src="{{ article.image | img_url: 'large'}}" alt="{{ article.image.alt }}">
-    {% endif %}
     
-    <div class="article-content">
-        {{ article.content }}
-    </div>
-
 </div>
