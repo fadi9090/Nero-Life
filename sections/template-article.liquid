@@ -1,42 +1,118 @@
 <style>
-/* 1. FIX VERTICAL SPACING AND OVERLAP (The problem from your screenshot) */
-.article-page-container {
-    /* Use a large value (130px) to push content down past the red bar and navigation bar. 
-       You may need to slightly adjust this number (e.g., 100px or 150px) based on your final header height. */
-    padding-top: 130px; 
-    padding-bottom: 50px; 
+/* MAIN CONTAINER STYLING */
+.article-container {
+    padding-top: 130px;
+    padding-bottom: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-/* 2. FIX READABILITY (Text Color) */
-.article-content-wrapper h1,
-.article-content-wrapper .article-meta,
-.article-content-wrapper .article-meta small,
-.article-content-wrapper .article-meta time,
-.article-content-wrapper .article-body,
-.article-content-wrapper .article-body p {
-    /* Set text to a dark, readable color against the light background */
-    color: #333333 !important; 
-    /* The !important tag is added temporarily to ensure this style overrides any faint text styles from your theme. */
+/* ARTICLE CONTENT STYLING */
+.article-content {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-top: 20px;
 }
 
-/* 3. BASIC ARTICLE STYLING */
+/* TITLE STYLING */
+.article-title {
+    color: #333333 !important;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+/* META INFORMATION STYLING */
+.article-meta {
+    color: #666666 !important;
+    font-size: 14px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.article-meta small,
+.article-meta time {
+    color: #666666 !important;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* IMAGE STYLING */
+.article-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 30px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* BODY CONTENT STYLING */
 .article-body {
-    /* Ensures body text is legible */
-    line-height: 1.6; 
-    font-size: 16px; 
+    color: #333333 !important;
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+.article-body p {
+    color: #333333 !important;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.article-body h1,
+.article-body h2,
+.article-body h3,
+.article-body h4,
+.article-body h5,
+.article-body h6 {
+    color: #333333 !important;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.article-body a {
+    color: #0077B6;
+    text-decoration: underline;
+}
+
+.article-body a:hover {
+    color: #0056b3;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .article-container {
+        padding-top: 100px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .article-content {
+        padding: 25px;
+    }
+    
+    .article-title {
+        font-size: 2rem;
+    }
 }
 </style>
 
-
-<div class="page-width article-page-container">
-
-    <div class="article-content-wrapper">
-
-        <h1>{{ article.title }}</h1>
-
+<div class="article-container">
+    <div class="article-content">
+        <h1 class="article-title">{{ article.title }}</h1>
+        
         <div class="article-meta">
             <small>{{ article.author }}</small>
-            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%Y-%m-%d' }}</time>
+            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                {{ article.published_at | date: '%B %d, %Y' }}
+            </time>
         </div>
 
         {% if article.image %}
@@ -53,7 +129,5 @@
         <div class="article-body">
             {{ article.content }}
         </div>
-
     </div>
-    
 </div>
