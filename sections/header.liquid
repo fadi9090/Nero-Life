@@ -10,8 +10,12 @@
         </button>
       </div>
 
+      {% comment %} <div class="flex flex-1 justify-center md:flex-1 md:justify-start truncate">
+        <h1 class="text-xl font-bold truncate text-black">{{ shop.logo }}</h1>
+      </div> {% endcomment %}
+
       <div class="flex flex-1 justify-center md:flex-1 md:justify-start truncate">
-        <h1 class="text-xl font-bold truncate text-black">{{ shop.name }}</h1>
+          <img src="{{ shop.logo_url }}" alt="Nero Life Science Logo" class="h-10 w-auto" />
       </div>
       
       <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
@@ -29,7 +33,7 @@
       </div>
 
       <div class="hidden md:flex items-center md:flex-1 md:justify-end space-x-5">
-        <a href="{{ routes.account_login_url }}" class="text-base text-black hover:text-[#0077B6]">{% render 'account' %}</a>
+        {% comment %} <a href="{{ routes.account_login_url }}" class="text-base text-black hover:text-[#0077B6]">{% render 'account' %}</a> {% endcomment %}
         <a href="{{routes.cart_url}}" class="whitespace-nowrap text-base text-black hover:text-[#0077B6]">
           {% render 'icon-shopping-bag' %}
         </a>
