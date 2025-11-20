@@ -1,9 +1,28 @@
-<h1>{{ article.title }}</h1>
 
-<small>{{ article.author }}</small>
+<style>
+    .article-wrapper h1,
+    .article-wrapper .article-meta,
+    .article-wrapper .article-content {
+        /* Set text to a dark, readable color */
+        color: #333333; /* Dark gray for good contrast */
+        line-height: 1.6; /* Improve readability of the body text */
+    }
+</style>
+<div class="page-width article-wrapper" style="padding-top: 50px; padding-bottom: 50px;">
 
-<time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%Y-%m-%d' }}</time>
+    <h1>{{ article.title }}</h1>
 
-<img src="{{ article.image | img_url: 'large'}}" alt="{{ article.image.alt }}">
+    <div class="article-meta">
+        <small>{{ article.author }}</small>
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%Y-%m-%d' }}</time>
+    </div>
 
-<div class="">{{ article.content }}</div>
+    {% if article.image %}
+        <img src="{{ article.image | img_url: 'large'}}" alt="{{ article.image.alt }}">
+    {% endif %}
+    
+    <div class="article-content">
+        {{ article.content }}
+    </div>
+
+</div>
