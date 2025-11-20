@@ -1,6 +1,27 @@
 {%- assign main_menu_linklist = linklists[section.settings.menu].links -%}
 {% assign logo_image = section.settings.logo %}
 
+<style>
+  .header-logo {
+      /* Set the maximum height the logo can occupy */
+      max-height: 60px; 
+      
+      /* Ensure the logo's aspect ratio is maintained */
+      width: auto;     
+      
+      /* Helps vertically align the image within its container */
+      vertical-align: middle; 
+  }
+
+  /* IMPORTANT: You also need to ensure the container itself is constrained */
+  .header-logo-container {
+      display: flex;
+      align-items: center; /* This will center the logo vertically */
+      /* If the logo container is flexing the header, you might need to constrain its height too */
+      /* height: 60px; */ 
+  }
+</style>
+
 <div x-data="{mobileMenu: false}" class="relative z-10 shadow-md">
   <div class="mx-auto px-4 sm:px-6">
     <div class="flex justify-between items-center h-16 md:justify-between md:space-x-4">
@@ -13,12 +34,14 @@
 
       <div class="header-logo-container flex flex-1 justify-center md:flex-1 md:justify-start truncate">
         {% if logo_image != blank %}
-          {{ logo_image | image_url: width: 200, height: 100 | image_tag: 
-            alt: shop.name, 
-            class: "shop-logo"
-          }}
+          <div class="header-logo-container">
+            {{ logo_image | image_url: height: 60 | image_tag: 
+              alt: shop.name, 
+              class: "header-logo" 
+            }}
+          </div>
         {% else %}
-          <h1 class="text-xl font-bold truncate text-black">{{ shop.name }}</h1>
+          <h1>{{ shop.name }}</h1>
         {% endif %}
       </div>
       
