@@ -13,12 +13,12 @@
                  class="w-full h-full object-center object-cover">
           {% else %}
             <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                {{ 'product-1' | placeholder_svg_tag: 'w-2/3 h-2/3 text-gray-300' }} {# Styled placeholder #}
+                {{ 'product-1' | placeholder_svg_tag: 'w-2/3 h-2/3 text-gray-300' }}
             </div>
           {% endif %}
         </div>
 
-        {% if product.media.size > 1 %} {# Only show thumbnails if there's more than one image #}
+        {% if product.media.size > 1 %}
             <div class="hidden mt-6 w-full max-w-2xl mx-auto sm:block lg:max-w-none">
               <div class="grid grid-cols-4 gap-6">
                 {% for media in product.media %}
