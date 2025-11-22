@@ -1,40 +1,36 @@
-{% comment %} 
-  SECTION: MAIN PRODUCT (Creative Fashion Layout)
-  Colors used: #F5F5DC (Light BG), black (Text/Button BG), #FA8072 (Accent), #0077B6 (Link/Hover)
-{% endcomment %}
 
 {% assign current_variant = product.selected_or_first_available_variant %}
 
 <div class="bg-[#F5F5DC] py-10">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    
     <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-      
       <div class="flex flex-col-reverse">
-        
         <div class="aspect-w-1 aspect-h-1 w-full rounded-lg overflow-hidden">
           {% if current_variant.featured_image %}
             <img src="{{ current_variant.featured_image | img_url: '1024x1024' }}" 
                  alt="{{ current_variant.featured_image.alt | escape }}" 
-                 class="w-full h-full object-center object-cover">
+                 class="w-full h-full object-center object-cover"
+                 width="250" height="250">
           {% else %}
             {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-center object-cover' }}
           {% endif %}
         </div>
-
         <div class="hidden mt-6 w-full max-w-2xl mx-auto sm:block lg:max-w-none">
           <div class="grid grid-cols-4 gap-6">
             {% for media in product.media %}
-              <div class="relative h-24 bg-white rounded-lg flex items-center justify-center cursor-pointer overflow-hidden border border-gray-200 hover:border-[#0077B6]">
-                <img src="{{ media | img_url: 'medium' }}" 
-                     alt="{{ media.alt | escape }}" 
-                     class="w-full h-full object-cover object-center">
-              </div>
+              {% if media.media_type == 'image' %} 
+                <div class="relative h-24 bg-white rounded-lg flex items-center justify-center cursor-pointer overflow-hidden border border-gray-200 hover:border-[#0077B6]">
+                  <img src="{{ media | img_url: 'medium' }}" 
+                       alt="{{ media.alt | escape }}" 
+                       class="w-full h-full object-cover object-center"
+                       width="45" height="45">
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
         </div>
+        
       </div>
-
       <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
         <h1 class="text-4xl font-extrabold tracking-tight text-black">{{ product.title }}</h1>
 
@@ -42,28 +38,21 @@
           <h2 class="sr-only">Product information</h2>
           <p class="text-3xl text-black">{{ current_variant.price | money }}</p>
         </div>
-
         <div class="mt-3">
           <h3 class="sr-only">Reviews</h3>
           <div class="flex items-center">
             <div class="flex items-center">
-              {% render 'icon-star' %} {# You would replace this with actual star icons/logic #}
-              {% render 'icon-star' %}
-              {% render 'icon-star' %}
-              {% render 'icon-star' %}
-              {% render 'icon-star' %}
+              {% render 'icon-star' %}{% render 'icon-star' %}{% render 'icon-star' %}{% render 'icon-star' %}{% render 'icon-star' %}
             </div>
             <p class="sr-only">4.5 out of 5 stars</p>
             <a href="#" class="ml-3 text-sm font-medium text-[#0077B6] hover:text-black">Read 45 reviews</a>
           </div>
         </div>
-
         <div class="mt-10">
           <h3 class="sr-only">Options</h3>
           
           {% form 'product', product, id: 'product-form', class: 'mt-4' %}
             <input type="hidden" name="id" value="{{ current_variant.id }}">
-
             {% unless product.has_only_default_variant %}
               {% for option in product.options_with_values %}
                 <div class="mt-8">
@@ -106,12 +95,10 @@
                 </div>
               {% endfor %}
             {% endunless %}
-
             <div class="mt-8">
               <label for="quantity" class="text-sm font-medium text-black">Quantity</label>
               <input type="number" id="quantity" name="quantity" value="1" min="1" class="w-20 mt-2 p-2 border border-gray-400 rounded-md text-black focus:ring-[#0077B6] focus:border-[#0077B6]">
             </div>
-
             <div class="mt-10">
               <button type="submit" name="add" 
                       class="w-full bg-black border border-transparent rounded-md py-3 px-8 flex items-center justify-center 
@@ -122,32 +109,31 @@
             </div>
           {% endform %}
         </div>
-
-        <div class="mt-10 border-t border-gray-200 pt-10">
-          <h3 class="text-lg font-medium text-black">Description</h3>
-          <div class="mt-4 text-base text-gray-700">
-            {{ product.description }}
-          </div>
-        </div>
-
-        <div class="mt-10 border-t border-gray-200 pt-10">
-          <h3 class="text-lg font-medium text-black mb-4">Details</h3>
-          <dl class="space-y-6">
-            <div>
-              <dt class="text-sm font-medium text-black">Shipping & Returns</dt>
-              <dd class="mt-2 text-sm text-gray-700">
-                Free shipping on all orders over $100. Returns accepted within 30 days.
-              </dd>
+        <div x-data="{ activeTab: 'description' }" class="mt-12 border-t border-gray-200 pt-10">
+            <div class="flex border-b border-gray-300">
+                <button @click="activeTab = 'description'" 
+                        :class="{'border-b-2 border-black font-semibold text-black': activeTab === 'description', 'text-gray-500': activeTab !== 'description'}"
+                        class="px-4 py-2 transition duration-300">Description</button>
+                
+                <button @click="activeTab = 'reviews'" 
+                        :class="{'border-b-2 border-black font-semibold text-black': activeTab === 'reviews', 'text-gray-500': activeTab !== 'reviews'}"
+                        class="px-4 py-2 transition duration-300">Reviews</button>
             </div>
-            <div>
-              <dt class="text-sm font-medium text-black">Fabric & Care</dt>
-              <dd class="mt-2 text-sm text-gray-700">
-                100% Cotton. Machine wash cold, tumble dry low.
-              </dd>
+            
+            <div x-show="activeTab === 'description'" class="py-6 text-base text-gray-700">
+                {{ product.description }}
+                <div class="mt-6 space-y-4">
+                    <h3 class="text-lg font-medium text-black border-t pt-4">Fabric & Care</h3>
+                    <p class="text-sm">100% Cotton. Machine wash cold, tumble dry low.</p>
+                </div>
             </div>
-          </dl>
-        </div>
-
+            
+            <div x-show="activeTab === 'reviews'" class="py-6">
+                {# This is where your external review app widget code would go #}
+                {% render 'product-reviews-widget' %}
+                <p class="text-sm text-gray-600 mt-2">Displaying 5 of 45 verified reviews.</p>
+            </div>
+        </div>        
       </div>
     </div>
   </div>
@@ -156,5 +142,6 @@
 <script>
   function selectVariantOption(optionName, optionValue) {
     console.log(`Selected ${optionName}: ${optionValue}`);
+    // This function needs robust Shopify variant selection logic to work fully.
   }
 </script>
