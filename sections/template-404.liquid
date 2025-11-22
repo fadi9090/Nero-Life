@@ -1,8 +1,12 @@
-<div class="flex items-center justify-center text-center py-7 h-screen">
+<div class="flex  items-center justify-center text-center py-10 flex-grow">
 
-    <div class="max-w-md">
+    <div class="max-w-md w-full px-4">
         <div class="text-5xl font-bold my-4 text-black">{{ section.settings.title }}</div>
-        <div class="my-4"><p class="text-base md:text-xl leading-normal text-black">{{ section.settings.subtext_title }}</p></div>
+        <div class="my-4">
+            <p class="text-base md:text-xl leading-normal text-black">{{ section.settings.subtext_title }}</p>
+        </div>
+
+
         <div class="my-4">
             {% if section.settings.button_url == blank %}
                 {% assign shop_url = shop.secure_url %}
@@ -11,14 +15,15 @@
             {% endif %}
             
             <a href="{{ shop_url }}" 
-               class="px-6 py-3 inline-block text-base font-medium shadow transition-colors duration-150 
-                      bg-black hover:bg-[#FA8072] hover:text-black text-[#F5F5DC] rounded">
+                class="px-6 py-3 inline-block text-base font-medium shadow transition-colors duration-150 
+                    bg-black hover:bg-[#FA8072] hover:text-black text-[#F5F5DC] rounded">
                 {{ section.settings.button_label }}
             </a>
         </div>
     </div>
     
 </div>
+
 {% schema %}
 {
     "name": "Template 404",

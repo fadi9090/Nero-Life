@@ -54,16 +54,16 @@
       </nav>
 
       <div class="flex items-center -mr-2 -my-2 ml-3 md:hidden">
-        <a href="{{routes.cart_url}}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
+        <button type="button" @click="$refs.CartDrawer.open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
           {% render 'icon-shopping-bag' %}
-        </a>
+        </button>
       </div>
 
       <div class="hidden md:flex items-center md:flex-1 md:justify-end space-x-5">
-        {% comment %} <a href="{{ routes.account_login_url }}" class="text-base text-black hover:text-[#0077B6]">{% render 'account' %}</a> {% endcomment %}
-        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-base text-black hover:text-[#0077B6]">
-          {% render 'icon-shopping-bag' %}
-        </a>
+          {% comment %} Login link if needed {% endcomment %}
+          <button type="button" @click="$refs.CartDrawer.open = true" class="whitespace-nowrap text-base text-black hover:text-[#0077B6]">
+              {% render 'icon-shopping-bag' %}
+          </button>
       </div>
     </div>
   </div>
