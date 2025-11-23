@@ -5,186 +5,265 @@
 
 {% assign current_variant = product.selected_or_first_available_variant %}
 
-<div class="bg-[#F5F5DC] pt-6">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-[#F5F5DC] min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
+    <!-- Improved Breadcrumb -->
     <nav aria-label="Breadcrumb" class="pb-6">
-      <ol role="list" class="flex items-center space-x-2">
+      <ol role="list" class="flex items-center space-x-2 text-sm">
         <li>
-          <div class="flex items-center">
-            <a href="/" class="mr-2 text-sm font-medium text-black hover:text-[#0077B6]">Home</a>
-            <svg viewBox="0 0 16 20" width="16" height="20" fill="currentColor" aria-hidden="true" class="h-5 w-4 text-gray-400">
-              <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-            </svg>
-          </div>
+          <a href="/" class="text-black hover:text-[#0077B6] transition-colors duration-200">Home</a>
+        </li>
+        <li>
+          <svg class="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+          </svg>
         </li>
         {% if collection %}
-          <li>
-            <div class="flex items-center">
-              <a href="{{ collection.url }}" class="mr-2 text-sm font-medium text-black hover:text-[#0077B6]">{{ collection.title }}</a>
-              <svg viewBox="0 0 16 20" width="16" height="20" fill="currentColor" aria-hidden="true" class="h-5 w-4 text-gray-400">
-                <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-              </svg>
-            </div>
-          </li>
+        <li>
+          <a href="{{ collection.url }}" class="text-black hover:text-[#0077B6] transition-colors duration-200">{{ collection.title }}</a>
+        </li>
+        <li>
+          <svg class="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+          </svg>
+        </li>
         {% endif %}
-        <li class="text-sm">
-          <span aria-current="page" class="font-medium text-gray-700">{{ product.title }}</span>
+        <li>
+          <span class="text-gray-600 font-medium">{{ product.title | truncate: 30 }}</span>
         </li>
       </ol>
     </nav>
 
-    <div class="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-8 lg:px-8">
+    <!-- Main Product Grid -->
+    <div class="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
       
-      {% for media in product.media limit: 4 %}
-        {% assign image_url = media | img_url: 'master' %}
-        {% assign alt_text = media.alt | escape %}
-        
-        {% if forloop.first %}
-          <img src="{{ image_url }}" alt="{{ alt_text }}" 
-               class="row-span-2 aspect-4/5 size-full object-cover sm:rounded-lg lg:aspect-3/4">
-        {% elsif forloop.index == 2 %}
-          <img src="{{ image_url }}" alt="{{ alt_text }}" 
-               class="row-span-2 aspect-3/4 size-full rounded-lg object-cover max-lg:hidden">
-        {% elsif forloop.index == 3 %}
-          <img src="{{ image_url }}" alt="{{ alt_text }}" 
-               class="col-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden">
-        {% elsif forloop.index == 4 %}
-          <img src="{{ image_url }}" alt="{{ alt_text }}" 
-               class="col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden">
-        {% endif %}
-      {% endfor %}
-
-      {% if product.media.size < 4 %}
-        {% for i in (product.media.size..3) %}
-          {% capture image_class %}
-            {% if i == 1 %}row-span-2 aspect-3/4 size-full rounded-lg object-cover max-lg:hidden{% endif %}
-            {% if i == 2 %}col-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden{% endif %}
-            {% if i == 3 %}col-start-2 row-start-2 aspect-3/2 size-full rounded-lg object-cover max-lg:hidden{% endif %}
-          {% endcapture %}
-          <div class="{{ image_class }} flex items-center justify-center bg-gray-200">
-            <span class="text-gray-500">Image {{ i | plus: 1 }} Placeholder</span>
+      <!-- Product Images Section -->
+      <div class="flex flex-col-reverse lg:flex-row gap-4">
+        <!-- Thumbnail Images -->
+        <div class="flex lg:flex-col order-1 gap-2 overflow-x-auto lg:overflow-visible py-2 lg:py-0">
+          {% for media in product.media %}
+          <div class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 rounded-md overflow-hidden border-2 border-transparent hover:border-[#0077B6] transition-all duration-200 {% if forloop.first %}border-[#0077B6]{% endif %}">
+            <img src="{{ media | img_url: '200x200' }}" alt="{{ media.alt | escape }}" 
+                 class="w-full h-full object-cover cursor-pointer">
           </div>
-        {% endfor %}
-      {% endif %}
-
-    </div>
-
-    <div class="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
-      
-      <div class="lg:col-span-2 lg:border-r lg:border-gray-300 lg:pr-8">
-        <h1 class="text-2xl font-bold tracking-tight text-black sm:text-3xl">{{ product.title }}</h1>
-      </div>
-
-      <div class="mt-4 lg:row-span-3 lg:mt-0">
-        <h2 class="sr-only">Product information</h2>
-        <p class="text-3xl tracking-tight text-black">{{ current_variant.price | money }}</p>
-
-        <div class="mt-6">
-          <h3 class="sr-only">Reviews</h3>
-          <div class="flex items-center">
-            <div class="flex items-center">
-              {% assign reviews_count = 4 %}
-              {% for i in (1..5) %}
-                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" 
-                     class="size-5 shrink-0 {% if i <= reviews_count %}text-black{% else %}text-gray-300{% endif %}">
-                  <path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clip-rule="evenodd" fill-rule="evenodd" />
-                </svg>
-              {% endfor %}
-            </div>
-            <p class="sr-only">4 out of 5 stars</p>
-            <a href="#" class="ml-3 text-sm font-medium text-[#0077B6] hover:text-black">117 reviews</a>
-          </div>
-        </div>
-        
-        {% form 'product', product, id: 'product-form-main', class: 'mt-10' %}
-          <input type="hidden" name="id" value="{{ current_variant.id }}">
-
-          {% for option in product.options_with_values %}
-            <div class="mt-8">
-              <h3 class="text-sm font-medium text-black">{{ option.name }}</h3>
-
-              <fieldset aria-label="Choose a {{ option.name | downcase }}" class="mt-4">
-                <div class="flex items-center gap-x-3">
-                  {% for value in option.values %}
-                    {% assign available = true %} 
-                    {% comment %} In a real theme, you'd check variant availability here using JS/Liquid logic {% endcomment %}
-                    
-                    <label aria-label="{{ value }}" 
-                           class="group relative flex items-center justify-center rounded-md border p-3 
-                           {% if option.name == 'Size' %}
-                             border-gray-300 bg-white
-                             has-checked:border-[#0077B6] has-checked:bg-[#0077B6] has-checked:text-[#F5F5DC]
-                             has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-50
-                           {% else %}
-                             size-8 appearance-none rounded-full outline -outline-offset-1 outline-black/10 bg-white
-                           {% endif %}">
-                        
-                      <input type="radio" 
-                             name="options[{{ option.name | handleize }}]" 
-                             value="{{ value | escape }}"
-                             {% if current_variant.options contains value %}checked{% endif %}
-                             {% unless available %}disabled{% endunless %}
-                             class="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed" />
-                      
-                      {% if option.name == 'Size' %}
-                        <span class="text-sm font-medium text-black uppercase group-has-checked:text-[#F5F5DC]">{{ value }}</span>
-                      {% else %}
-
-                        <div class="size-full rounded-full" style="background-color: 
-                          {% case value | downcase %}
-                            {% when 'white' %} #FFFFFF
-                            {% when 'black' %} #000000
-                            {% when 'gray' %} #D1D5DB
-                            {% else %} #FA8072 
-                          {% endcase %};">
-                        </div>
-                      {% endif %}
-                    </label>
-                  {% endfor %}
-                </div>
-              </fieldset>
-            </div>
           {% endfor %}
-
-          <button type="submit" name="add" 
-                  class="mt-10 flex w-full items-center justify-center rounded-md border border-transparent 
-                         bg-black px-8 py-3 text-base font-medium text-[#F5F5DC] 
-                         hover:bg-[#FA8072] hover:text-black focus:ring-2 focus:ring-[#FA8072] focus:ring-offset-2 focus:outline-none">
-            Add to Bag
-          </button>
-        {% endform %}
-      </div>
-
-      <div class="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-300 lg:pt-6 lg:pr-8 lg:pb-16">
-
-        <div>
-          <h2 class="text-lg font-medium text-black">Description</h2>
-          <div class="mt-4 space-y-6 text-base text-gray-700">
-            {{ product.description }}
-          </div>
         </div>
-
-        <div class="mt-10">
-          <h3 class="text-lg font-medium text-black">Highlights</h3>
-          <div class="mt-4">
-            <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
-              <li class="text-gray-700"><span class="text-gray-700">Hand cut and sewn locally</span></li>
-              <li class="text-gray-700"><span class="text-gray-700">Dyed with our proprietary colors</span></li>
-              <li class="text-gray-700"><span class="text-gray-700">Pre-washed &amp; pre-shrunk</span></li>
-              <li class="text-gray-700"><span class="text-gray-700">Ultra-soft 100% cotton</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="mt-10">
-          <h2 class="text-lg font-medium text-black">Details</h2>
-          <div class="mt-4 space-y-6">
-            <p class="text-sm text-gray-600">This item is part of our limited Winter collection. See shipping and return policy for full details.</p>
+        
+        <!-- Main Image -->
+        <div class="flex-1">
+          <div class="aspect-square rounded-lg overflow-hidden bg-white shadow-md">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | img_url: '800x800' }}" 
+                   alt="{{ product.featured_image.alt | escape }}" 
+                   class="w-full h-full object-cover">
+            {% else %}
+              <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                <span class="text-gray-500">Product Image</span>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>
-      
+
+      <!-- Product Details Section -->
+      <div class="mt-8 lg:mt-0">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h1 class="text-2xl lg:text-3xl font-bold text-black">{{ product.title }}</h1>
+          
+          <!-- Price and Rating -->
+          <div class="mt-4 flex items-center justify-between">
+            <p class="text-2xl font-semibold text-black">{{ current_variant.price | money }}</p>
+            
+            <div class="flex items-center">
+              <div class="flex">
+                {% for i in (1..5) %}
+                  <svg class="h-5 w-5 {% if i <= 4 %}text-[#FA8072]{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                {% endfor %}
+              </div>
+              <a href="#" class="ml-2 text-sm font-medium text-[#0077B6] hover:text-black transition-colors">117 reviews</a>
+            </div>
+          </div>
+          
+          <!-- Variant Selection -->
+          {% form 'product', product, id: 'product-form-main', class: 'mt-8' %}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+            
+            {% for option in product.options_with_values %}
+              <div class="mt-6">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-medium text-black">{{ option.name }}</h3>
+                  {% if option.name == 'Size' %}
+                    <a href="#" class="text-xs text-[#0077B6] hover:text-black transition-colors">Size guide</a>
+                  {% endif %}
+                </div>
+                
+                <fieldset class="mt-3">
+                  <div class="flex flex-wrap gap-3">
+                    {% for value in option.values %}
+                      {% assign available = true %}
+                      
+                      {% if option.name == 'Color' %}
+                        <label class="relative">
+                          <input type="radio" 
+                                 name="options[{{ option.name | handleize }}]" 
+                                 value="{{ value | escape }}"
+                                 {% if current_variant.options contains value %}checked{% endif %}
+                                 class="sr-only">
+                          <span class="w-10 h-10 rounded-full border-2 border-transparent flex items-center justify-center 
+                                       {% if current_variant.options contains value %}border-black{% endif %} 
+                                       hover:border-gray-400 transition-all duration-200 cursor-pointer">
+                            <span class="w-8 h-8 rounded-full block" style="background-color: 
+                              {% case value | downcase %}
+                                {% when 'white' %} #FFFFFF
+                                {% when 'black' %} #000000
+                                {% when 'gray' %} #D1D5DB
+                                {% else %} #FA8072 
+                              {% endcase %};">
+                            </span>
+                          </span>
+                        </label>
+                      {% else %}
+                        <label class="relative">
+                          <input type="radio" 
+                                 name="options[{{ option.name | handleize }}]" 
+                                 value="{{ value | escape }}"
+                                 {% if current_variant.options contains value %}checked{% endif %}
+                                 class="sr-only">
+                          <span class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium 
+                                       {% if current_variant.options contains value %}bg-black text-[#F5F5DC] border-black{% else %}bg-white text-black hover:bg-gray-50{% endif %} 
+                                       transition-all duration-200 cursor-pointer flex items-center justify-center min-w-[50px]">
+                            {{ value }}
+                          </span>
+                        </label>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              </div>
+            {% endfor %}
+            
+            <!-- Quantity Selector -->
+            <div class="mt-6">
+              <label for="quantity" class="text-sm font-medium text-black">Quantity</label>
+              <div class="mt-2 flex rounded-md shadow-sm max-w-[120px]">
+                <button type="button" class="quantity-btn bg-gray-100 text-black px-3 py-2 rounded-l-md border border-r-0 border-gray-300 hover:bg-gray-200 transition-colors">-</button>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" 
+                       class="bg-white border-y border-gray-300 text-center w-full py-2 text-black focus:outline-none focus:ring-1 focus:ring-[#0077B6]">
+                <button type="button" class="quantity-btn bg-gray-100 text-black px-3 py-2 rounded-r-md border border-l-0 border-gray-300 hover:bg-gray-200 transition-colors">+</button>
+              </div>
+            </div>
+            
+            <!-- Add to Cart Button -->
+            <button type="submit" name="add" 
+                    class="mt-8 w-full bg-black text-[#F5F5DC] py-3 px-6 rounded-md font-medium 
+                           hover:bg-[#FA8072] hover:text-black transition-all duration-300 
+                           focus:outline-none focus:ring-2 focus:ring-[#FA8072] focus:ring-offset-2 
+                           flex items-center justify-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z"></path>
+              </svg>
+              Add to Bag
+            </button>
+            
+            <!-- Additional Info -->
+            <div class="mt-4 text-center">
+              <p class="text-xs text-gray-600">Free shipping on orders over $50</p>
+            </div>
+          {% endform %}
+          
+          <!-- Product Highlights -->
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex items-center">
+                <svg class="h-5 w-5 text-[#0077B6] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Free shipping</span>
+              </div>
+              <div class="flex items-center">
+                <svg class="h-5 w-5 text-[#0077B6] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                <span class="text-sm text-gray-700">2-year warranty</span>
+              </div>
+              <div class="flex items-center">
+                <svg class="h-5 w-5 text-[#0077B6] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Easy returns</span>
+              </div>
+              <div class="flex items-center">
+                <svg class="h-5 w-5 text-[#0077B6] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Delivery in 2-4 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Product Description & Details -->
+        <div class="mt-8 bg-white rounded-lg shadow-sm p-6">
+          <div class="border-b border-gray-200 pb-4">
+            <h2 class="text-xl font-semibold text-black">Product Details</h2>
+          </div>
+          
+          <div class="mt-6">
+            <h3 class="text-lg font-medium text-black">Description</h3>
+            <div class="mt-4 text-gray-700 leading-relaxed">
+              {{ product.description }}
+            </div>
+          </div>
+          
+          <div class="mt-8">
+            <h3 class="text-lg font-medium text-black">Highlights</h3>
+            <div class="mt-4">
+              <ul class="list-disc pl-5 space-y-2">
+                <li class="text-gray-700">Hand cut and sewn locally</li>
+                <li class="text-gray-700">Dyed with our proprietary colors</li>
+                <li class="text-gray-700">Pre-washed &amp; pre-shrunk</li>
+                <li class="text-gray-700">Ultra-soft 100% cotton</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="mt-8">
+            <h3 class="text-lg font-medium text-black">Care Instructions</h3>
+            <div class="mt-4">
+              <ul class="list-disc pl-5 space-y-2">
+                <li class="text-gray-700">Machine wash cold with similar colors</li>
+                <li class="text-gray-700">Tumble dry low</li>
+                <li class="text-gray-700">Do not bleach</li>
+                <li class="text-gray-700">Iron on low heat if needed</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+// Simple quantity selector functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const quantityInput = document.getElementById('quantity');
+  const minusBtn = document.querySelector('.quantity-btn:first-of-type');
+  const plusBtn = document.querySelector('.quantity-btn:last-of-type');
+  
+  if (minusBtn && plusBtn && quantityInput) {
+    minusBtn.addEventListener('click', function() {
+      if (parseInt(quantityInput.value) > 1) {
+        quantityInput.value = parseInt(quantityInput.value) - 1;
+      }
+    });
+    
+    plusBtn.addEventListener('click', function() {
+      quantityInput.value = parseInt(quantityInput.value) + 1;
+    });
+  }
+});
+</script>
