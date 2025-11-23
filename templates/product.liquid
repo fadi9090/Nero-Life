@@ -1,55 +1,21 @@
-{% comment %} <div class="bg-[#F5F5DC] py-10 px-10 flex flex-col md:flex-col md:py-10 md:px-10 lg:flex-row lg:items-center lg:justify-between">
-    <div class="bg-[#F5F5DC] flex flex-col md:flex-row max-w-sm p-6 border-default rounded-base shadow-xs mb-6 lg:mb-0 ">
-        <div class="order-1 block "></div>
-        <div class="order-2 block color-black">
-            <h1 class="font-bold">
-                {{ product.title }}
-            </h1>
-            <div class="mt-2">
-                {% if product.compare_at_price > product.price %}
-                    <span class="text-lg font-semibold text-red-600">
-                        {{ product.price | money }}
-                    </span>
-                    <span class="text-sm line-through text-gray-500 ml-2">
-                        {{ product.compare_at_price | money }}
-                    </span>
-                {% else %}
-                    <span class="text-lg font-semibold text-black">
-                        {{ product.price | money }}
-                    </span>
-                {% endif %} 
-            </div>
-        </div>
-    </div>
-    <div>
+<div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10">
 
-    </div>
-    <div>
-
-    </div>
-    <div>
-
-    </div>
-</div> {% endcomment %}
-
-<div>
-    <div class="bg-[#F5F5DC] py-10 px-10 flex flex-col lg:flex-row lg:justify-between lg:gap-10">
-
+        <!-- 1. PRODUCT MEDIA GALLERY (Left Column) -->
         <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
             <div class="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center">
 
-                <!-- 1. Main Image Display Area -->
-                <!-- Start with the URL of the product's featured media (Liquid handles this automatically) -->
+                <!-- Main Image Display Area -->
                 <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
                     <img id="media-display"
-                        src="{{ product.featured_media | img_url: '1024x1024' }}" 
-                        alt="{{ product.featured_media.alt | escape }}"
-                        class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
-                        onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
+                         src="{{ product.featured_media | img_url: '1024x1024' }}" 
+                         alt="{{ product.featured_media.alt | escape }}"
+                         class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
                     />
                 </div>
 
-                <!-- 2. Thumbnails Area (Horizontal Scrollable Row) -->
+                <!-- Thumbnails Area (Horizontal Scrollable Row) -->
                 <div id="thumbnails-container"
                     class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
                 >
@@ -81,44 +47,49 @@
             </div>
         </div>
 
-        <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-white"> 
+        <!-- 2. PRODUCT INFO & CTA (Right Column) -->
+        <div class="w-full lg:w-1/2 p-6 border rounded-xl shadow-sm bg-white"> 
             
-            <h1 class="text-3xl font-bold mb-4 text-black">
+            <h1 class="text-3xl font-extrabold mb-4 text-gray-900">
                 {{ product.title }}
             </h1>
 
+            <!-- Price Display -->
             <div class="mt-2 mb-6">
                 {% if product.compare_at_price > product.price %}
-                    <span class="text-xl font-semibold text-red-600">
+                    <span class="text-xl font-bold text-red-600">
                         {{ product.price | money }}
                     </span>
                     <span class="text-base line-through text-gray-500 ml-2">
                         {{ product.compare_at_price | money }}
                     </span>
                 {% else %}
-                    <span class="text-xl font-semibold text-black">
+                    <span class="text-xl font-bold text-gray-900">
                         {{ product.price | money }}
                     </span>
                 {% endif %} 
             </div>
 
-            <div>
-                <button class="bg-[#FA8072] text-[#F5F5DC] p-3 rounded-md w-full hover:bg-[#0077B6]">
+            <!-- Add to Cart Button -->
+            <div class="mt-8">
+                <button class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200">
                     Add to Cart
                 </button>
             </div>
+            
         </div>
         
-
     </div>
 
+    <!-- 3. PRODUCT DESCRIPTION SECTION (Full Width below the main content) -->
     <div class="bg-white p-8 max-w-7xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Product Description</h2>
-         <div class="text-base leading-relaxed text-gray-600 prose">
-              {{ product.description }}
-         </div>
+        <div class="text-base leading-relaxed text-gray-600 prose">
+            {{ product.description }}
+        </div>
     </div>
-</div>
+
+</div> <!-- End of bg-[#F5F5DC] container -->
 
 <script>
     /**
