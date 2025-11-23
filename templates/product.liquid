@@ -1,4 +1,4 @@
-<div class="bg-[#F5F5DC] py-10 px-10 flex flex-col md:flex-col md:py-10 md:px-10 lg:flex-row lg:items-center lg:justify-between">
+{% comment %} <div class="bg-[#F5F5DC] py-10 px-10 flex flex-col md:flex-col md:py-10 md:px-10 lg:flex-row lg:items-center lg:justify-between">
     <div class="bg-[#F5F5DC] flex flex-col md:flex-row max-w-sm p-6 border-default rounded-base shadow-xs mb-6 lg:mb-0 ">
         <div class="order-1 block "></div>
         <div class="order-2 block color-black">
@@ -30,4 +30,42 @@
     <div>
 
     </div>
+</div> {% endcomment %}
+
+<div class="bg-[#F5F5DC] py-10 px-10 flex flex-col lg:flex-row lg:justify-between lg:gap-10">
+
+    <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
+        <div class="h-96 bg-gray-300 flex items-center justify-center rounded-lg">
+             
+        </div> 
+    </div>
+
+    <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-white"> 
+        
+        <h1 class="text-3xl font-bold mb-4">
+            {{ product.title }}
+        </h1>
+
+        <div class="mt-2 mb-6">
+            {% if product.compare_at_price > product.price %}
+                <span class="text-xl font-semibold text-red-600">
+                    {{ product.price | money }}
+                </span>
+                <span class="text-base line-through text-gray-500 ml-2">
+                    {{ product.compare_at_price | money }}
+                </span>
+            {% else %}
+                <span class="text-xl font-semibold text-black">
+                    {{ product.price | money }}
+                </span>
+            {% endif %} 
+        </div>
+
+        <div>
+            <button class="bg-blue-600 text-white p-3 rounded-md w-full hover:bg-blue-700">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
 </div>
