@@ -662,6 +662,9 @@
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .grid-cols-\[1\.5fr\,1fr\,1fr\] {
+    grid-template-columns: 1.5fr,1fr,1fr;
+  }
   .grid-cols-\[2fr\,1fr\,1fr\] {
     grid-template-columns: 2fr,1fr,1fr;
   }
@@ -862,6 +865,9 @@
     border-top-left-radius: var(--radius-md);
     border-bottom-left-radius: var(--radius-md);
   }
+  .rounded-tl-xl {
+    border-top-left-radius: var(--radius-xl);
+  }
   .rounded-r-md {
     border-top-right-radius: var(--radius-md);
     border-bottom-right-radius: var(--radius-md);
@@ -1018,6 +1024,9 @@
   }
   .bg-indigo-500 {
     background-color: var(--color-indigo-500);
+  }
+  .bg-pink-50 {
+    background-color: var(--color-pink-50);
   }
   .bg-pink-100 {
     background-color: var(--color-pink-100);
