@@ -1,60 +1,53 @@
 <div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10 mb-8">
 
-        <!-- 1. PRODUCT MEDIA GALLERY (Left Column) -->
         <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
             <div class="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center">
 
-                <!-- Main Image Display Area -->
                 <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
                     <img id="media-display"
-                         src="{{ product.featured_media | img_url: '1024x1024' }}" 
+                         src="{{ product.featured_media | img_url: '1024x1024' }}"
                          alt="{{ product.featured_media.alt | escape }}"
                          class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
                          onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
                     />
                 </div>
 
-                <!-- Thumbnails Area (Horizontal Scrollable Row) -->
                 <div id="thumbnails-container"
                     class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
                 >
-                    
-                    <!-- Loop through ALL media associated with the product -->
+
                     {% for media in product.media %}
-                        
-                        <!-- Check if the current media item is the featured media to set the initial active class -->
+
                         {% assign is_active = false %}
                         {% if product.featured_media.id == media.id %}
                             {% assign is_active = true %}
                         {% endif %}
-                        
-                        <img src="{{ media.preview_image | img_url: 'medium' }}" 
-                            alt="{{ media.alt | escape }}" 
+
+                        <img src="{{ media.preview_image | img_url: 'medium' }}"
+                            alt="{{ media.alt | escape }}"
                             data-full-url="{{ media | img_url: '1024x1024' }}"
                             data-media-id="{{ media.id }}"
-                            class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100 
-                                    {% if is_active %}
-                                        border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md 
-                                    {% else %}
-                                        border-gray-300 border opacity-75
-                                    {% endif %}"
+                            class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100
+                                        {% if is_active %}
+                                            border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
+                                        {% else %}
+                                            border-gray-300 border opacity-75
+                                        {% endif %}"
                             onclick="swapMedia(this, '{{ media | img_url: '1024x1024' }}')"
                         />
                     {% endfor %}
-                    
+
                 </div>
             </div>
         </div>
 
-        <!-- 2. PRODUCT INFO & CTA (Right Column) -->
-        <div class="w-full lg:w-1/2 p-6 border rounded-xl shadow-sm bg-white"> 
-            
+        <div class="w-full lg:w-1/2 p-6 border rounded-xl shadow-sm bg-white">
+
             <h1 class="text-3xl font-extrabold mb-4 text-gray-900">
                 {{ product.title }}
             </h1>
 
-            <!-- Price Display -->
             <div class="mt-2 mb-6">
                 {% if product.compare_at_price > product.price %}
                     <span class="text-xl font-bold text-red-600">
@@ -67,32 +60,29 @@
                     <span class="text-xl font-bold text-gray-900">
                         {{ product.price | money }}
                     </span>
-                {% endif %} 
+                {% endif %}
             </div>
 
-            <!-- Add to Cart Button -->
             <div class="mt-8">
                 <button class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200">
                     Add to Cart
                 </button>
             </div>
-            
+
         </div>
-        
+
     </div>
 
-    <!-- 3. PRODUCT DESCRIPTION SECTION (Full Width below the main content) -->
-    <div class="bg-white p-8 max-w-7xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100">
+    <div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Product Description</h2>
         <div class="text-base leading-relaxed text-gray-600">
-            <!-- START OF USER'S FORMATTED DESCRIPTION -->
             <p class="mb-4">
                 Bring professional skincare technology into your home with the <span class="font-semibold text-gray-800 bg-blue-50 px-1 rounded">14™ Silicone Face & Neck Photon Rejuvenation Mask</span>.
             </p>
             <p class="mb-6">
                 Designed with ultra-soft, skin-friendly silicone, this mask fits tightly to the contours of your face and neck — ensuring deep light absorption with minimal light leakage. Its flexible, bendable structure makes it comfortable to wear while sitting, lying down, or moving around.
             </p>
-            
+
             <div class="bg-blue-50 p-5 rounded-lg mb-6">
                 <h3 class="text-lg font-semibold mb-3 text-gray-800 flex items-center">
                     <svg class="w-5 h-5 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -130,35 +120,28 @@
             <p class="mt-4 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
                 Whether you're looking to brighten your complexion, reduce the appearance of fine lines, or support healthier, firmer skin, the 14™ mask delivers consistent, targeted light therapy.
             </p>
-            <!-- END OF USER'S FORMATTED DESCRIPTION -->
-        </div>
+            </div>
     </div>
 
-    <!-- 4. WHY CHOOSE US? COMPARISON SECTION (New Addition) -->
-    <div class="bg-white p-8 max-w-7xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100">
+    <div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100">
         <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">Why Choose Our LED Mask?</h2>
 
-        <!-- Description Text -->
         <div class="w-full mb-10 text-center">
             <p class="text-lg text-gray-600 max-w-3xl mx-auto">
                 Experience revolutionary skincare with our advanced LED Light Therapy Mask. Featuring medical-grade technology in a comfortable, flexible design, our mask delivers professional results from home. Transform your skin with clinically-proven light treatments that are safe, effective, and incredibly easy to use.
             </p>
         </div>
 
-        <!-- Comparison Table -->
         <div class="w-full flex justify-center">
             <div class="w-full max-w-3xl border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                <!-- Grid Container for Table -->
                 <div class="grid grid-cols-3 text-sm sm:text-base">
-                    
-                    <!-- Header Row -->
+
                     <div class="col-span-1 px-4 py-4 text-left font-bold text-white bg-white">Benefit</div>
                     <div class="col-span-1 px-2 py-4 font-bold text-white text-center bg-[#F5F5DC]">
                         Our LED Mask
                     </div>
                     <div class="col-span-1 px-2 py-4 font-bold text-white text-center bg-red-500">Others</div>
-                    
-                    <!-- Row 1: Stimulate natural cell renewal -->
+
                     <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
                         Stimulate natural cell renewal
                     </div>
@@ -173,7 +156,6 @@
                         </svg>
                     </div>
 
-                    <!-- Row 2: Support deep skin hydration -->
                     <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
                         Support deep skin hydration
                     </div>
@@ -187,8 +169,7 @@
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    
-                    <!-- Row 3: Smooth fine lines and wrinkles -->
+
                     <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
                         Smooth fine lines and wrinkles
                     </div>
@@ -203,7 +184,6 @@
                         </svg>
                     </div>
 
-                    <!-- Row 4: Improve skin tone and clarity -->
                     <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
                         Improve skin tone and clarity
                     </div>
@@ -218,7 +198,6 @@
                         </svg>
                     </div>
 
-                    <!-- Row 5: Strengthen skin's natural barrier -->
                     <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
                         Strengthen skin's natural barrier
                     </div>
@@ -238,14 +217,12 @@
         </div>
     </div>
 
-    <!-- 5. REASONS WHY YOU WILL LOVE IT SECTION (New Separate Section) -->
-    <div class="bg-white p-8 max-w-7xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100 text-center">
+    <div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100 text-center">
         <h2 class="text-3xl font-extrabold text-gray-900 mb-8">
             <span class="text-pink-600">4 Reasons</span> Why You Will Love It:
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Reason 1 -->
         <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300">
             <div class="flex items-start mb-3">
                 <div class="bg-blue-500 text-white rounded-lg w-8 h-8 flex items-center justify-center font-bold text-sm mr-3 flex-shrink-0">1</div>
@@ -256,7 +233,6 @@
             </p>
         </div>
 
-        <!-- Reason 2 -->
         <div class="bg-gradient-to-br from-white to-purple-50 p-6 rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300">
             <div class="flex items-start mb-3">
                 <div class="bg-purple-500 text-white rounded-lg w-8 h-8 flex items-center justify-center font-bold text-sm mr-3 flex-shrink-0">2</div>
@@ -267,7 +243,6 @@
             </p>
         </div>
 
-        <!-- Reason 3 -->
         <div class="bg-gradient-to-br from-white to-pink-50 p-6 rounded-xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-300">
             <div class="flex items-start mb-3">
                 <div class="bg-pink-500 text-white rounded-lg w-8 h-8 flex items-center justify-center font-bold text-sm mr-3 flex-shrink-0">3</div>
@@ -278,7 +253,6 @@
             </p>
         </div>
 
-        <!-- Reason 4 -->
         <div class="bg-gradient-to-br from-white to-indigo-50 p-6 rounded-xl border border-indigo-100 shadow-sm hover:shadow-md transition-all duration-300">
             <div class="flex items-start mb-3">
                 <div class="bg-indigo-500 text-white rounded-lg w-8 h-8 flex items-center justify-center font-bold text-sm mr-3 flex-shrink-0">4</div>
@@ -291,20 +265,18 @@
     </div>
     </div>
 
-    <div class="flex flex-col lg:flex-row items-center justify-center py-10 gap-8 lg:gap-12 p-8 lg:p-12 bg-gray-50 rounded-xl shadow-sm mx-auto max-w-7xl">
-        <!-- Image - Top on mobile, Left on desktop -->
+    <div class="flex flex-col lg:flex-row items-center justify-center py-6 gap-8 lg:gap-12 p-8 lg:p-12 bg-gray-50 rounded-xl shadow-sm mx-auto max-w-7xl mt-6">
         <div class="w-full lg:w-1/2 flex justify-center lg:justify-start order-1 lg:order-1">
-            <img 
-                src="{{ 'skin-effact.png' | asset_url }}" 
-                alt="LED Facial and Neck Mask showing skin rejuvenation benefits" 
-                width="500" 
-                height="400" 
+            <img
+                src="{{ 'skin-effact.png' | asset_url }}"
+                alt="LED Facial and Neck Mask showing skin rejuvenation benefits"
+                width="500"
+                height="400"
                 loading="lazy"
                 class="w-full max-w-[500px] h-auto rounded-lg shadow-md"
             >
         </div>
-        
-        <!-- Content - Bottom on mobile, Right on desktop -->
+
         <div class="w-full lg:w-1/2 flex-grow max-w-[500px] order-2 lg:order-2">
             <h2 class="font-sans text-2xl lg:text-2xl font-semibold text-gray-800 mb-6 leading-tight text-center lg:text-left">
                 Professional-Grade LED Therapy At Home
@@ -342,13 +314,11 @@
         </div>
     </div>
 
-    <!-- 6. CUSTOMER TESTIMONIALS SECTION (Manual Entry) -->
-    <div class="bg-white p-8 max-w-7xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100">
+    <div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100">
         <h2 class="text-2xl font-bold mb-6 text-gray-800">Verified Customer Stories</h2>
-        
+
         <div class="grid md:grid-cols-2 gap-6">
-            
-            <!-- Testimonial 1 - UPDATED TO REFLECT ALIBABA SOURCE -->
+
             <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-200">
                 <div class="flex items-center mb-3 text-yellow-500">
                     <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
@@ -363,7 +333,6 @@
                 <p class="mt-4 text-sm font-semibold text-gray-800">- Verified Buyer (Source: Alibaba B2B Review)</p>
             </div>
 
-            <!-- Testimonial 2 (Still reflecting an Amazon-style consumer review) -->
             <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-200">
                 <div class="flex items-center mb-3 text-yellow-500">
                     <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
@@ -386,9 +355,7 @@
 
     </div>
 
-</div> <!-- End of bg-[#F5F5DC] container -->
-
-<script>
+</div> <script>
     /**
      * Swaps the main product image and updates the active state of the thumbnails.
      * @param {HTMLElement} clickedThumb - The thumbnail element that was clicked.
@@ -396,11 +363,11 @@
      */
     function swapMedia(clickedThumb, fullImageUrl) {
         const display = document.getElementById('media-display');
-        
+
         // 1. Update main image source and alt text
         display.src = fullImageUrl;
         display.alt = clickedThumb.alt;
-        
+
         // 2. Update active state for all thumbnails
         document.querySelectorAll('.media-thumbnail').forEach(thumb => {
             // Remove active classes (blue border)
@@ -408,7 +375,7 @@
             // Add inactive styling (gray border, lower opacity)
             thumb.classList.add('border-gray-300', 'border', 'opacity-75');
         });
-        
+
         // 3. Apply active state to the clicked thumbnail
         clickedThumb.classList.add('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
         clickedThumb.classList.remove('border-gray-300', 'border', 'opacity-75');
@@ -416,7 +383,7 @@
 
     // Safely inject styles for scrollbar hiding if not already present
     let scrollbarStyle = document.getElementById('scrollbar-style-fix');
-    
+
     if (!scrollbarStyle) {
         const style = document.createElement('style');
         style.id = 'scrollbar-style-fix';
