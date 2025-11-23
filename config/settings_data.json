@@ -20,10 +20,18 @@
       "header": {
         "type": "header",
         "settings": {
-          "logo": "shopify://shop_images/Gemini_Generated_Image_rp5kbwrp5kbwrp5k.png",
+          "logo": "shopify://shop_images/Gemini_Generated_Image_h42zg7h42zg7h42z.png",
           "mobile_menu_title": "Menu",
           "menu": "main-menu"
         }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {}
       }
     },
     "content_for_index": []
