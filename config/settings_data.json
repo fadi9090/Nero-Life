@@ -24,6 +24,14 @@
           "mobile_menu_title": "Menu",
           "menu": "main-menu"
         }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {}
       }
     },
     "content_for_index": []
