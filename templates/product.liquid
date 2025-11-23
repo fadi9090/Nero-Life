@@ -37,9 +37,9 @@
     <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
         <div class="h-96 bg-white flex flex-col items-center justify-center rounded-lg">
              <div>
-                <img id="media-display" src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.featured_image.alt | escape }}" class="max-h-80 object-contain" width="250" height="250"/>
+                <img id="media-display" src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.featured_image.alt | escape }}" class="max-h-80 object-contain" width="100%" height="100%"/>
              </div>
-             <div>
+             <div class="mt-4 flex space-x-4 overflow-x-auto flex-row">
                 {% for media in product.media %}
                     <img src="{{ media.preview_image | img_url: 'medium' }}" alt="{{ media.alt | escape }}" class="max-h-80 object-contain" width="30" height="30"/>
                 {% endfor %}
