@@ -1168,6 +1168,13 @@
       }
     }
   }
+  .hover\:opacity-80 {
+    &:hover {
+      @media (hover: hover) {
+        opacity: 80%;
+      }
+    }
+  }
   .focus\:border-\[\#0077B6\] {
     &:focus {
       border-color: #0077B6;

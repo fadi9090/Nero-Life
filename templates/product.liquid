@@ -36,17 +36,27 @@
 
     <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
         <div class="h-96 bg-white flex flex-col items-center justify-center rounded-lg">
-             <div>
-                <img id="media-display" src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.featured_image.alt | escape }}" class="max-h-80 object-contain" width="100%" height="100%"/>
-             </div>
-             <div class="mt-4 flex space-x-4 overflow-x-auto flex-row">
+            <!-- Main Featured Image - Full width/height -->
+            <div class="w-full h-full flex items-center justify-center">
+                <img id="media-display" 
+                    src="{{ product.featured_image | img_url: 'large' }}" 
+                    alt="{{ product.featured_image.alt | escape }}" 
+                    class="w-full h-full object-contain"/>
+            </div>
+            
+            <!-- Thumbnail Images - Full width container -->
+            <div class="w-full mt-4 flex space-x-4 overflow-x-auto flex-row px-4 pb-2">
                 {% for media in product.media %}
-                    <img src="{{ media.preview_image | img_url: 'medium' }}" alt="{{ media.alt | escape }}" class="max-h-80 object-contain" width="30" height="30"/>
+                    <div class="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+                        <img src="{{ media.preview_image | img_url: 'medium' }}" 
+                            alt="{{ media.alt | escape }}" 
+                            class="w-full h-full object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                            data-media-src="{{ media | img_url: 'large' }}"/>
+                    </div>
                 {% endfor %}
-             </div>
+            </div>
         </div> 
     </div>
-
     <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-white"> 
         
         <h1 class="text-3xl font-bold mb-4 color-black">
