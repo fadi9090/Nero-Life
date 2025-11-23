@@ -291,41 +291,48 @@
     </div>
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: center; gap: 40px; padding: 50px; background-color: #f8f8f8; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <div style="flex-shrink: 0;">
-            <img src="{{ 'skin-effect.png' | asset_url }}" alt="Skin hydration diagram with LED mask benefits" width="400" height="300" style="width: 400px; height: auto; border-radius: 8px;">
+    <div class="flex items-center justify-center gap-10 p-12 bg-gray-50 rounded-xl shadow-sm mx-auto max-w-7xl">
+        <div class="flex-shrink-0">
+            <img 
+                src="{{ 'skin-effact.png' | asset_url }}" 
+                alt="LED Facial and Neck Mask showing skin rejuvenation benefits" 
+                width="400" 
+                height="300" 
+                loading="lazy"
+                class="w-[400px] h-auto rounded-lg shadow-md"
+            >
         </div>
-        <div style="flex-grow: 1; max-width: 500px;">
-            <h2 style="font-family: 'Arial', sans-serif; font-size: 2.5em; color: #333; margin-bottom: 20px;">
-                Radiant Revitalization, Every Day.
+        <div class="flex-grow max-w-[500px]">
+            <h2 class="font-sans text-3xl font-semibold text-gray-800 mb-6 leading-tight">
+                Professional-Grade LED Therapy At Home
             </h2>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-                    <span style="display: inline-block; width: 24px; height: 24px; background-color: #007bff; border-radius: 50%; color: white; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.9em; margin-right: 15px;">✓</span>
+            <ul class="list-none p-0 m-0">
+                <li class="mb-5 flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full text-white font-bold text-sm mr-4 flex-shrink-0">✓</span>
                     <div>
-                        <strong style="font-family: 'Arial', sans-serif; font-size: 1.1em; color: #555;">Daily Radiance Boost</strong>
-                        <p style="font-family: 'Arial', sans-serif; font-size: 0.95em; color: #777; margin-top: 5px;">Experience a youthful glow with regular use.</p>
+                        <strong class="font-sans text-lg font-medium text-gray-700 block">Immediate Radiance Enhancement</strong>
+                        <p class="font-sans text-base text-gray-600 mt-1">Achieve a vibrant, youthful complexion with consistent daily treatments.</p>
                     </div>
                 </li>
-                <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-                    <span style="display: inline-block; width: 24px; height: 24px; background-color: #007bff; border-radius: 50%; color: white; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.9em; margin-right: 15px;">✓</span>
+                <li class="mb-5 flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full text-white font-bold text-sm mr-4 flex-shrink-0">✓</span>
                     <div>
-                        <strong style="font-family: 'Arial', sans-serif; font-size: 1.1em; color: #555;">Long-Term Skin Renewal</strong>
-                        <p style="font-family: 'Arial', sans-serif; font-size: 0.95em; color: #777; margin-top: 5px;">AuraRay LED technology strengthens and rejuvenates skin at a cellular level.</p>
+                        <strong class="font-sans text-lg font-medium text-gray-700 block">Deep Cellular Regeneration</strong>
+                        <p class="font-sans text-base text-gray-600 mt-1">Our advanced LED technology works at the cellular level to renew and fortify both facial and neck skin.</p>
                     </div>
                 </li>
-                <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-                    <span style="display: inline-block; width: 24px; height: 24px; background-color: #007bff; border-radius: 50%; color: white; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.9em; margin-right: 15px;">✓</span>
+                <li class="mb-5 flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full text-white font-bold text-sm mr-4 flex-shrink-0">✓</span>
                     <div>
-                        <strong style="font-family: 'Arial', sans-serif; font-size: 1.1em; color: #555;">Activate Skin's Natural Vitality</strong>
-                        <p style="font-family: 'Arial', sans-serif; font-size: 0.95em; color: #777; margin-top: 5px;">Stimulate collagen production for visibly vibrant skin over time.</p>
+                        <strong class="font-sans text-lg font-medium text-gray-700 block">Natural Collagen Activation</strong>
+                        <p class="font-sans text-base text-gray-600 mt-1">Stimulate your skin's collagen production for lasting firmness and elasticity.</p>
                     </div>
                 </li>
-                <li style="margin-bottom: 0; display: flex; align-items: flex-start;">
-                    <span style="display: inline-block; width: 24px; height: 24px; background-color: #007bff; border-radius: 50%; color: white; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.9em; margin-right: 15px;">✓</span>
+                <li class="flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full text-white font-bold text-sm mr-4 flex-shrink-0">✓</span>
                     <div>
-                        <strong style="font-family: 'Arial', sans-serif; font-size: 1.1em; color: #555;">Gentle & Protective Care</strong>
-                        <p style="font-family: 'Arial', sans-serif; font-size: 0.95em; color: #777; margin-top: 5px;">Non-invasive and suitable for even the most sensitive skin types.</p>
+                        <strong class="font-sans text-lg font-medium text-gray-700 block">Gentle Yet Effective Treatment</strong>
+                        <p class="font-sans text-base text-gray-600 mt-1">Suitable for all skin types, including sensitive skin, with zero downtime or irritation.</p>
                     </div>
                 </li>
             </ul>
