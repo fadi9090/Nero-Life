@@ -82,7 +82,7 @@
 
     <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-white"> 
         
-        <h1 class="text-3xl font-bold mb-4 color-black">
+        <h1 class="text-3xl font-bold mb-4 text-black">
             {{ product.title }}
         </h1>
 
@@ -106,6 +106,12 @@
                 Add to Cart
             </button>
         </div>
+    </div>
+    <div class="block text-black">
+        <h1 class="text-2xl font-bold mb-4">Product Description</h1>
+        <p class="text-base leading-relaxed">
+            {{ product.description }}
+        </p>
     </div>
 
 </div>
