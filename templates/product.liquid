@@ -2,6 +2,7 @@
 <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 
 {% assign selected_variant = product.selected_or_first_available_variant %}
+{% assign featured_media = selected_variant.featured_media | default: product.featured_media %}
 
 <style>
     .swiper-button-prev, .swiper-button-next { color: black; top: auto !important; height: 20px; }
@@ -18,16 +19,23 @@
 <div class="max-w-6xl mx-auto my-8 bg-[#F5F5DC]">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         
+        {# --- Product Media (Single Image on Desktop, Swiper on Mobile) --- #}
         <div class="product--medias">
             
-            <div class="hidden md:grid md:grid-cols-1 md:gap-3">
-                {% for media in product.media %}
-                    <div class="h-100 overflow-hidden p-2">
-                        {% render 'product-media', media: media %}
-                    </div>
-                {% endfor %}
+            {# Desktop Single Featured Image #}
+            <div class="hidden md:block">
+                <div class="h-100 overflow-hidden p-2">
+                    {% if featured_media %}
+                        {% render 'product-media', media: featured_media %}
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                            <span class="text-gray-500">Image Placeholder</span>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
+            {# Mobile Media Swiper Slider (Uses ALL media as fallback for swiping) #}
             <div class="md:hidden">
                 <div class="swiper h-94">
                     <div class="swiper-wrapper">
@@ -47,6 +55,7 @@
             </div>
         </div>
         
+        {# --- Product Information & Form --- #}
         <div class="product--information sticky top-5 p-2">
             
             {% form 'product', product, id: 'product-form', novalidate: 'novalidate' %}
@@ -148,7 +157,9 @@
             if(this.currentVariant) {
                 this.updateURL();
                 this.updateFormID();
-                this.updateAvailability(); 
+                this.updateAvailability();
+                // Note: Price update logic remains client-side only (availability status). 
+                // Full price/media refresh requires server-side section rendering which was removed.
             }
         }
 
@@ -192,11 +203,11 @@
             if (this.currentVariant.available) {
                 button.disabled = false;
                 button.innerHTML = "Add to cart";
-                button.classList.replace('bg-gray-400', 'bg-black'); // Changed from gray-900 to black
+                button.classList.replace('bg-gray-400', 'bg-black');
             } else {
                 button.disabled = true;
                 button.innerHTML = "Sold out";
-                button.classList.replace('bg-black', 'bg-gray-400'); // Changed from gray-900 to black
+                button.classList.replace('bg-black', 'bg-gray-400');
             }
         }
     }
