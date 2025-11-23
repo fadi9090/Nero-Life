@@ -35,28 +35,51 @@
 <div class="bg-[#F5F5DC] py-10 px-10 flex flex-col lg:flex-row lg:justify-between lg:gap-10">
 
     <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
-        <div class="h-96 bg-white flex flex-col items-center justify-center rounded-lg">
-            <!-- Main Featured Image - Full width/height -->
-            <div class="w-full h-full flex items-center justify-center">
-                <img id="media-display" 
-                    src="{{ product.featured_image | img_url: 'large' }}" 
-                    alt="{{ product.featured_image.alt | escape }}" 
-                    class="w-full h-full object-contain"/>
+        <div class="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center">
+
+            <!-- 1. Main Image Display Area -->
+            <!-- Start with the URL of the product's featured media (Liquid handles this automatically) -->
+            <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
+                <img id="media-display"
+                    src="{{ product.featured_media | img_url: '1024x1024' }}" 
+                    alt="{{ product.featured_media.alt | escape }}"
+                    class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
+                    onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
+                />
             </div>
-            
-            <!-- Thumbnail Images - Full width container -->
-            <div class="w-full mt-4 flex space-x-4 overflow-x-auto flex-row px-4 pb-2">
+
+            <!-- 2. Thumbnails Area (Horizontal Scrollable Row) -->
+            <div id="thumbnails-container"
+                class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
+            >
+                
+                <!-- Loop through ALL media associated with the product -->
                 {% for media in product.media %}
-                    <div class="flex-shrink-0 w-16 h-16 flex items-center justify-center">
-                        <img src="{{ media.preview_image | img_url: 'medium' }}" 
-                            alt="{{ media.alt | escape }}" 
-                            class="w-full h-full object-contain cursor-pointer hover:opacity-80 transition-opacity"
-                            data-media-src="{{ media | img_url: 'large' }}"/>
-                    </div>
+                    
+                    <!-- Check if the current media item is the featured media to set the initial active class -->
+                    {% assign is_active = false %}
+                    {% if product.featured_media.id == media.id %}
+                        {% assign is_active = true %}
+                    {% endif %}
+                    
+                    <img src="{{ media.preview_image | img_url: 'medium' }}" 
+                        alt="{{ media.alt | escape }}" 
+                        data-full-url="{{ media | img_url: '1024x1024' }}"
+                        data-media-id="{{ media.id }}"
+                        class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100 
+                                {% if is_active %}
+                                    border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md 
+                                {% else %}
+                                    border-gray-300 border opacity-75
+                                {% endif %}"
+                        onclick="swapMedia(this, '{{ media | img_url: '1024x1024' }}')"
+                    />
                 {% endfor %}
+                
             </div>
-        </div> 
+        </div>
     </div>
+
     <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-white"> 
         
         <h1 class="text-3xl font-bold mb-4 color-black">
@@ -88,5 +111,41 @@
 </div>
 
 <script>
+    /**
+     * Swaps the main product image and updates the active state of the thumbnails.
+     * @param {HTMLElement} clickedThumb - The thumbnail element that was clicked.
+     * @param {string} fullImageUrl - The full-size URL for the new main image.
+     */
+    function swapMedia(clickedThumb, fullImageUrl) {
+        const display = document.getElementById('media-display');
+        
+        // 1. Update main image source and alt text
+        display.src = fullImageUrl;
+        display.alt = clickedThumb.alt;
+        
+        // 2. Update active state for all thumbnails
+        document.querySelectorAll('.media-thumbnail').forEach(thumb => {
+            // Remove active classes (blue border)
+            thumb.classList.remove('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+            // Add inactive styling (gray border, lower opacity)
+            thumb.classList.add('border-gray-300', 'border', 'opacity-75');
+        });
+        
+        // 3. Apply active state to the clicked thumbnail
+        clickedThumb.classList.add('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+        clickedThumb.classList.remove('border-gray-300', 'border', 'opacity-75');
+    }
 
+    // Safely inject styles for scrollbar hiding if not already present
+    let scrollbarStyle = document.getElementById('scrollbar-style-fix');
+    
+    if (!scrollbarStyle) {
+        const style = document.createElement('style');
+        style.id = 'scrollbar-style-fix';
+        style.innerHTML = `
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        `;
+        document.head.appendChild(style);
+    }
 </script>
