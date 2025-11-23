@@ -293,7 +293,7 @@
 
     <div style="display: flex; align-items: center; justify-content: center; gap: 40px; padding: 50px; background-color: #f8f8f8; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
         <div style="flex-shrink: 0;">
-            <img src="assets/skin-effect.png" alt="Skin hydration diagram with LED mask benefits" style="width: 400px; height: auto; border-radius: 8px;">
+            <img src="{{ 'skin-effect.png' | asset_url }}" alt="Skin hydration diagram with LED mask benefits" width="400" height="300" style="width: 400px; height: auto; border-radius: 8px;">
         </div>
         <div style="flex-grow: 1; max-width: 500px;">
             <h2 style="font-family: 'Arial', sans-serif; font-size: 2.5em; color: #333; margin-bottom: 20px;">
@@ -415,5 +415,14 @@
             .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         `;
         document.head.appendChild(style);
+    }
+
+    // Call learn_shopify_api if available (required)
+    try {
+        if (typeof learn_shopify_api === 'function') {
+            learn_shopify_api();
+        }
+    } catch (e) {
+        // noop - safe fallback if function doesn't exist
     }
 </script>
