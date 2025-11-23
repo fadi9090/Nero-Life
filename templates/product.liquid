@@ -1,440 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NERO LIFE - The Noir Elegance Midi Dress</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f8f8;
-        }
-        
-        .brand-font {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .product-image {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .product-image:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .thumbnail {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .thumbnail.active {
-            border-color: #000;
-        }
-        
-        .thumbnail:hover {
-            transform: scale(1.05);
-        }
-        
-        .size-option {
-            transition: all 0.2s ease;
-        }
-        
-        .size-option.selected {
-            background-color: #000;
-            color: white;
-        }
-        
-        .btn-primary {
-            background-color: #000;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: #333;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            border: 1px solid #000;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #f0f0f0;
-        }
-        
-        .review-stars {
-            color: #000;
-        }
-        
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        
-        .accordion.active .accordion-content {
-            max-height: 500px;
-        }
-        
-        .accordion.active .accordion-icon {
-            transform: rotate(180deg);
-        }
-    </style>
-</head>
-<body class="bg-white">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div class="brand-font text-2xl font-bold">NERO LIFE</div>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#" class="text-gray-700 hover:text-black">New Arrivals</a>
-                <a href="#" class="text-gray-700 hover:text-black">Dresses</a>
-                <a href="#" class="text-gray-700 hover:text-black">Tops</a>
-                <a href="#" class="text-gray-700 hover:text-black">Bottoms</a>
-                <a href="#" class="text-gray-700 hover:text-black">Accessories</a>
-            </nav>
-            <div class="flex items-center space-x-4">
-                <button class="text-gray-700 hover:text-black">
-                    <i class="fas fa-search"></i>
-                </button>
-                <button class="text-gray-700 hover:text-black">
-                    <i class="fas fa-shopping-bag"></i>
-                </button>
-                <button class="text-gray-700 hover:text-black">
-                    <i class="fas fa-user"></i>
-                </button>
-            </div>
-        </div>
-    </header>
+<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 
-    <!-- Breadcrumb -->
-    <div class="container mx-auto px-4 py-4 text-sm">
-        <a href="#" class="text-gray-500 hover:text-black">Home</a> / 
-        <a href="#" class="text-gray-500 hover:text-black">Dresses</a> / 
-        <span class="text-black">The Noir Elegance Midi Dress</span>
-    </div>
+{% assign selected_variant = product.selected_or_first_available_variant %}
 
-    <!-- Product Section -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col lg:flex-row gap-12">
-            <!-- Product Images -->
-            <div class="lg:w-1/2">
-                <div class="flex flex-col md:flex-row gap-6">
-                    <!-- Thumbnails -->
-                    <div class="flex md:flex-col gap-4 order-2 md:order-1">
-                        <div class="thumbnail w-16 h-16 md:w-20 md:h-24 border border-gray-300 active">
-                            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
-                                 alt="Dress thumbnail 1" class="w-full h-full object-cover">
-                        </div>
-                        <div class="thumbnail w-16 h-16 md:w-20 md:h-24 border border-gray-300">
-                            <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
-                                 alt="Dress thumbnail 2" class="w-full h-full object-cover">
-                        </div>
-                        <div class="thumbnail w-16 h-16 md:w-20 md:h-24 border border-gray-300">
-                            <img src="https://images.unsplash.com/photo-1566479179818-81594dca99e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
-                                 alt="Dress thumbnail 3" class="w-full h-full object-cover">
-                        </div>
-                        <div class="thumbnail w-16 h-16 md:w-20 md:h-24 border border-gray-300">
-                            <img src="https://images.unsplash.com/photo-1585487000113-27e0c5d778c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
-                                 alt="Dress thumbnail 4" class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                    
-                    <!-- Main Image -->
-                    <div class="flex-1 order-1 md:order-2">
-                        <div class="product-image bg-white rounded-lg overflow-hidden shadow-md">
-                            <img id="main-image" src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
-                                 alt="The Noir Elegance Midi Dress" class="w-full h-auto">
-                        </div>
-                    </div>
-                </div>
-            </div>
+<style>
+    .swiper-button-prev, .swiper-button-next { color: black; top: auto !important; height: 20px; }
+    .swiper-button-prev::after, .swiper-button-next::after { font-size: 20px; }
+    .swiper-pagination { color: black; bottom: 0 !important; }
+    .swiper-pagination-bullet-active { background: black !important; }
+    .product--information { height: fit-content; }
+    
+    .h-94 { height: 23.5rem; }
+    .h-100 { height: 25rem; }
+    .h-80 { height: 20rem; }
+</style>
+
+<div class="max-w-6xl mx-auto my-8 bg-[#F5F5DC]">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        
+        <div class="product--medias">
             
-            <!-- Product Details -->
-            <div class="lg:w-1/2 py-4">
-                <h1 class="brand-font text-3xl md:text-4xl font-medium mb-2">The Noir Elegance Midi Dress</h1>
-                <p class="text-2xl font-light mb-6">$180.00 USD</p>
-                
-                <div class="flex items-center mb-6">
-                    <div class="review-stars flex mr-2">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+            <div class="hidden md:grid md:grid-cols-1 md:gap-3">
+                {% for media in product.media %}
+                    <div class="h-100 overflow-hidden p-2">
+                        {% render 'product-media', media: media %}
                     </div>
-                    <a href="#" class="text-gray-600 hover:text-black text-sm">Read 45 Reviews</a>
-                </div>
-                
-                <p class="text-gray-700 mb-8 leading-relaxed">
-                    The Noir Elegance Midi Dress combines luxurious fabrics and timeless design. 
-                    Crafted from premium materials with attention to detail, this dress offers both comfort and sophistication.
-                </p>
-                
-                <!-- Size Selection -->
-                <div class="mb-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-medium">Size</h3>
-                        <a href="#" class="text-sm text-gray-600 hover:text-black">Size Guide</a>
+                {% endfor %}
+            </div>
+
+            <div class="md:hidden">
+                <div class="swiper h-94">
+                    <div class="swiper-wrapper">
+                        {% for media in product.media %}
+                            <div class="swiper-slide">
+                                <div class="h-80 overflow-hidden p-2">
+                                    {% render 'product-media', media: media %}
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                    <div class="flex flex-wrap gap-3">
-                        <div class="size-option selected border border-gray-300 w-12 h-12 flex items-center justify-center cursor-pointer">XS</div>
-                        <div class="size-option border border-gray-300 w-12 h-12 flex items-center justify-center cursor-pointer">S</div>
-                        <div class="size-option border border-gray-300 w-12 h-12 flex items-center justify-center cursor-pointer">M</div>
-                        <div class="size-option border border-gray-300 w-12 h-12 flex items-center justify-center cursor-pointer">L</div>
-                        <div class="size-option border border-gray-300 w-12 h-12 flex items-center justify-center cursor-pointer">XL</div>
-                    </div>
-                </div>
-                
-                <!-- Color Selection -->
-                <div class="mb-8">
-                    <h3 class="font-medium mb-4">Color</h3>
-                    <div class="flex gap-3">
-                        <div class="w-8 h-8 rounded-full bg-black border-2 border-black cursor-pointer"></div>
-                        <div class="w-8 h-8 rounded-full bg-gray-400 border-2 border-gray-300 cursor-pointer"></div>
-                        <div class="w-8 h-8 rounded-full bg-rose-200 border-2 border-gray-300 cursor-pointer"></div>
-                    </div>
-                </div>
-                
-                <!-- Quantity & Add to Cart -->
-                <div class="mb-8">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex border border-gray-300 rounded-md overflow-hidden">
-                            <button class="px-4 py-3 bg-gray-100 hover:bg-gray-200 transition-colors">-</button>
-                            <div class="px-6 py-3 bg-white w-16 text-center">1</div>
-                            <button class="px-4 py-3 bg-gray-100 hover:bg-gray-200 transition-colors">+</button>
-                        </div>
-                        <button class="btn-primary flex-1 py-3 px-6 rounded-md font-medium flex items-center justify-center">
-                            <i class="fas fa-shopping-bag mr-2"></i>
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Buy Now Button -->
-                <button class="btn-secondary w-full py-3 px-6 rounded-md font-medium mb-8">
-                    Buy Now
-                </button>
-                
-                <!-- Additional Info -->
-                <div class="border-t border-gray-200 pt-6">
-                    <div class="accordion mb-4">
-                        <div class="accordion-header flex justify-between items-center cursor-pointer py-2">
-                            <h3 class="font-medium">Shipping & Returns</h3>
-                            <i class="accordion-icon fas fa-chevron-down transition-transform"></i>
-                        </div>
-                        <div class="accordion-content text-sm text-gray-600 mt-2">
-                            <p>Free standard shipping on orders over $100. Returns accepted within 30 days of purchase.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="accordion mb-4">
-                        <div class="accordion-header flex justify-between items-center cursor-pointer py-2">
-                            <h3 class="font-medium">Fabric & Care</h3>
-                            <i class="accordion-icon fas fa-chevron-down transition-transform"></i>
-                        </div>
-                        <div class="accordion-content text-sm text-gray-600 mt-2">
-                            <p>Made from 100% premium cotton. Machine wash cold, tumble dry low. Do not bleach.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Social Sharing -->
-                <div class="mt-8 flex items-center">
-                    <span class="text-gray-600 mr-4">Share:</span>
-                    <div class="flex space-x-3">
-                        <a href="#" class="text-gray-600 hover:text-black">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-black">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-black">
-                            <i class="fab fa-pinterest"></i>
-                        </a>
-                        <a href="#" class="text-gray-600 hover:text-black">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                    </div>
+
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Related Products -->
-    <div class="bg-gray-50 py-16 mt-12">
-        <div class="container mx-auto px-4">
-            <h2 class="brand-font text-2xl md:text-3xl text-center mb-12">You Might Also Like</h2>
+        
+        <div class="product--information sticky top-5 p-2">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Product Card 1 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm product-card">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
-                             alt="Evening Dress" class="w-full h-80 object-cover transition-transform duration-500 hover:scale-105">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-medium mb-1">Midnight Serenade</h3>
-                        <p class="text-gray-600 text-sm mb-2">Evening Dress</p>
-                        <p class="font-medium">$220.00</p>
-                    </div>
+            {% form 'product', product, id: 'product-form', novalidate: 'novalidate' %}
+                <input type="hidden" name="id" value="{{ selected_variant.id }}">
+                
+                <div class="my-3">
+                    <span class="text-xs text-gray-700">{{ product.vendor }}</span>
                 </div>
                 
-                <!-- Product Card 2 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm product-card">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
-                             alt="Casual Dress" class="w-full h-80 object-cover transition-transform duration-500 hover:scale-105">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-medium mb-1">Urban Chic</h3>
-                        <p class="text-gray-600 text-sm mb-2">Casual Dress</p>
-                        <p class="font-medium">$145.00</p>
-                    </div>
+                <div class="my-3">
+                    <h1 class="text-3xl text-black">{{ product.title }}</h1>
                 </div>
                 
-                <!-- Product Card 3 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm product-card">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
-                             alt="Summer Dress" class="w-full h-80 object-cover transition-transform duration-500 hover:scale-105">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-medium mb-1">Summer Breeze</h3>
-                        <p class="text-gray-600 text-sm mb-2">Day Dress</p>
-                        <p class="font-medium">$165.00</p>
-                    </div>
+                <div class="my-3" id="price-{{ product.id }}">
+                    {% if selected_variant.price < selected_variant.compare_at_price %}
+                        <span class="text-base text-gray-700 line-through">{{ selected_variant.compare_at_price | money }}</span>
+                        <span class="text-lg text-black">{{ selected_variant.price | money }}</span>
+                        <span class="px-5 py-1 text-sm font-bold bg-[#FA8072] rounded-full text-black mx-4">Sale</span>
+                    {% else %}
+                        <span class="text-lg text-black">{{ selected_variant.price | money }}</span>
+                    {% endif %}
                 </div>
                 
-                <!-- Product Card 4 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm product-card">
-                    <div class="relative overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1508296695146-257a814070b4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" 
-                             alt="Cocktail Dress" class="w-full h-80 object-cover transition-transform duration-500 hover:scale-105">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-medium mb-1">Velvet Dream</h3>
-                        <p class="text-gray-600 text-sm mb-2">Cocktail Dress</p>
-                        <p class="font-medium">$195.00</p>
+                <div class="my-3">
+                    {% unless product.has_only_default_variant %}
+                        <variant-selector data-url="{{ product.url}}" data-product-id="{{ product.id }}">
+                            {% for option in product.options_with_values %}
+                                <label for="Option-{{ product.id }}-{{ forloop.index0 }}" class="text-black">{{ option.name }}</label>
+
+                                <div class="my-2">
+                                    <select 
+                                        name="options[{{ option.name | escape }}]" 
+                                        id="Option-{{ product.id }}-{{ forloop.index0 }}" 
+                                        class="w-full border border-gray-400 py-3 px-3 bg-white text-black"
+                                    >
+                                        {% for value in option.values %}
+                                            <option 
+                                                value="{{ value | escape }}"
+                                                {% if option.selected_value == value %}
+                                                    selected="selected"
+                                                {% endif %}
+                                            >
+                                                {{ value }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            {% endfor %}
+                            
+                            <script type="application/json" id="VariantData-{{ product.id }}">
+                                {{ product.variants | json }}
+                            </script>
+                        </variant-selector>
+                    {% endunless %}
+                </div>
+                
+                <div class="my-3">
+                    <label for="Quantity-{{ product.id }}" class="text-black">Quantity</label>
+                    <div class="my-2">
+                        <input type="number" name="quantity" id="Quantity-{{ product.id }}" value="1" min="1" class="w-full border border-gray-400 px-3 py-3 bg-white text-black">
                     </div>
                 </div>
-            </div>
+
+                <div class="my-3">
+                    <p class="text-gray-700">{{ product.description }}</p>
+                </div>
+                
+                <div class="my-3">
+                    <button type="submit" name="add" class="w-full px-6 py-4 bg-black text-[#F5F5DC] hover:bg-[#FA8072] hover:text-black rounded-sm my-2"
+                        {% if selected_variant.available == false %}
+                            disabled
+                        {% endif %}
+                    >
+                        {% if selected_variant.available == false %}
+                            Sold out
+                        {% else %}
+                            Add to cart
+                        {% endif %}
+                    </button>
+                </div>
+
+            {% endform %}
         </div>
     </div>
+</div>
 
-    <!-- Footer -->
-    <footer class="bg-black text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="brand-font text-xl mb-4">NERO LIFE</h3>
-                    <p class="text-gray-400 text-sm">Elevating everyday style with timeless pieces and modern elegance.</p>
-                </div>
-                <div>
-                    <h4 class="font-medium mb-4">Shop</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white">New Arrivals</a></li>
-                        <li><a href="#" class="hover:text-white">Dresses</a></li>
-                        <li><a href="#" class="hover:text-white">Tops</a></li>
-                        <li><a href="#" class="hover:text-white">Bottoms</a></li>
-                        <li><a href="#" class="hover:text-white">Accessories</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-medium mb-4">Help</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white">Shipping & Returns</a></li>
-                        <li><a href="#" class="hover:text-white">Size Guide</a></li>
-                        <li><a href="#" class="hover:text-white">FAQs</a></li>
-                        <li><a href="#" class="hover:text-white">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-medium mb-4">Newsletter</h4>
-                    <p class="text-gray-400 text-sm mb-4">Subscribe for updates and exclusive offers</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Your email" class="bg-gray-800 text-white px-4 py-2 w-full rounded-l-md focus:outline-none">
-                        <button class="bg-white text-black px-4 py-2 rounded-r-md font-medium">Join</button>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
-                <p>&copy; 2023 NERO LIFE. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+<script>
+    class VariantSelector extends HTMLElement {
+        constructor() {
+            super();
+            this.addEventListener("change", this.onVariantChange);
+        }
 
-    <script>
-        // Thumbnail click functionality
-        document.querySelectorAll('.thumbnail').forEach(thumb => {
-            thumb.addEventListener('click', function() {
-                // Remove active class from all thumbnails
-                document.querySelectorAll('.thumbnail').forEach(t => {
-                    t.classList.remove('active');
-                    t.classList.add('border-gray-300');
-                });
-                
-                // Add active class to clicked thumbnail
-                this.classList.add('active');
-                this.classList.remove('border-gray-300');
-                
-                // Get the image source from the thumbnail
-                const imgSrc = this.querySelector('img').src;
-                
-                // Update the main image
-                document.getElementById('main-image').src = imgSrc.replace('200', '800');
-            });
-        });
-        
-        // Size selection functionality
-        document.querySelectorAll('.size-option').forEach(size => {
-            size.addEventListener('click', function() {
-                // Remove selected class from all sizes
-                document.querySelectorAll('.size-option').forEach(s => {
-                    s.classList.remove('selected');
-                    s.classList.add('border-gray-300');
-                });
-                
-                // Add selected class to clicked size
-                this.classList.add('selected');
-                this.classList.remove('border-gray-300');
-            });
-        });
-        
-        // Accordion functionality
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', function() {
-                const accordion = this.parentElement;
-                accordion.classList.toggle('active');
-            });
-        });
-        
-        // Quantity buttons functionality
-        const quantityDisplay = document.querySelector('.flex.border button + div');
-        const minusBtn = document.querySelector('.flex.border button:first-child');
-        const plusBtn = document.querySelector('.flex.border button:last-child');
-        
-        let quantity = 1;
-        
-        minusBtn.addEventListener('click', function() {
-            if (quantity > 1) {
-                quantity--;
-                quantityDisplay.textContent = quantity;
+        onVariantChange() {
+            this.getSelectedOptions();
+            this.getSelectedVariant();
+
+            if(this.currentVariant) {
+                this.updateURL();
+                this.updateFormID();
+                this.updateAvailability(); // Keep this for button state
+                // updatePrice() is complex without section_id/AJAX snippets.
+                // For a simpler setup, price will update on page refresh or 
+                // if you implement client-side price update logic.
             }
-        });
-        
-        plusBtn.addEventListener('click', function() {
-            quantity++;
-            quantityDisplay.textContent = quantity;
-        });
-    </script>
-</body>
-</html>
+        }
+
+        getSelectedOptions() {
+            this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+        }
+
+        getVariantJSON() {
+            const scriptTag = document.getElementById(`VariantData-${this.dataset.productId}`);
+            this.variantData = this.variantData || JSON.parse(scriptTag.textContent);
+            return this.variantData;
+        }
+
+        getSelectedVariant() {
+            this.currentVariant = this.getVariantJSON().find(
+                (variant) => {
+                    const findings = !variant.options.map(
+                        (option, index) => {
+                            return this.options[index] === option;
+                        }
+                    ).includes(false);
+
+                    if(findings) return variant;
+                }
+            );
+        }
+
+        updateURL() {
+            if(!this.currentVariant) return;
+            window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.currentVariant.id}`);
+        }
+
+        updateFormID() {
+            const form_input = document.querySelector("#product-form").querySelector('input[name="id"]');
+            form_input.value = this.currentVariant.id;
+        }
+
+        updateAvailability() {
+            const button = document.querySelector('#product-form button[name="add"]');
+            
+            if (this.currentVariant.available) {
+                button.disabled = false;
+                button.innerHTML = "Add to cart";
+                button.classList.replace('bg-gray-400', 'bg-black'); // Changed from gray-900 to black
+            } else {
+                button.disabled = true;
+                button.innerHTML = "Sold out";
+                button.classList.replace('bg-black', 'bg-gray-400'); // Changed from gray-900 to black
+            }
+        }
+    }
+
+    customElements.define("variant-selector", VariantSelector);
+</script>
+
+<script>
+    const swiper = new Swiper('.swiper', {
+        direction: 'horizontal',
+        pagination: {
+            el: '.swiper-pagination'
+        },
+        navigation: {
+            prevEl: '.swiper-button-prev',
+            nextEl: '.swiper-button-next'
+        }
+    })
+</script>
