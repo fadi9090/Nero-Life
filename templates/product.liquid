@@ -135,82 +135,197 @@
     </div>
 
     <!-- 4. WHY CHOOSE US? COMPARISON SECTION (New Addition) -->
-    <div class="bg-white p-8 max-w-7xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100">
+    <div class="bg-white p-8 max-w-4xl mx-auto mt-10 rounded-xl shadow-lg border border-gray-100 text-center">
+        <div class="flex items-center justify-center mb-4">
+            <div class="bg-blue-50 p-2 rounded-lg mr-3">
+                <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-extrabold text-gray-900">Why Choose Us?</h2>
+        </div>
         
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">Why Choose Us?</h2>
+        <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
+            At AureaSkins, we combine cutting-edge technology with premium design to deliver real results. The AureaRay is safe, easy to use, and trusted by thousands who want visible, lasting skin improvements – right from home!
+        </p>
 
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-            
-            <!-- Left Side: Description Text (Centered on mobile, left-aligned on desktop) -->
-            <div class="w-full lg:w-1/2 mb-8 lg:mb-0 text-center lg:text-left">
-                <p class="text-lg text-gray-600 max-w-xl lg:max-w-none mx-auto lg:mx-0">
-                    At AureaSkins. We combine cutting-edge technology with premium design to deliver real results. The AureaRay are safe, easy to use, and trusted by thousands who want visible, lasting skin improvements - right from home!
-                </p>
+        <!-- Desktop View -->
+        <div class="hidden md:flex flex-col md:flex-row justify-center max-w-3xl mx-auto border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+            <!-- Benefits Column -->
+            <div class="flex-1 min-w-[200px] bg-gray-50">
+                <div class="px-6 py-4 font-bold text-gray-700 bg-gray-100 text-lg h-20 flex items-center justify-start">Benefit</div>
+                <div class="px-6 py-4 h-20 flex items-center border-t border-gray-200">
+                    <div class="font-medium text-gray-800">Stimulate natural cell renewal</div>
+                </div>
+                <div class="px-6 py-4 h-20 flex items-center border-t border-gray-200">
+                    <div class="font-medium text-gray-800">Support deep skin hydration</div>
+                </div>
+                <div class="px-6 py-4 h-20 flex items-center border-t border-gray-200">
+                    <div class="font-medium text-gray-800">Smooth fine lines and wrinkles</div>
+                </div>
+                <div class="px-6 py-4 h-20 flex items-center border-t border-gray-200">
+                    <div class="font-medium text-gray-800">Improve skin tone and clarity</div>
+                </div>
+                <div class="px-6 py-4 h-20 flex items-center border-t border-gray-200">
+                    <div class="font-medium text-gray-800">Strengthen skin's natural barrier</div>
+                </div>
             </div>
 
-            <!-- Right Side: Comparison Table (Fixed structure, responsive appearance) -->
-            <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
-                <div class="min-w-[300px] max-w-sm sm:max-w-md border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                    
-                    <!-- Main Grid Container for the Table Content -->
-                    <div class="grid grid-cols-[2fr,1fr,1fr] text-sm sm:text-base">
-                        
-                        <!-- Header Row -->
-                        <div class="col-span-1 px-4 py-3 font-bold text-gray-700 bg-gray-100 text-left"></div>
-                        <div class="col-span-1 px-2 py-3 font-bold text-white text-center bg-pink-500 rounded-tr-xl sm:rounded-tr-none relative after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-pink-500/90 after:to-red-400/80">
-                            Aureaskins
-                        </div>
-                        <div class="col-span-1 px-2 py-3 font-bold text-gray-700 bg-gray-100 text-center">Others</div>
-                        
-                        <!-- Data Rows -->
-                        
-                        <!-- Row 1: Stimulate natural cell renewal -->
-                        <div class="col-span-1 px-4 py-3 bg-white text-gray-800 text-left border-b border-gray-100">Stimulate natural cell renewal</div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-pink-100 relative after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-pink-100/50 after:to-red-50/20">
-                            <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        </div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-white border-l border-gray-100">
-                            <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                        </div>
+            <!-- AureaSkins Column -->
+            <div class="flex-1 min-w-[120px] bg-green-50 border-l border-r border-green-200">
+                <div class="px-4 py-4 font-bold text-white text-lg bg-green-500 h-20 flex items-center justify-center">AureaSkins</div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-green-200">
+                    <svg class="w-7 h-7 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-green-200">
+                    <svg class="w-7 h-7 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-green-200">
+                    <svg class="w-7 h-7 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-green-200">
+                    <svg class="w-7 h-7 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-green-200">
+                    <svg class="w-7 h-7 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+            </div>
 
-                        <!-- Row 2: Support deep skin hydration -->
-                        <div class="col-span-1 px-4 py-3 bg-white text-gray-800 text-left border-b border-gray-100">Support deep skin hydration</div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-pink-100 relative after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-pink-100/50 after:to-red-50/20">
-                            <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        </div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-white border-l border-gray-100">
-                            <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                        </div>
-                        
-                        <!-- Row 3: Smooth fine lines and wrinkles -->
-                        <div class="col-span-1 px-4 py-3 bg-white text-gray-800 text-left border-b border-gray-100">Smooth fine lines and wrinkles</div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-pink-100 relative after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-pink-100/50 after:to-red-50/20">
-                            <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        </div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-white border-l border-gray-100">
-                            <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                        </div>
+            <!-- Others Column -->
+            <div class="flex-1 min-w-[120px] bg-red-50">
+                <div class="px-4 py-4 font-bold text-gray-700 bg-red-100 text-lg h-20 flex items-center justify-center">Others</div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-gray-200">
+                    <svg class="w-7 h-7 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-gray-200">
+                    <svg class="w-7 h-7 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-gray-200">
+                    <svg class="w-7 h-7 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-gray-200">
+                    <svg class="w-7 h-7 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="px-4 py-4 h-20 flex items-center justify-center border-t border-gray-200">
+                    <svg class="w-7 h-7 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Row 4: Improve skin tone and clarity -->
-                        <div class="col-span-1 px-4 py-3 bg-white text-gray-800 text-left border-b border-gray-100">Improve skin tone and clarity</div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-pink-100 relative after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-pink-100/50 after:to-red-50/20">
-                            <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        </div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-white border-l border-gray-100">
-                            <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                        </div>
-
-                        <!-- Row 5: Strengthen skin's natural barrier -->
-                        <div class="col-span-1 px-4 py-3 bg-white text-gray-800 text-left rounded-bl-xl">Strengthen skin's natural barrier</div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-pink-100 relative rounded-b-xl sm:rounded-bl-none after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-b after:from-pink-100/50 after:to-red-50/20">
-                            <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        </div>
-                        <div class="col-span-1 px-2 py-3 text-center bg-white border-l border-gray-100 rounded-br-xl">
-                            <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                        </div>
-
+        <!-- Mobile View -->
+        <div class="md:hidden max-w-md mx-auto space-y-6">
+            <!-- Benefit 1 -->
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-gray-100 px-4 py-3 font-bold text-gray-700">Stimulate natural cell renewal</div>
+                <div class="flex divide-x divide-gray-200">
+                    <div class="flex-1 px-4 py-4 text-center bg-green-50">
+                        <div class="font-semibold text-green-600 mb-2">AureaSkins</div>
+                        <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
                     </div>
-                    
+                    <div class="flex-1 px-4 py-4 text-center bg-red-50">
+                        <div class="font-semibold text-red-600 mb-2">Others</div>
+                        <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benefit 2 -->
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-gray-100 px-4 py-3 font-bold text-gray-700">Support deep skin hydration</div>
+                <div class="flex divide-x divide-gray-200">
+                    <div class="flex-1 px-4 py-4 text-center bg-green-50">
+                        <div class="font-semibold text-green-600 mb-2">AureaSkins</div>
+                        <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 px-4 py-4 text-center bg-red-50">
+                        <div class="font-semibold text-red-600 mb-2">Others</div>
+                        <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benefit 3 -->
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-gray-100 px-4 py-3 font-bold text-gray-700">Smooth fine lines and wrinkles</div>
+                <div class="flex divide-x divide-gray-200">
+                    <div class="flex-1 px-4 py-4 text-center bg-green-50">
+                        <div class="font-semibold text-green-600 mb-2">AureaSkins</div>
+                        <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 px-4 py-4 text-center bg-red-50">
+                        <div class="font-semibold text-red-600 mb-2">Others</div>
+                        <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benefit 4 -->
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-gray-100 px-4 py-3 font-bold text-gray-700">Improve skin tone and clarity</div>
+                <div class="flex divide-x divide-gray-200">
+                    <div class="flex-1 px-4 py-4 text-center bg-green-50">
+                        <div class="font-semibold text-green-600 mb-2">AureaSkins</div>
+                        <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 px-4 py-4 text-center bg-red-50">
+                        <div class="font-semibold text-red-600 mb-2">Others</div>
+                        <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benefit 5 -->
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-gray-100 px-4 py-3 font-bold text-gray-700">Strengthen skin's natural barrier</div>
+                <div class="flex divide-x divide-gray-200">
+                    <div class="flex-1 px-4 py-4 text-center bg-green-50">
+                        <div class="font-semibold text-green-600 mb-2">AureaSkins</div>
+                        <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 px-4 py-4 text-center bg-red-50">
+                        <div class="font-semibold text-red-600 mb-2">Others</div>
+                        <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
