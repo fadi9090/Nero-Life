@@ -438,6 +438,9 @@
   .h-min {
     height: min-content;
   }
+  .max-h-80 {
+    max-height: calc(var(--spacing) * 80);
+  }
   .min-h-\[50vh\] {
     min-height: 50vh;
   }
@@ -750,6 +753,9 @@
   }
   .bg-white {
     background-color: var(--color-white);
+  }
+  .object-contain {
+    object-fit: contain;
   }
   .object-cover {
     object-fit: cover;

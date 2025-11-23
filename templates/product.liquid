@@ -35,14 +35,21 @@
 <div class="bg-[#F5F5DC] py-10 px-10 flex flex-col lg:flex-row lg:justify-between lg:gap-10">
 
     <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
-        <div class="h-96 bg-[#FA8072] flex items-center justify-center rounded-lg">
-             
+        <div class="h-96 bg-white flex flex-col items-center justify-center rounded-lg">
+             <div>
+                <img id="media-display" src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.featured_image.alt | escape }}" class="max-h-80 object-contain" width="250" height="250"/>
+             </div>
+             <div>
+                {% for media in product.media %}
+                    <img src="{{ media.preview_image | img_url: 'medium' }}" alt="{{ media.alt | escape }}" class="max-h-80 object-contain" width="30" height="30"/>
+                {% endfor %}
+             </div>
         </div> 
     </div>
 
-    <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-[#FA8072]"> 
+    <div class="w-full lg:w-1/2 p-6 border-default rounded-base shadow-xs bg-white"> 
         
-        <h1 class="text-3xl font-bold mb-4">
+        <h1 class="text-3xl font-bold mb-4 color-black">
             {{ product.title }}
         </h1>
 
@@ -62,10 +69,14 @@
         </div>
 
         <div>
-            <button class="bg-blue-600 text-white p-3 rounded-md w-full hover:bg-blue-700">
+            <button class="bg-[#FA8072] text-[#F5F5DC] p-3 rounded-md w-full hover:bg-[#0077B6]">
                 Add to Cart
             </button>
         </div>
     </div>
 
 </div>
+
+<script>
+
+</script>
