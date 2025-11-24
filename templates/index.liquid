@@ -1,120 +1,152 @@
+<div class="w-full max-w-7xl rounded-2xl shadow-2xl overflow-hidden bg-white mx-auto">
+    <div class="flex flex-col lg:flex-row min-h-[600px]">
+        <!-- Image Section with Text Overlay -->
+        <div class="relative lg:w-3/5 min-h-[500px] lg:min-h-auto bg-cover bg-center flex items-center justify-center lg:justify-start p-8"
+             style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1556228578-8c89e6adf883?ixlib=rb-4.0.3&auto=format&fit=crop&w=1169&q=80')">
+            
+            <!-- Glow Effect -->
+            <div class="absolute inset-0 shadow-[inset_0_0_100px_30px_rgba(156,48,48,0.3)] pointer-events-none mix-blend-overlay z-5"></div>
+            
+            <!-- Text Content Overlay -->
+            <div class="relative z-10 text-white text-center lg:text-left max-w-2xl lg:pl-12">
+                <!-- Product Title -->
+                <h1 class="title-text text-4xl sm:text-5xl lg:text-6xl font-black uppercase mb-6 leading-tight drop-shadow-lg">
+                    {% if product.title != blank %}
+                        {{ product.title | default: "THE CLINIC FACIAL, NOW AT HOME" }}
+                    {% else %}
+                        THE CLINIC FACIAL, NOW AT HOME
+                    {% endif %}
+                </h1>
+
+                <!-- Product Description -->
+                <p class="text-lg sm:text-xl mb-8 leading-relaxed drop-shadow-md max-w-xl">
+                    {% if product.description != blank %}
+                        {{ product.description | truncatewords: 25 }}
+                    {% else %}
+                        Unlock 7-1 LED Therapy Mask. Save thousands on treatments. Guaranteed results in 15 minutes a day.
+                    {% endif %}
+                </p>
+
+                <!-- Price Comparison -->
+                <div class="flex items-baseline justify-center lg:justify-start space-x-4 mb-8">
+                    <span class="text-4xl sm:text-5xl font-black text-red-400 drop-shadow-md">
+                        {% if product.price != blank %}
+                            {{ product.price | money_without_trailing_zeros }}
+                        {% else %}
+                            $69.99
+                        {% endif %}
+                    </span>
+                    <span class="text-2xl sm:text-3xl font-medium line-through opacity-80">
+                        {% if product.compare_at_price != blank %}
+                            {{ product.compare_at_price | money_without_trailing_zeros }}
+                        {% else %}
+                            $99.99
+                        {% endif %}
+                    </span>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="mb-8">
+                    {% assign discount = product.discount_percent | default: 30 %}
+                    <a href="{% if product.url != blank %}{{ product.url }}{% else %}#{% endif %}"
+                       class="inline-block px-10 py-4 text-lg font-bold text-white bg-red-500 hover:bg-red-600 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl uppercase tracking-wider transform hover:-translate-y-1">
+                        SHOP {{ discount }}% OFF NOW
+                    </a>
+                </div>
+
+                <!-- Feature Badges -->
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-8 text-sm font-semibold">
+                    {% assign has_guarantee = product.has_guarantee | default: true %}
+                    {% if has_guarantee %}
+                        <div class="flex items-center text-white drop-shadow-sm">
+                            <svg class="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            30-Day Guarantee
+                        </div>
+                    {% endif %}
+
+                    {% assign is_certified = product.is_certified | default: true %}
+                    {% if is_certified %}
+                        <div class="flex items-center text-white drop-shadow-sm">
+                            <svg class="w-5 h-5 text-blue-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            FCC & CE Certified
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details Section -->
+        <div class="lg:w-2/5 p-8 lg:p-12 bg-white flex flex-col justify-center">
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 mb-6">Why Choose Our LED Therapy Mask?</h2>
+            
+            <!-- Benefits List -->
+            <ul class="space-y-4 mb-8">
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-gray-700">Professional-grade results at home</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-gray-700">7 different light therapy modes</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-gray-700">FDA-cleared technology</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-gray-700">Fits all face shapes comfortably</span>
+                </li>
+            </ul>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-600">97%</div>
+                    <div class="text-sm text-gray-600 mt-1">Satisfaction Rate</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-600">15min</div>
+                    <div class="text-sm text-gray-600 mt-1">Daily Use</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-600">7-in-1</div>
+                    <div class="text-sm text-gray-600 mt-1">Light Modes</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-600">2Y</div>
+                    <div class="text-sm text-gray-600 mt-1">Warranty</div>
+                </div>
+            </div>
+
+            <!-- Mobile Notice -->
+            <div class="mt-6 p-4 bg-orange-50 rounded-lg text-center lg:hidden">
+                <div class="text-orange-700 font-medium text-sm">
+                    <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    Text displayed over image with proper z-index
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .title-text {
         line-height: 1.1;
         font-weight: 800;
     }
-
-    .mask-placeholder {
-        background-color: #333; 
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        min-height: 400px; 
-        overflow: hidden;
-    }
-
-    .mask-placeholder::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        box-shadow: inset 0 0 100px 30px rgba(156, 48, 48, 0.7); 
-        pointer-events: none;
-        mix-blend-mode: soft-light;
-    }
 </style>
-
-<div class="w-full max-w-7xl rounded-xl shadow-2xl overflow-hidden bg-white mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-2">
-
-        <!-- 1. Content Area (Left) -->
-        <div class="p-8 sm:p-12 lg:p-16 flex flex-col justify-center text-black">
-            
-            <!-- Liquid: Title -->
-            <h1 class="title-text text-3xl sm:text-5xl lg:text-6xl uppercase mb-6 max-w-lg">
-                {% if product.title != blank %}
-                    {{ product.title | default: "THE CLINIC FACIAL, NOW AT HOME" }}
-                {% else %}
-                    THE CLINIC FACIAL, NOW AT HOME
-                {% endif %}
-            </h1>
-
-            <!-- Liquid: Description -->
-            <p class="text-base sm:text-lg mb-8 max-w-md font-medium">
-                {% if product.description != blank %}
-                    {{ product.description | truncatewords: 30 }}
-                {% else %}
-                    Unlock 7-1 LED Therapy Mask. Save thousands on treatments. Guaranteed results in 15 minutes a day.
-                {% endif %}
-            </p>
-
-            <!-- Liquid: Price Comparison -->
-            <div class="flex items-baseline space-x-3 mb-8">
-                <span class="text-3xl sm:text-4xl font-bold text-accent-red">
-                    {% comment %} Use money_without_currency filter and prepend $ for a clean look {% endcomment %}
-                    {% if product.price != blank %}
-                        {{ product.price | money_without_currency | prepend: '$' }}
-                    {% else %}
-                        $69.99
-                    {% endif %}
-                </span>
-                <span class="text-xl sm:text-2xl font-normal line-through opacity-70">
-                    {% if product.compare_at_price != blank %}
-                        {{ product.compare_at_price | money_without_currency | prepend: '$' }}
-                    {% else %}
-                        $99.99
-                    {% endif %}
-                </span>
-            </div>
-
-            <!-- Liquid: Call to Action Button -->
-            <div class="mb-8">
-                {% assign discount = product.discount_percent | default: 10 %}
-                <a href="{% if product.url != blank %}{{ product.url }}{% else %}#{% endif %}"
-                   class="inline-block px-8 py-3 text-lg font-bold text-[#F5F5DC] bg-black hover:bg-red-800 transition duration-300 rounded-lg shadow-lg uppercase tracking-wider">
-                    SHOP {{ discount }}% OFF NOW
-                </a>
-            </div>
-
-            <!-- Liquid: Feature Badges -->
-            <div class="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0 text-sm font-semibold mt-4">
-                
-                <!-- 30-Day Guarantee Badge -->
-                {% assign has_guarantee = product.has_guarantee | default: true %}
-                {% if has_guarantee %}
-                    <div class="flex items-center text-primary-text/90">
-                        <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        30-Day Guarantee
-                    </div>
-                {% endif %}
-
-                <!-- Certification Badge -->
-                {% assign is_certified = product.is_certified | default: true %}
-                {% if is_certified %}
-                    <div class="flex items-center text-primary-text/90">
-                        <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        FCC & CE Certified
-                    </div>
-                {% endif %}
-
-            </div>
-        </div>
-
-        <!-- 2. Image Area (Right) -->
-        <div class="mask-placeholder w-full min-h-[300px] lg:min-h-full">
-            <!-- 
-            PLACEHOLDER FOR PRODUCT IMAGE
-            This area is styled with the dramatic dark background and red glow effect via CSS.
-            Insert your Liquid image tag here, e.g.:
-            <img src="{{ product.featured_image | img_url: '1000x' }}" alt="{{ product.title }}" class="w-full h-full object-cover"> 
-            -->
-        </div>
-        
-    </div>
-</div>
