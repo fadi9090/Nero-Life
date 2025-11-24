@@ -64,9 +64,17 @@
             </div>
 
             <div class="mt-8">
-                <button class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200">
-                    Add to Cart
-                </button>
+                <div class="mt-8">
+                    <button id="addToCartButton" class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200">
+                        Add to Cart
+                    </button>
+                </div>
+
+                <div id="cartIcon" style="position: fixed; top: 20px; right: 20px;">
+                    🛒 (Cart)
+                </div>
+
+                <img id="productImage" src="path-to-product-image.jpg" alt="Product" style="width: 100px; height: 100px;">
             </div>
 
         </div>
@@ -335,7 +343,8 @@
 
     </div>
 
-</div> <script>
+</div> 
+<script>
     /**
      * Swaps the main product image and updates the active state of the thumbnails.
      * @param {HTMLElement} clickedThumb - The thumbnail element that was clicked.
@@ -382,4 +391,48 @@
     } catch (e) {
         // noop - safe fallback if function doesn't exist
     }
+
+    document.getElementById('addToCartButton').addEventListener('click', function() {
+    const cart = document.getElementById('cartIcon');
+    const productImg = document.getElementById('productImage');
+
+    // 1. Get the starting and ending positions (rectangles)
+    const startRect = productImg.getBoundingClientRect();
+    const endRect = cart.getBoundingClientRect();
+
+    // 2. Clone the image element
+    const flyingImg = productImg.cloneNode();
+    flyingImg.classList.add('flying-item');
+    flyingImg.style.width = startRect.width + 'px'; // Start at original size
+    flyingImg.style.height = startRect.height + 'px';
+
+    // Set initial position: Use fixed positioning relative to the viewport
+    flyingImg.style.left = startRect.left + 'px';
+    flyingImg.style.top = startRect.top + 'px';
+
+    // 3. Add a smooth transition property for the movement
+    flyingImg.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)'; // Fun, bouncy transition
+
+    // Append the clone to the body so it can fly freely
+    document.body.appendChild(flyingImg);
+
+    // 4. Trigger the transition after a very short delay (to ensure element is in the DOM)
+    setTimeout(() => {
+        // Calculate the destination position (center of the cart icon)
+        flyingImg.style.left = (endRect.left + (endRect.width / 2) - (flyingImg.offsetWidth / 2)) + 'px';
+        flyingImg.style.top = (endRect.top + (endRect.height / 2) - (flyingImg.offsetHeight / 2)) + 'px';
+        
+        // Shrink and fade out as it reaches the cart
+        flyingImg.style.width = '10px';
+        flyingImg.style.height = '10px';
+        flyingImg.style.opacity = '0';
+    }, 10);
+
+    // 5. Clean up the element after the animation is complete
+    // The duration here (900ms) should be slightly longer than the CSS transition time (0.8s)
+    setTimeout(() => {
+        flyingImg.remove();
+        // **Optional:** You would also update the cart count here
+    }, 900);
+});
 </script>
