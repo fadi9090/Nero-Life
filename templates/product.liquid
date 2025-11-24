@@ -1,3 +1,24 @@
+<style>
+/* * 1. CSS for the Flying Item (Required for the animation)
+ * This class is dynamically added to the cloned image for animation.
+ */
+.flying-item {
+    /* Critical positioning and layer settings */
+    position: fixed; 
+    z-index: 9999; 
+    
+    /* Defines the animation timing and curve (0.8s bouncy transition) */
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+    
+    /* Appearance tweaks */
+    object-fit: contain; 
+    border-radius: 8px; /* Match the product image rounding */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
+    opacity: 1; /* Start visible */
+    pointer-events: none; /* Prevents the flying element from blocking clicks */
+}
+</style>
+
 <div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10 mb-8">
 
@@ -16,28 +37,24 @@
                 <div id="thumbnails-container"
                     class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
                 >
-
                     {% for media in product.media %}
-
                         {% assign is_active = false %}
                         {% if product.featured_media.id == media.id %}
                             {% assign is_active = true %}
                         {% endif %}
-
                         <img src="{{ media.preview_image | img_url: 'medium' }}"
                             alt="{{ media.alt | escape }}"
                             data-full-url="{{ media | img_url: '1024x1024' }}"
                             data-media-id="{{ media.id }}"
                             class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100
-                                        {% if is_active %}
-                                            border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
-                                        {% else %}
-                                            border-gray-300 border opacity-75
-                                        {% endif %}"
+                                             {% if is_active %}
+                                                 border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
+                                             {% else %}
+                                                 border-gray-300 border opacity-75
+                                             {% endif %}"
                             onclick="swapMedia(this, '{{ media | img_url: '1024x1024' }}')"
                         />
                     {% endfor %}
-
                 </div>
             </div>
         </div>
@@ -69,15 +86,16 @@
                         Add to Cart
                     </button>
                 </div>
-
-                <div id="cartIcon" style="position: fixed; top: 20px; right: 20px;">
-                    🛒 (Cart)
+                
                 </div>
 
-                <img id="productImage" src="path-to-product-image.jpg" alt="Product" style="width: 100px; height: 100px;">
-            </div>
-
         </div>
+
+    </div>
+    
+    <div id="cartIcon" style="position: fixed; top: 20px; right: 20px; z-index: 1000;" class="p-2 bg-white rounded-full shadow-lg">
+        🛒 (Cart)
+    </div>
 
     </div>
 
@@ -347,8 +365,7 @@
 <script>
     /**
      * Swaps the main product image and updates the active state of the thumbnails.
-     * @param {HTMLElement} clickedThumb - The thumbnail element that was clicked.
-     * @param {string} fullImageUrl - The full-size URL for the new main image.
+     * (Retained from your original code)
      */
     function swapMedia(clickedThumb, fullImageUrl) {
         const display = document.getElementById('media-display');
@@ -370,9 +387,8 @@
         clickedThumb.classList.remove('border-gray-300', 'border', 'opacity-75');
     }
 
-    // Safely inject styles for scrollbar hiding if not already present
+    // Safely inject styles for scrollbar hiding (Retained from your original code)
     let scrollbarStyle = document.getElementById('scrollbar-style-fix');
-
     if (!scrollbarStyle) {
         const style = document.createElement('style');
         style.id = 'scrollbar-style-fix';
@@ -382,57 +398,69 @@
         `;
         document.head.appendChild(style);
     }
-
-    // Call learn_shopify_api if available (required)
+    
+    // Call learn_shopify_api if available (Retained from your original code)
     try {
         if (typeof learn_shopify_api === 'function') {
             learn_shopify_api();
         }
     } catch (e) {
-        // noop - safe fallback if function doesn't exist
+        // noop
     }
 
+    /* * 2. JAVASCRIPT FOR FLY-TO-CART ANIMATION
+     * --------------------------------------------------------
+     */
     document.getElementById('addToCartButton').addEventListener('click', function() {
-    const cart = document.getElementById('cartIcon');
-    const productImg = document.getElementById('productImage');
+        // Define the source (main product image) and destination (cart icon)
+        const productImg = document.getElementById('media-display'); 
+        const cart = document.getElementById('cartIcon');
 
-    // 1. Get the starting and ending positions (rectangles)
-    const startRect = productImg.getBoundingClientRect();
-    const endRect = cart.getBoundingClientRect();
+        if (!productImg || !cart) {
+            console.error('Animation failed: Missing media-display or cartIcon element.');
+            return; 
+        }
 
-    // 2. Clone the image element
-    const flyingImg = productImg.cloneNode();
-    flyingImg.classList.add('flying-item');
-    flyingImg.style.width = startRect.width + 'px'; // Start at original size
-    flyingImg.style.height = startRect.height + 'px';
+        // 1. Get positions relative to the viewport
+        const startRect = productImg.getBoundingClientRect();
+        const endRect = cart.getBoundingClientRect();
 
-    // Set initial position: Use fixed positioning relative to the viewport
-    flyingImg.style.left = startRect.left + 'px';
-    flyingImg.style.top = startRect.top + 'px';
-
-    // 3. Add a smooth transition property for the movement
-    flyingImg.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)'; // Fun, bouncy transition
-
-    // Append the clone to the body so it can fly freely
-    document.body.appendChild(flyingImg);
-
-    // 4. Trigger the transition after a very short delay (to ensure element is in the DOM)
-    setTimeout(() => {
-        // Calculate the destination position (center of the cart icon)
-        flyingImg.style.left = (endRect.left + (endRect.width / 2) - (flyingImg.offsetWidth / 2)) + 'px';
-        flyingImg.style.top = (endRect.top + (endRect.height / 2) - (flyingImg.offsetHeight / 2)) + 'px';
+        // 2. Clone the main image element
+        const flyingImg = productImg.cloneNode();
+        flyingImg.classList.add('flying-item');
         
-        // Shrink and fade out as it reaches the cart
-        flyingImg.style.width = '10px';
-        flyingImg.style.height = '10px';
-        flyingImg.style.opacity = '0';
-    }, 10);
+        // Set initial size and position
+        flyingImg.style.width = startRect.width + 'px'; 
+        flyingImg.style.height = startRect.height + 'px';
+        flyingImg.style.left = startRect.left + 'px';
+        flyingImg.style.top = startRect.top + 'px';
+        
+        // Append the clone to the body
+        document.body.appendChild(flyingImg);
+        
+        const finalSize = 10; // The size the image shrinks to
 
-    // 5. Clean up the element after the animation is complete
-    // The duration here (900ms) should be slightly longer than the CSS transition time (0.8s)
-    setTimeout(() => {
-        flyingImg.remove();
-        // **Optional:** You would also update the cart count here
-    }, 900);
-});
+        // 3. Trigger the animation/transition after a tiny delay
+        setTimeout(() => {
+            // Calculate center point of cart icon and move the clone there
+            // This compensates for the flying image's final size
+            flyingImg.style.left = (endRect.left + (endRect.width / 2) - (finalSize / 2)) + 'px';
+            flyingImg.style.top = (endRect.top + (endRect.height / 2) - (finalSize / 2)) + 'px';
+            
+            // Shrink and fade out
+            flyingImg.style.width = finalSize + 'px';
+            flyingImg.style.height = finalSize + 'px';
+            flyingImg.style.opacity = '0';
+        }, 10);
+
+        // 4. Clean up the element and execute real Add to Cart logic
+        setTimeout(() => {
+            flyingImg.remove();
+            
+            // !!! PLACE YOUR ACTUAL LIQUID/AJAX CART ADDITION CODE HERE !!!
+            // e.g., using fetch to submit the item to the cart:
+            // fetch('/cart/add.js', { /* ... */ });
+            
+        }, 900); // Wait 900ms (0.9 seconds) for the 0.8s transition to complete
+    });
 </script>
