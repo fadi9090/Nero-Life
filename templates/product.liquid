@@ -1,21 +1,27 @@
 <style>
-/* * 1. CSS for the Flying Item (Required for the animation)
- * This class is dynamically added to the cloned image for animation.
- */
+/* Enhanced Flying Item Animation */
 .flying-item {
-    /* Critical positioning and layer settings */
-    position: fixed; 
-    z-index: 9999; 
-    
-    /* Defines the animation timing and curve (0.8s bouncy transition) */
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-    
-    /* Appearance tweaks */
-    object-fit: contain; 
-    border-radius: 8px; /* Match the product image rounding */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
-    opacity: 1; /* Start visible */
-    pointer-events: none; /* Prevents the flying element from blocking clicks */
+    position: fixed;
+    z-index: 10000; /* Increased z-index to ensure it's above everything */
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    pointer-events: none;
+    /* Ensure smooth rendering */
+    will-change: transform, opacity, width, height, left, top;
+}
+
+/* Add a subtle bounce effect to the cart icon when item arrives */
+@keyframes cartBounce {
+    0%, 20%, 60%, 100% { transform: scale(1); }
+    40% { transform: scale(1.1); }
+    80% { transform: scale(1.05); }
+}
+
+.cart-bounce {
+    animation: cartBounce 0.6s ease;
 }
 </style>
 
@@ -355,10 +361,10 @@
     </div>
 
 </div> 
+
 <script>
     /**
      * Swaps the main product image and updates the active state of the thumbnails.
-     * (Retained from your original code)
      */
     function swapMedia(clickedThumb, fullImageUrl) {
         const display = document.getElementById('media-display');
@@ -380,7 +386,7 @@
         clickedThumb.classList.remove('border-gray-300', 'border', 'opacity-75');
     }
 
-    // Safely inject styles for scrollbar hiding (Retained from your original code)
+    // Safely inject styles for scrollbar hiding
     let scrollbarStyle = document.getElementById('scrollbar-style-fix');
     if (!scrollbarStyle) {
         const style = document.createElement('style');
@@ -391,8 +397,8 @@
         `;
         document.head.appendChild(style);
     }
-    
-    // Call learn_shopify_api if available (Retained from your original code)
+
+    // Call learn_shopify_api if available
     try {
         if (typeof learn_shopify_api === 'function') {
             learn_shopify_api();
@@ -401,59 +407,150 @@
         // noop
     }
 
-    /* * 2. JAVASCRIPT FOR FLY-TO-CART ANIMATION
-     * --------------------------------------------------------
+    /**
+     * Enhanced Fly-to-Cart Animation
      */
-    document.getElementById('addToCartButton').addEventListener('click', function() {
-        // Define the source (main product image) and destination (cart icon)
-        const productImg = document.getElementById('media-display'); 
-        const cart = document.getElementById('cartIcon');
+    document.getElementById('addToCartButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const productImg = document.getElementById('media-display');
+        
+        // UPDATED: Now looking for the class 'cart-icon-btn' instead of ID
+        let cart = document.querySelector('.cart-icon-btn');
 
-        if (!productImg || !cart) {
-            console.error('Animation failed: Missing media-display or cartIcon element.');
-            return; 
+        if (!productImg) {
+            console.error('Animation failed: Missing media-display element.');
+            return;
         }
 
-        // 1. Get positions relative to the viewport
+        if (!cart) {
+            console.warn('Cart icon not found with class ".cart-icon-btn". Searching for alternative selectors...');
+            // Try to find cart by common selectors
+            const possibleCartSelectors = [
+                'a[href*="/cart"]',
+                '.cart-toggle',
+                '.header-cart',
+                '.nav-cart',
+                '.js-cart-toggle',
+                'button[onclick*="CartDrawer"]',
+                'button[onclick*="cart"]'
+            ];
+            
+            for (const selector of possibleCartSelectors) {
+                const foundCart = document.querySelector(selector);
+                if (foundCart) {
+                    cart = foundCart;
+                    console.log('Found cart using selector:', selector);
+                    break;
+                }
+            }
+            
+            if (!cart) {
+                console.error('Cart icon not found. Using fallback position.');
+                // Fallback: animate to top right corner
+                cart = { 
+                    getBoundingClientRect: () => ({ 
+                        left: window.innerWidth - 50, 
+                        top: 20, 
+                        width: 40, 
+                        height: 40 
+                    }) 
+                };
+            }
+        }
+
+        // Get positions
         const startRect = productImg.getBoundingClientRect();
         const endRect = cart.getBoundingClientRect();
+        
+        // Add scroll position to coordinates since getBoundingClientRect() returns viewport-relative coordinates
+        const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-        // 2. Clone the main image element
-        const flyingImg = productImg.cloneNode();
+        // Create flying image
+        const flyingImg = new Image();
+        flyingImg.src = productImg.src;
+        flyingImg.alt = productImg.alt;
         flyingImg.classList.add('flying-item');
         
-        // Set initial size and position
-        flyingImg.style.width = startRect.width + 'px'; 
+        // Set initial position and size (absolute positioning relative to document)
+        flyingImg.style.position = 'fixed';
+        flyingImg.style.width = startRect.width + 'px';
         flyingImg.style.height = startRect.height + 'px';
-        flyingImg.style.left = startRect.left + 'px';
-        flyingImg.style.top = startRect.top + 'px';
+        flyingImg.style.left = (startRect.left + scrollX) + 'px';
+        flyingImg.style.top = (startRect.top + scrollY) + 'px';
         
-        // Append the clone to the body
         document.body.appendChild(flyingImg);
         
-        const finalSize = 10; // The size the image shrinks to
+        // Force reflow
+        flyingImg.offsetHeight;
+        
+        const finalSize = 20; // Final size in pixels
 
-        // 3. Trigger the animation/transition after a tiny delay
+        // Animate to cart
         setTimeout(() => {
-            // Calculate center point of cart icon and move the clone there
-            // This compensates for the flying image's final size
-            flyingImg.style.left = (endRect.left + (endRect.width / 2) - (finalSize / 2)) + 'px';
-            flyingImg.style.top = (endRect.top + (endRect.height / 2) - (finalSize / 2)) + 'px';
+            const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
+            const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
             
-            // Shrink and fade out
+            flyingImg.style.left = endX + 'px';
+            flyingImg.style.top = endY + 'px';
             flyingImg.style.width = finalSize + 'px';
             flyingImg.style.height = finalSize + 'px';
-            flyingImg.style.opacity = '0';
+            flyingImg.style.opacity = '0.3';
+            flyingImg.style.transform = 'rotate(360deg)'; // Add a little spin for fun
         }, 10);
 
-        // 4. Clean up the element and execute real Add to Cart logic
+        // Add bounce effect to cart icon (only if it's a real DOM element)
+        if (cart.classList) {
+            cart.classList.add('cart-bounce');
+            setTimeout(() => {
+                if (cart.classList) {
+                    cart.classList.remove('cart-bounce');
+                }
+            }, 600);
+        }
+
+        // Clean up and add to cart
         setTimeout(() => {
-            flyingImg.remove();
+            if (flyingImg.parentNode) {
+                flyingImg.parentNode.removeChild(flyingImg);
+            }
             
-            // !!! PLACE YOUR ACTUAL LIQUID/AJAX CART ADDITION CODE HERE !!!
-            // e.g., using fetch to submit the item to the cart:
-            // fetch('/cart/add.js', { /* ... */ });
+            // YOUR ACTUAL ADD TO CART LOGIC GOES HERE
+            addToCartFunction();
             
-        }, 900); // Wait 900ms (0.9 seconds) for the 0.8s transition to complete
+        }, 800);
     });
+
+    /**
+     * Your actual add to cart function
+     * Replace this with your Shopify cart implementation
+     */
+    function addToCartFunction() {
+        console.log('Adding product to cart...');
+        
+        // Example Shopify AJAX cart addition:
+        /*
+        fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                items: [{
+                    id: {{ product.selected_or_first_available_variant.id }},
+                    quantity: 1
+                }]
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update cart count or show success message
+            console.log('Product added to cart:', data);
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+        });
+        */
+    }
 </script>
