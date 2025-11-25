@@ -79,82 +79,62 @@
         </div>
     </div>
 
-    <div class="relative w-full min-h-[250px] sm:min-h-[350px] lg:min-h-auto bg-cover bg-center flex items-center justify-center lg:justify-start p-4 sm:p-6 lg:p-12"
-        style="background-image: linear-gradient(to bottom, rgba(120, 0, 45, 0.4), rgba(120, 0, 45, 0.7)), 
-                        {% if product.featured_image != blank %}
-                            url('{{ product.featured_image | img_url: '1200x800' }}')
-                        {% else %}
-                            url('https://images.unsplash.com/photo-1556228578-8c89e6adf883?ixlib=rb-4.0.3&auto=format&fit=crop&w=1169&q=80')
-                        {% endif %};">
-                
-        <div class="absolute inset-0 shadow-[inset_0_0_100px_30px_rgba(220,38,38,0.4)] pointer-events-none mix-blend-overlay z-5"></div>
-                
-        <div class="relative z-10 text-white text-center lg:text-left max-w-xl lg:pl-10">
-            <div class="inline-block bg-gradient-to-r from-rose-600 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 sm:mb-6 uppercase tracking-wider shadow-lg">
-                Limited Time Launch Offer
+    <div class="w-full p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-white to-gray-50 flex flex-col justify-center rounded-xl shadow-lg">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-6 sm:mb-8 border-b-2 border-rose-100 pb-3 sm:pb-4">Why Our LED Mask Stands Out</h2>
+        
+        <!-- Benefits List -->
+        <ul class="space-y-4 sm:space-y-5 mb-8 sm:mb-10">
+            <li class="flex items-start group">
+                <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                </div>
+                <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">Dual-area treatment for face and neck simultaneously</span>
+            </li>
+            <li class="flex items-start group">
+                <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">7 specialized light wavelengths for different skin concerns</span>
+            </li>
+            <li class="flex items-start group">
+                <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">Clinically tested technology with proven safety standards</span>
+            </li>
+            <li class="flex items-start group">
+                <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">Ergonomic design fits all face shapes and neck contours</span>
+            </li>
+        </ul>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 md:gap-5">
+            <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 text-center border border-rose-100 shadow-md sm:shadow-lg">
+                <div class="text-xl sm:text-2xl md:text-3xl font-black text-rose-600">94%</div>
+                <div class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 font-medium">Users See Results</div>
             </div>
-                    
-            <h1 class="text-3xl sm:text-4xl lg:text-6xl font-black uppercase mb-3 sm:mb-6 leading-tight tracking-tight drop-shadow-2xl">
-                {% if product.title != blank %}
-                    {{ product.title | default: "PROFESSIONAL LED THERAPY FOR FACE & NECK" }}
-                {% else %}
-                    PROFESSIONAL LED THERAPY FOR FACE & NECK
-                {% endif %}
-            </h1>
-
-            <p class="text-sm sm:text-lg mb-4 sm:mb-8 leading-relaxed drop-shadow-lg max-w-md opacity-95 font-medium hidden sm:block">
-                {% if product.description != blank %}
-                    {{ product.description | truncatewords: 25 }}
-                {% else %}
-                    Advanced 7-wavelength LED technology for comprehensive facial and neck rejuvenation. Visible results in just 15 minutes daily.
-                {% endif %}
-            </p>
-
-            <div class="flex items-baseline justify-center lg:justify-start space-x-3 sm:space-x-4 mb-4 sm:mb-8">
-                <span class="text-3xl sm:text-5xl lg:text-6xl font-black text-rose-300 drop-shadow-md">
-                    {% if product.price != blank %}
-                        {{ product.price | money_without_trailing_zeros }}
-                    {% else %}
-                        $79.99
-                    {% endif %}
-                </span>
-                <span class="text-xl sm:text-3xl lg:text-4xl font-normal line-through opacity-70">
-                    {% if product.compare_at_price != blank %}
-                        {{ product.compare_at_price | money_without_trailing_zeros }}
-                    {% else %}
-                        $129.99
-                    {% endif %}
-                </span>
+            <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 text-center border border-rose-100 shadow-md sm:shadow-lg">
+                <div class="text-xl sm:text-2xl md:text-3xl font-black text-rose-600">12min</div>
+                <div class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 font-medium">Daily Treatment</div>
             </div>
-
-            <div class="mb-4 sm:mb-8">
-                {% assign discount = product.discount_percent | default: 38 %}
-                <a href="{% if product.url != blank %}{{ product.url }}{% else %}#{% endif %}"
-                    class="inline-block px-6 py-2 text-sm sm:px-10 sm:py-4 sm:text-lg font-black text-white bg-gradient-to-r from-rose-600 to-pink-500 hover:from-rose-700 hover:to-pink-600 transition-all duration-300 rounded-full shadow-2xl hover:shadow-3xl uppercase tracking-wider transform hover:scale-105 active:scale-95">
-                    GET {{ discount }}% OFF NOW
-                </a>
+            <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 text-center border border-rose-100 shadow-md sm:shadow-lg">
+                <div class="text-xl sm:text-2xl md:text-3xl font-black text-rose-600">7-in-1</div>
+                <div class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 font-medium">Light Therapy</div>
             </div>
-
-            <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-8 text-xs sm:text-sm font-semibold mt-2">
-                {% assign has_guarantee = product.has_guarantee | default: true %}
-                {% if has_guarantee %}
-                    <div class="flex items-center text-white opacity-95">
-                        <svg class="w-4 h-4 text-rose-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        60-Day Guarantee
-                    </div>
-                {% endif %}
-
-                {% assign is_certified = product.is_certified | default: true %}
-                {% if is_certified %}
-                    <div class="flex items-center text-white opacity-95">
-                        <svg class="w-4 h-4 text-rose-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" clip-rule="evenodd"></path>
-                        </svg>
-                        Medical-Grade
-                    </div>
-                {% endif %}
+            <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 text-center border border-rose-100 shadow-md sm:shadow-lg">
+                <div class="text-xl sm:text-2xl md:text-3xl font-black text-rose-600">3Y</div>
+                <div class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 font-medium">Device Warranty</div>
             </div>
         </div>
     </div>
