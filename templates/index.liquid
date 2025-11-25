@@ -10,11 +10,11 @@
         <div class="absolute inset-0 shadow-[inset_0_0_100px_30px_rgba(220,38,38,0.4)] pointer-events-none mix-blend-overlay z-5"></div>
                 
         <div class="relative z-10 text-white text-center lg:text-left max-w-xl lg:pl-10">
-            <div class="inline-block bg-gradient-to-r from-rose-600 to-pink-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 uppercase tracking-wider shadow-lg">
+            <div class="inline-block bg-gradient-to-r from-rose-600 to-pink-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-4 uppercase tracking-wider shadow-lg">
                 Limited Time Launch Offer
             </div>
                     
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black uppercase mb-6 leading-tight tracking-tight drop-shadow-2xl">
+            <h1 class="text-3xl sm:text-4xl lg:text-6xl font-black uppercase mb-4 leading-tight tracking-tight drop-shadow-2xl">
                 {% if product.title != blank %}
                     {{ product.title | default: "PROFESSIONAL LED THERAPY FOR FACE & NECK" }}
                 {% else %}
@@ -22,7 +22,7 @@
                 {% endif %}
             </h1>
 
-            <p class="text-lg sm:text-xl mb-8 leading-relaxed drop-shadow-lg max-w-md opacity-95 font-medium">
+            <p class="text-base sm:text-lg mb-6 leading-relaxed drop-shadow-lg max-w-md opacity-95 font-medium">
                 {% if product.description != blank %}
                     {{ product.description | truncatewords: 25 }}
                 {% else %}
@@ -30,15 +30,15 @@
                 {% endif %}
             </p>
 
-            <div class="flex items-baseline justify-center lg:justify-start space-x-4 mb-8">
-                <span class="text-4xl sm:text-5xl lg:text-6xl font-black text-rose-300 drop-shadow-md">
+            <div class="flex items-baseline justify-center lg:justify-start space-x-3 mb-6">
+                <span class="text-3xl sm:text-4xl lg:text-6xl font-black text-rose-300 drop-shadow-md">
                     {% if product.price != blank %}
                         {{ product.price | money_without_trailing_zeros }}
                     {% else %}
                         $79.99
                     {% endif %}
                 </span>
-                <span class="text-2xl sm:text-3xl lg:text-4xl font-normal line-through opacity-70">
+                <span class="text-xl sm:text-2xl lg:text-4xl font-normal line-through opacity-70">
                     {% if product.compare_at_price != blank %}
                         {{ product.compare_at_price | money_without_trailing_zeros }}
                     {% else %}
@@ -47,19 +47,19 @@
                 </span>
             </div>
 
-            <div class="mb-8">
+            <div class="mb-6">
                 {% assign discount = product.discount_percent | default: 38 %}
                 <a href="{% if product.url != blank %}{{ product.url }}{% else %}#{% endif %}"
-                    class="inline-block px-10 py-4 text-lg font-black text-white bg-gradient-to-r from-rose-600 to-pink-500 hover:from-rose-700 hover:to-pink-600 transition-all duration-300 rounded-full shadow-2xl hover:shadow-3xl uppercase tracking-wider transform hover:scale-105 active:scale-95">
+                    class="inline-block px-8 py-3 text-base font-black text-white bg-gradient-to-r from-rose-600 to-pink-500 hover:from-rose-700 hover:to-pink-600 transition-all duration-300 rounded-full shadow-2xl hover:shadow-3xl uppercase tracking-wider transform hover:scale-105 active:scale-95">
                     GET {{ discount }}% OFF NOW
                 </a>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-8 text-sm font-semibold">
+            <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm font-semibold mt-4">
                 {% assign has_guarantee = product.has_guarantee | default: true %}
                 {% if has_guarantee %}
                     <div class="flex items-center text-white opacity-95">
-                        <svg class="w-5 h-5 text-rose-300 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 text-rose-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                         </svg>
                         60-Day Satisfaction Guarantee
@@ -69,7 +69,7 @@
                 {% assign is_certified = product.is_certified | default: true %}
                 {% if is_certified %}
                     <div class="flex items-center text-white opacity-95">
-                        <svg class="w-5 h-5 text-rose-300 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 text-rose-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" clip-rule="evenodd"></path>
                         </svg>
                         Medical-Grade Certified
