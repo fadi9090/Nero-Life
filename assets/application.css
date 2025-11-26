@@ -592,6 +592,9 @@
   .max-w-7xl {
     max-width: var(--container-7xl);
   }
+  .max-w-\[300px\] {
+    max-width: 300px;
+  }
   .max-w-\[500px\] {
     max-width: 500px;
   }
@@ -2082,6 +2085,11 @@
   .lg\:w-10 {
     @media (width >= 64rem) {
       width: calc(var(--spacing) * 10);
+    }
+  }
+  .lg\:max-w-\[400px\] {
+    @media (width >= 64rem) {
+      max-width: 400px;
     }
   }
   .lg\:grid-cols-3 {
