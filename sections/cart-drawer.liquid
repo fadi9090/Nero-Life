@@ -43,9 +43,10 @@
                 <div class="flex items-center justify-between border-b pb-4 mb-4">
                     <h2 class="text-2xl font-bold text-black">Your Bag ({{ cart.item_count }})</h2>
                     <button type="button" 
-                            @click="open = false" 
-                            class="text-black hover:text-[#FA8072] transition duration-300">
-                        {% render 'icon-close' %}
+                            @click="$refs.CartDrawer.open = true" 
+                            class="cart-icon-btn p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
+                        {% render 'icon-shopping-bag' %}
+                        <span class="cart-count">{{ cart.item_count }}</span>
                     </button>
                 </div>
 

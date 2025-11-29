@@ -939,6 +939,9 @@
   .bg-\[\#FA8072\] {
     background-color: #FA8072;
   }
+  .bg-\[\#\] {
+    background-color: #;
+  }
   .bg-black {
     background-color: var(--color-black);
   }
