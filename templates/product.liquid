@@ -92,7 +92,7 @@
                 
                 <div class="grid grid-cols-2 gap-3">
                     <!-- Single Mask Option -->
-                    <div class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
+                    <div id="singleMaskOption" class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
                         data-quantity="1"
                         data-price="{{ product.price | money }}"
                         onclick="selectMaskOption(this, 1)">
@@ -106,8 +106,8 @@
 
                         <div class="flex flex-col items-center text-center">
                             <!-- Smaller Mask Image -->
-                            <div class="w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <img src="{{ 'single.jpg' | asset_url }}" 
+                            <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <img src="{{ 'single-mask.png' | asset_url }}" 
                                     alt="Single Face & Neck Mask" 
                                     class="w-10 h-10 object-contain"
                                     onerror="this.style.display='none'">
@@ -123,7 +123,7 @@
                     </div>
 
                     <!-- Double Mask Option -->
-                    <div class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+                    <div id="doubleMaskOption" class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
                         data-quantity="2"
                         data-price="{{ product.price | times: 2 | money }}"
                         onclick="selectMaskOption(this, 2)">
@@ -137,8 +137,8 @@
 
                         <div class="flex flex-col items-center text-center">
                             <!-- Smaller Mask Image -->
-                            <div class="w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <img src="{{ 'double.png' | asset_url }}" 
+                            <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <img src="{{ 'double-mask.png' | asset_url }}" 
                                     alt="Two Face & Neck Masks" 
                                     class="w-10 h-10 object-contain"
                                     onerror="this.style.display='none'">
@@ -440,6 +440,7 @@
 <script>
 // Mask selection functionality
 let selectedQuantity = 1;
+let selectedPackageElement = null;
 
 function selectMaskOption(element, quantity) {
     // Remove selection from all options
@@ -456,8 +457,9 @@ function selectMaskOption(element, quantity) {
     const checkmark = element.querySelector('.absolute');
     if (checkmark) checkmark.style.display = 'flex';
 
-    // Update selected quantity
+    // Update selected quantity and store selected element
     selectedQuantity = quantity;
+    selectedPackageElement = element;
 
     // Update button text
     const button = document.getElementById('addToCartButton');
@@ -475,6 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
     if (singleMaskOption) {
         selectMaskOption(singleMaskOption, 1);
+        selectedPackageElement = singleMaskOption;
     }
 });
 
@@ -501,7 +504,114 @@ function swapMedia(thumbnail, fullImageUrl) {
     thumbnail.classList.remove('border-gray-300', 'opacity-75');
 }
 
-// Add to Cart with Shopify Integration
+// Enhanced Fly-to-Cart Animation for Selected Package
+function flyPackageToCart() {
+    if (!selectedPackageElement) return;
+    
+    const packageImage = selectedPackageElement.querySelector('.package-image');
+    let cart = document.querySelector('.cart-icon-btn');
+
+    if (!packageImage) {
+        console.error('Animation failed: Missing package image element.');
+        return;
+    }
+
+    if (!cart) {
+        console.warn('Cart icon not found with class ".cart-icon-btn". Searching for alternative selectors...');
+        // Try to find cart by common selectors
+        const possibleCartSelectors = [
+            'a[href*="/cart"]',
+            '.cart-toggle',
+            '.header-cart',
+            '.nav-cart',
+            '.js-cart-toggle',
+            'button[onclick*="CartDrawer"]',
+            'button[onclick*="cart"]'
+        ];
+        
+        for (const selector of possibleCartSelectors) {
+            const foundCart = document.querySelector(selector);
+            if (foundCart) {
+                cart = foundCart;
+                console.log('Found cart using selector:', selector);
+                break;
+            }
+        }
+        
+        if (!cart) {
+            console.error('Cart icon not found. Using fallback position.');
+            // Fallback: animate to top right corner
+            cart = { 
+                getBoundingClientRect: () => ({ 
+                    left: window.innerWidth - 50, 
+                    top: 20, 
+                    width: 40, 
+                    height: 40 
+                }) 
+            };
+        }
+    }
+
+    // Get positions
+    const startRect = packageImage.getBoundingClientRect();
+    const endRect = cart.getBoundingClientRect();
+    
+    // Add scroll position to coordinates
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Create flying element (clone the package image)
+    const flyingElement = packageImage.cloneNode(true);
+    flyingElement.style.position = 'fixed';
+    flyingElement.style.width = startRect.width + 'px';
+    flyingElement.style.height = startRect.height + 'px';
+    flyingElement.style.left = (startRect.left + scrollX) + 'px';
+    flyingElement.style.top = (startRect.top + scrollY) + 'px';
+    flyingElement.style.zIndex = '10000';
+    flyingElement.style.pointerEvents = 'none';
+    flyingElement.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+    flyingElement.style.borderRadius = '8px';
+    flyingElement.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
+    
+    document.body.appendChild(flyingElement);
+    
+    // Force reflow
+    flyingElement.offsetHeight;
+    
+    const finalSize = 20; // Final size in pixels
+
+    // Animate to cart
+    setTimeout(() => {
+        const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
+        const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
+        
+        flyingElement.style.left = endX + 'px';
+        flyingElement.style.top = endY + 'px';
+        flyingElement.style.width = finalSize + 'px';
+        flyingElement.style.height = finalSize + 'px';
+        flyingElement.style.opacity = '0.7';
+        flyingElement.style.transform = 'rotate(360deg) scale(0.8)';
+    }, 50);
+
+    // Add bounce effect to cart icon
+    if (cart.classList) {
+        cart.classList.add('cart-bounce');
+        setTimeout(() => {
+            if (cart.classList) {
+                cart.classList.remove('cart-bounce');
+            }
+        }, 1000);
+    }
+
+    // Clean up
+    setTimeout(() => {
+        if (flyingElement.parentNode) {
+            flyingElement.parentNode.removeChild(flyingElement);
+        }
+    }, 1000);
+}
+
+// Add to Cart with Shopify Integration and Animation
 document.getElementById('addToCartButton').addEventListener('click', function(e) {
     e.preventDefault();
     
@@ -512,6 +622,9 @@ document.getElementById('addToCartButton').addEventListener('click', function(e)
     // Show loading state
     button.innerHTML = 'Adding to Cart...';
     button.disabled = true;
+    
+    // Trigger fly-to-cart animation
+    flyPackageToCart();
     
     // Prepare cart data
     const cartData = {
@@ -538,18 +651,17 @@ document.getElementById('addToCartButton').addEventListener('click', function(e)
         updateCartCount(data.item_count || (parseInt(document.querySelector('.cart-count')?.textContent || 0) + selectedQuantity));
         
         // Show success message
-        button.innerHTML = '✓ Added to Cart!';
-        button.style.backgroundColor = '#10B981';
+        setTimeout(() => {
+            button.innerHTML = '✓ Added to Cart!';
+            button.style.backgroundColor = '#10B981';
+        }, 800);
         
         // Reset button after 2 seconds
         setTimeout(() => {
             button.innerHTML = originalText;
             button.style.backgroundColor = '';
             button.disabled = false;
-        }, 2000);
-        
-        // Trigger fly-to-cart animation if you have it
-        triggerFlyToCartAnimation();
+        }, 2800);
         
     })
     .catch(error => {
@@ -574,12 +686,6 @@ function updateCartCount(count) {
     });
 }
 
-// Your existing fly-to-cart animation function
-function triggerFlyToCartAnimation() {
-    // Add your existing fly-to-cart animation code here
-    console.log('Trigger fly to cart animation');
-}
-
 // Scrollbar hiding styles
 let scrollbarStyle = document.getElementById('scrollbar-style-fix');
 if (!scrollbarStyle) {
@@ -588,6 +694,17 @@ if (!scrollbarStyle) {
     style.innerHTML = `
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Cart bounce animation */
+        .cart-bounce {
+            animation: cartBounce 0.6s ease-in-out;
+        }
+        
+        @keyframes cartBounce {
+            0%, 20%, 60%, 100% { transform: scale(1); }
+            40% { transform: scale(1.3); }
+            80% { transform: scale(1.1); }
+        }
     `;
     document.head.appendChild(style);
 }
