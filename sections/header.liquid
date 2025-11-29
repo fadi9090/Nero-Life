@@ -13,121 +13,100 @@
       align-items: center;
   }
 
-  /* Ensure header stays above everything */
+  /* Fix header positioning */
   .section-header {
       position: relative;
-      z-index: 50;
+      z-index: 100;
       background: white;
+      width: 100%;
   }
 
-  /* Mobile menu overlay */
-  .mobile-menu-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 40;
+  /* Ensure header stays on top of hero section */
+  .header-wrapper {
+      position: relative;
+      z-index: 100;
   }
 </style>
 
-<!-- Header Section -->
-<section class="section-header bg-white shadow-md">
-  <div class="mx-auto px-4 sm:px-6">
-    <div class="flex justify-between items-center h-16 md:justify-between md:space-x-4">
+<!-- Header Wrapper - This ensures header stays above hero -->
+<div class="header-wrapper">
+  <div x-data="{mobileMenu: false}" class="section-header bg-white shadow-md">
+    <div class="mx-auto px-4 sm:px-6">
+      <div class="flex justify-between items-center h-16 md:justify-between md:space-x-4">
 
-      <!-- Mobile menu button -->
-      <div class="-ml-2 -my-2 mr-3 md:hidden">
-        <button @click="mobileMenu = true" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
-          {% render 'icon-menu' %}
-        </button>
-      </div>
-
-      <!-- Logo -->
-      <div class="header-logo-container flex flex-1 justify-center md:flex-1 md:justify-start truncate">
-        {% if logo_image != blank %}
-          <div class="header-logo-container">
-            {{ logo_image | image_url: height: 60 | image_tag: 
-              alt: shop.name, 
-              class: "shop-logo" 
-            }}
-          </div>
-        {% else %}
-          <h1 class="header-logo-text">{{ shop.name }}</h1>
-        {% endif %}
-      </div>
-      
-      <!-- Desktop Navigation -->
-      <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
-        {% for link in main_menu_linklist %}
-          <div class="relative">
-            <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150 font-medium">{{ link.title }}</a>
-          </div>
-        {% endfor %}
-      </nav>
-
-      <!-- Cart -->
-      <div class="flex items-center -mr-2 -my-2 ml-3">
-          <button type="button" @click="$refs.CartDrawer.open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
-              {% render 'icon-shopping-bag' %}
-              <span class="cart-count">{{ cart.item_count }}</span>
+        <!-- Mobile menu button -->
+        <div class="-ml-2 -my-2 mr-3 md:hidden">
+          <button @click="mobileMenu = !mobileMenu" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
+            {% render 'icon-menu' %}
           </button>
+        </div>
+
+        <!-- Logo -->
+        <div class="header-logo-container flex flex-1 justify-center md:flex-1 md:justify-start truncate">
+          {% if logo_image != blank %}
+            <div class="header-logo-container">
+              {{ logo_image | image_url: height: 60 | image_tag: 
+                alt: shop.name, 
+                class: "header-logo" 
+              }}
+            </div>
+          {% else %}
+            <h1 class="text-lg font-bold">{{ shop.name }}</h1>
+          {% endif %}
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
+          {% for link in main_menu_linklist %}
+            <div class="relative">
+              <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150 font-medium">{{ link.title }}</a>
+            </div>
+          {% endfor %}
+        </nav>
+
+        <!-- Cart -->
+        <div class="flex items-center -mr-2 -my-2 ml-3">
+            <button type="button" @click="$refs.CartDrawer.open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
+                {% render 'icon-shopping-bag' %}
+                <span class="cart-count">{{ cart.item_count }}</span>
+            </button>
+        </div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- Mobile Menu -->
-<div x-data="{ mobileMenu: false }" class="md:hidden">
-  <!-- Mobile Menu Overlay -->
-  <div x-show="mobileMenu" 
-       class="mobile-menu-overlay"
-       x-transition:enter="duration-200 ease-out"
-       x-transition:enter-start="opacity-0"
-       x-transition:enter-end="opacity-100"
-       x-transition:leave="duration-200 ease-in"
-       x-transition:leave-start="opacity-100"
-       x-transition:leave-end="opacity-0"
-       @click="mobileMenu = false">
-  </div>
-
-  <!-- Mobile Menu Panel -->
-  <div x-show="mobileMenu" 
-       x-transition:enter="duration-300 ease-out"
-       x-transition:enter-start="-translate-x-full"
-       x-transition:enter-end="translate-x-0"
-       x-transition:leave="duration-300 ease-in"
-       x-transition:leave-start="translate-x-0"
-       x-transition:leave-end="-translate-x-full"
-       class="fixed top-0 left-0 bottom-0 w-80 max-w-full bg-white shadow-xl z-50">
     
-    <div class="p-6 h-full flex flex-col">
-      <!-- Header -->
-      <div class="flex items-center justify-between pb-6 border-b">
-        <div>
-          <h1 class="text-xl font-bold text-black">{{ section.settings.mobile_menu_title | default: "Menu" }}</h1>
-        </div>
-        <button @click="mobileMenu = false" type="button" class="p-2 text-black hover:text-[#0077B6]">
-          {% render 'icon-close' %}
-        </button>
-      </div>
+    <!-- Mobile Menu -->
+    <div x-show="mobileMenu" 
+          @click.away="mobileMenu = false" 
+          x-transition:enter="duration-200 ease-out"
+          x-transition:enter-start="opacity-0 scale-95"
+          x-transition:enter-end="opacity-100 scale-100"
+          x-transition:leave="duration-100 ease-in"
+          x-transition:leave-start="opacity-100 scale-100"
+          x-transition:leave-end="opacity-0 scale-95"
+          class="absolute z-50 top-16 inset-x-0 p-2 transform origin-top-left md:hidden">
+      
+      <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-white w-full">
+        <div class="p-5 divide-y-2 divide-gray-100"> 
+          <div class="flex items-center justify-between pb-3">
+            <div>
+              <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title | default: "Menu" }}</h1>
+            </div>
+            <div class="-mr-2">
+              <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
+                  {% render 'icon-close' %}
+              </button>
+            </div>
+          </div>
 
-      <!-- Navigation Links -->
-      <nav class="flex-1 pt-6 space-y-4">
-        {% for link in main_menu_linklist %}
-          <a href="{{link.url}}" 
-             class="block p-3 text-lg font-medium text-black hover:text-[#0077B6] hover:bg-gray-50 rounded-lg transition duration-150"
-             @click="mobileMenu = false">
-            {{ link.title }}
-          </a>
-        {% endfor %}
-      </nav>
-
-      <!-- Footer -->
-      <div class="pt-6 border-t">
-        <div class="text-sm text-gray-500">
-          <!-- Add any footer content here -->
+          <div class="pt-3">
+            <nav class="grid gap-y-2">
+              {% for link in main_menu_linklist %}
+                <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6] font-medium">
+                  {{ link.title }}
+                </a>
+              {% endfor %}
+            </nav>
+          </div>
         </div>
       </div>
     </div>
