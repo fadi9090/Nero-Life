@@ -3,35 +3,48 @@
 
 <style>
   .header-logo {
-      /* Set the maximum height the logo can occupy */
       max-height: 60px; 
-      
-      /* Ensure the logo's aspect ratio is maintained */
       width: auto;     
-      
-      /* Helps vertically align the image within its container */
       vertical-align: middle; 
   }
 
-  /* IMPORTANT: You also need to ensure the container itself is constrained */
   .header-logo-container {
       display: flex;
-      align-items: center; /* This will center the logo vertically */
-      /* If the logo container is flexing the header, you might need to constrain its height too */
-      /* height: 60px; */ 
+      align-items: center;
+  }
+
+  /* Ensure header stays above everything */
+  .section-header {
+      position: relative;
+      z-index: 50;
+      background: white;
+  }
+
+  /* Mobile menu overlay */
+  .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 40;
   }
 </style>
 
-<div x-data="{mobileMenu: false}" class="relative z-10 shadow-md">
+<!-- Header Section -->
+<section class="section-header bg-white shadow-md">
   <div class="mx-auto px-4 sm:px-6">
     <div class="flex justify-between items-center h-16 md:justify-between md:space-x-4">
 
+      <!-- Mobile menu button -->
       <div class="-ml-2 -my-2 mr-3 md:hidden">
-        <button @click="mobileMenu = !mobileMenu" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
+        <button @click="mobileMenu = true" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
           {% render 'icon-menu' %}
         </button>
       </div>
 
+      <!-- Logo -->
       <div class="header-logo-container flex flex-1 justify-center md:flex-1 md:justify-start truncate">
         {% if logo_image != blank %}
           <div class="header-logo-container">
@@ -45,95 +58,78 @@
         {% endif %}
       </div>
       
+      <!-- Desktop Navigation -->
       <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
         {% for link in main_menu_linklist %}
           <div class="relative">
-            <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150">{{ link.title }}</a>
+            <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150 font-medium">{{ link.title }}</a>
           </div>
         {% endfor %}
       </nav>
 
-      <!-- Mobile cart -->
-      <div class="flex items-center -mr-2 -my-2 ml-3 md:hidden">
-          <button type="button" class="cart-icon-btn" @click="$refs.CartDrawer.open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
-              {% render 'icon-shopping-bag' %}
-              <span class="cart-count">{{ cart.item_count }}</span>
-          </button>
-      </div>
-
-      <!-- Desktop cart -->
-      <div class="hidden md:flex items-center">
-          <button type="button" class="cart-icon-btn" @click="$refs.CartDrawer.open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
+      <!-- Cart -->
+      <div class="flex items-center -mr-2 -my-2 ml-3">
+          <button type="button" @click="$refs.CartDrawer.open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
               {% render 'icon-shopping-bag' %}
               <span class="cart-count">{{ cart.item_count }}</span>
           </button>
       </div>
     </div>
   </div>
-  
-  <div x-show="mobileMenu" 
-        @click.away="mobileMenu = false" 
-        x-transition:enter="duration-200 ease-out"
-        x-transition:enter-start="opacity-0 scale-95"
-        x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="duration-100 ease-in"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        class="absolute z-100 top-0 inset-x-0 p-2 transform origin-top-left md:hidden">
-    
-    <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-[#F5F5DC] w-full">
-      <div class="p-5 divide-y-2 divide-gray-100"> 
-        <div class="flex items-center justify-between pb-3">
-          <div>
-            <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title }}</h1>
-          </div>
-          <div class="-mr-2">
-            <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
-                {% render 'icon-close' %}
-            </button>
-          </div>
-        </div>
+</section>
 
-        <div class="pt-3">
-          <nav class="grid gap-y-2">
-            {% for link in main_menu_linklist %}
-              <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6]">
-                <span class="font-medium">{{ link.title }}</span>
-              </a>
-            {% endfor %}
-          </nav>
+<!-- Mobile Menu -->
+<div x-data="{ mobileMenu: false }" class="md:hidden">
+  <!-- Mobile Menu Overlay -->
+  <div x-show="mobileMenu" 
+       class="mobile-menu-overlay"
+       x-transition:enter="duration-200 ease-out"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="duration-200 ease-in"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       @click="mobileMenu = false">
+  </div>
+
+  <!-- Mobile Menu Panel -->
+  <div x-show="mobileMenu" 
+       x-transition:enter="duration-300 ease-out"
+       x-transition:enter-start="-translate-x-full"
+       x-transition:enter-end="translate-x-0"
+       x-transition:leave="duration-300 ease-in"
+       x-transition:leave-start="translate-x-0"
+       x-transition:leave-end="-translate-x-full"
+       class="fixed top-0 left-0 bottom-0 w-80 max-w-full bg-white shadow-xl z-50">
+    
+    <div class="p-6 h-full flex flex-col">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-6 border-b">
+        <div>
+          <h1 class="text-xl font-bold text-black">{{ section.settings.mobile_menu_title | default: "Menu" }}</h1>
+        </div>
+        <button @click="mobileMenu = false" type="button" class="p-2 text-black hover:text-[#0077B6]">
+          {% render 'icon-close' %}
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 pt-6 space-y-4">
+        {% for link in main_menu_linklist %}
+          <a href="{{link.url}}" 
+             class="block p-3 text-lg font-medium text-black hover:text-[#0077B6] hover:bg-gray-50 rounded-lg transition duration-150"
+             @click="mobileMenu = false">
+            {{ link.title }}
+          </a>
+        {% endfor %}
+      </nav>
+
+      <!-- Footer -->
+      <div class="pt-6 border-t">
+        <div class="text-sm text-gray-500">
+          <!-- Add any footer content here -->
         </div>
       </div>
     </div>
   </div>
 </div>
-
-{% schema %}
-{
-  "name": "Header",
-  "tag": "section",
-  "class": "section-header",
-  "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo",
-      "info": "Upload the logo image"
-    },
-    {
-      "type": "text",
-      "id": "mobile_menu_title",
-      "label": "Mobile Menu Title",
-      "default": "Menu",
-      "info": "Title for the mobile menu drawer"
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Navigation Menu",
-      "default": "main-menu",
-      "info": "Select the navigation menu to display"
-    }
-  ]
-}
-{% endschema %}
