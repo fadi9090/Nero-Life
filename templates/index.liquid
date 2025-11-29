@@ -6,7 +6,7 @@
                             {% if product.featured_image != blank %}
                                 url('{{ product.featured_image | img_url: '1200x800' }}')
                             {% else %}
-                                url('https://images.unsplash.com/photo-1556228578-8c89e6adf883?ixlib=rb-4.0.3&auto=format&fit=crop&w=1169&q=80')
+                                url('{{ 'Marina-sexy-woman.jpg' | asset_url }}')
                             {% endif %};">
                     
             <div class="absolute inset-0 shadow-[inset_0_0_100px_30px_rgba(220,38,38,0.4)] pointer-events-none mix-blend-overlay z-5"></div>
