@@ -112,3 +112,33 @@
     </div>
   </div>
 </div>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Upload the logo image"
+    },
+    {
+      "type": "text",
+      "id": "mobile_menu_title",
+      "label": "Mobile Menu Title",
+      "default": "Menu",
+      "info": "Title for the mobile menu drawer"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu",
+      "default": "main-menu",
+      "info": "Select the navigation menu to display"
+    }
+  ]
+}
+{% endschema %}
