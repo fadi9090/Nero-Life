@@ -33,10 +33,10 @@
 
                 <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
                     <img id="media-display"
-                         src="{{ product.featured_media | img_url: '1024x1024' }}"
-                         alt="{{ product.featured_media.alt | escape }}"
-                         class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
-                         onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
+                        src="{{ product.featured_media | img_url: '1024x1024' }}"
+                        alt="{{ product.featured_media.alt | escape }}"
+                        class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
                     />
                 </div>
 
@@ -53,11 +53,11 @@
                             data-full-url="{{ media | img_url: '1024x1024' }}"
                             data-media-id="{{ media.id }}"
                             class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100
-                                             {% if is_active %}
-                                                 border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
-                                             {% else %}
-                                                 border-gray-300 border opacity-75
-                                             {% endif %}"
+                                            {% if is_active %}
+                                                border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
+                                            {% else %}
+                                                border-gray-300 border opacity-75
+                                            {% endif %}"
                             onclick="swapMedia(this, '{{ media | img_url: '1024x1024' }}')"
                         />
                     {% endfor %}
@@ -86,12 +86,87 @@
                 {% endif %}
             </div>
 
-            <div class="mt-8">
-                <div class="mt-8">
-                    <button id="addToCartButton" class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200">
-                        Add to Cart
-                    </button>
+            <!-- Mask Options Section -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Choose Your Package:</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Single Mask Option -->
+                    <div class="mask-option relative border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+                        data-quantity="1"
+                        data-price="{{ product.price | money }}"
+                        onclick="selectMaskOption(this, 1)">
+                        
+                        <!-- Selected Indicator -->
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+
+                        <div class="flex flex-col items-center text-center">
+                            <!-- Mask Image -->
+                            <div class="w-20 h-20 mb-3 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <img src="{{ 'single.jpg' | asset_url }}" 
+                                    alt="Single Face & Neck Mask" 
+                                    class="w-16 h-16 object-contain"
+                                    onerror="this.style.display='none'">
+                                <div class="text-2xl">1x</div>
+                            </div>
+                            
+                            <!-- Option Details -->
+                            <h4 class="font-medium text-gray-900 mb-1">Single Mask</h4>
+                            <p class="text-sm text-gray-600 mb-2">Perfect for personal use</p>
+                            <div class="text-lg font-bold text-[#FA8072]">
+                                {{ product.price | money }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Double Mask Option -->
+                    <div class="mask-option relative border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+                        data-quantity="2"
+                        data-price="{{ product.price | times: 2 | money }}"
+                        onclick="selectMaskOption(this, 2)">
+                        
+                        <!-- Selected Indicator -->
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+
+                        <div class="flex flex-col items-center text-center">
+                            <!-- Mask Image -->
+                            <div class="w-20 h-20 mb-3 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <img src="{{ 'double.png' | asset_url }}" 
+                                    alt="Two Face & Neck Masks" 
+                                    class="w-16 h-16 object-contain"
+                                    onerror="this.style.display='none'">
+                                <div class="text-2xl">2x</div>
+                            </div>
+                            
+                            <!-- Option Details -->
+                            <h4 class="font-medium text-gray-900 mb-1">Double Pack</h4>
+                            <p class="text-sm text-gray-600 mb-2">Great for couples or backup</p>
+                            <div class="text-lg font-bold text-[#FA8072]">
+                                {{ product.price | times: 2 | money }}
+                            </div>
+                            <div class="text-xs text-green-600 font-medium mt-1">
+                                Save {{ product.compare_at_price | minus: product.price | times: 2 | money }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Add to Cart Button -->
+            <div class="mt-8">
+                <button id="addToCartButton" 
+                        class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
+                        data-default-quantity="1">
+                    Add to Cart - <span class="quantity-text">1 Mask</span>
+                </button>
             </div>
 
         </div>
@@ -363,6 +438,46 @@
 </div> 
 
 <script>
+    // Mask selection functionality - ADD THIS NEW FUNCTION
+    let selectedQuantity = 1; // Track selected quantity globally
+
+    function selectMaskOption(element, quantity) {
+        // Remove selection from all options
+        document.querySelectorAll('.mask-option').forEach(option => {
+            option.classList.remove('border-[#FA8072]', 'bg-rose-50');
+            option.classList.add('border-gray-200');
+            const checkmark = option.querySelector('.absolute');
+            if (checkmark) checkmark.style.display = 'none';
+        });
+
+        // Add selection to clicked option
+        element.classList.add('border-[#FA8072]', 'bg-rose-50');
+        element.classList.remove('border-gray-200');
+        const checkmark = element.querySelector('.absolute');
+        if (checkmark) checkmark.style.display = 'flex';
+
+        // Update selected quantity
+        selectedQuantity = quantity;
+
+        // Update button text
+        const button = document.getElementById('addToCartButton');
+        const quantityText = button.querySelector('.quantity-text');
+        
+        if (quantity === 1) {
+            quantityText.textContent = '1 Mask';
+        } else {
+            quantityText.textContent = '2 Masks';
+        }
+    }
+
+    // Initialize with single mask selected by default
+    document.addEventListener('DOMContentLoaded', function() {
+        const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
+        if (singleMaskOption) {
+            selectMaskOption(singleMaskOption, 1);
+        }
+    });
+
     /**
      * Swaps the main product image and updates the active state of the thumbnails.
      */
@@ -408,7 +523,7 @@
     }
 
     /**
-     * Enhanced Fly-to-Cart Animation
+     * Enhanced Fly-to-Cart Animation - UPDATED TO USE SELECTED QUANTITY
      */
     document.getElementById('addToCartButton').addEventListener('click', function(e) {
         e.preventDefault();
@@ -510,26 +625,26 @@
             }, 600);
         }
 
-        // Clean up and add to cart
+        // Clean up and add to cart - UPDATED TO USE SELECTED QUANTITY
         setTimeout(() => {
             if (flyingImg.parentNode) {
                 flyingImg.parentNode.removeChild(flyingImg);
             }
             
             // YOUR ACTUAL ADD TO CART LOGIC GOES HERE
-            addToCartFunction();
+            addToCartFunction(selectedQuantity); // Pass the selected quantity
             
         }, 800);
     });
 
     /**
-     * Your actual add to cart function
+     * Your actual add to cart function - UPDATED TO ACCEPT QUANTITY
      * Replace this with your Shopify cart implementation
      */
-    function addToCartFunction() {
-        console.log('Adding product to cart...');
+    function addToCartFunction(quantity = 1) {
+        console.log(`Adding ${quantity} product(s) to cart...`);
         
-        // Example Shopify AJAX cart addition:
+        // Example Shopify AJAX cart addition - UPDATED WITH QUANTITY:
         /*
         fetch('/cart/add.js', {
             method: 'POST',
@@ -539,7 +654,7 @@
             body: JSON.stringify({
                 items: [{
                     id: {{ product.selected_or_first_available_variant.id }},
-                    quantity: 1
+                    quantity: quantity // Use the selected quantity
                 }]
             })
         })
@@ -547,6 +662,12 @@
         .then(data => {
             // Update cart count or show success message
             console.log('Product added to cart:', data);
+            
+            // Update cart count display if needed
+            const cartCount = document.querySelector('.cart-count');
+            if (cartCount) {
+                cartCount.textContent = data.item_count || (parseInt(cartCount.textContent) + quantity);
+            }
         })
         .catch(error => {
             console.error('Error adding to cart:', error);
