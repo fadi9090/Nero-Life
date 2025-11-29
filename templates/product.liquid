@@ -26,11 +26,11 @@
 </style>
 
 <div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
+
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10 mb-8">
 
         <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
             <div class="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center">
-
                 <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
                     <img id="media-display"
                         src="{{ product.featured_media | img_url: '1024x1024' }}"
@@ -86,85 +86,85 @@
                 {% endif %}
             </div>
 
-            <!-- Mask Options Section -->
+            <!-- Smaller Mask Options Section -->
             <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Choose Your Package:</h3>
+                <h3 class="text-base font-semibold text-gray-800 mb-3">Choose Your Package:</h3>
                 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <!-- Single Mask Option -->
-                    <div class="mask-option relative border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+                    <div class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
                         data-quantity="1"
                         data-price="{{ product.price | money }}"
                         onclick="selectMaskOption(this, 1)">
                         
                         <!-- Selected Indicator -->
-                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
 
                         <div class="flex flex-col items-center text-center">
-                            <!-- Mask Image -->
-                            <div class="w-20 h-20 mb-3 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <!-- Smaller Mask Image -->
+                            <div class="w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
                                 <img src="{{ 'single.jpg' | asset_url }}" 
                                     alt="Single Face & Neck Mask" 
-                                    class="w-16 h-16 object-contain"
+                                    class="w-10 h-10 object-contain"
                                     onerror="this.style.display='none'">
-                                <div class="text-2xl">1x</div>
+                                <div class="text-lg font-bold text-gray-700">1x</div>
                             </div>
                             
                             <!-- Option Details -->
-                            <h4 class="font-medium text-gray-900 mb-1">Single Mask</h4>
-                            <p class="text-sm text-gray-600 mb-2">Perfect for personal use</p>
-                            <div class="text-lg font-bold text-[#FA8072]">
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">Single Mask</h4>
+                            <div class="text-base font-bold text-[#FA8072]">
                                 {{ product.price | money }}
                             </div>
                         </div>
                     </div>
 
                     <!-- Double Mask Option -->
-                    <div class="mask-option relative border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+                    <div class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
                         data-quantity="2"
                         data-price="{{ product.price | times: 2 | money }}"
                         onclick="selectMaskOption(this, 2)">
                         
                         <!-- Selected Indicator -->
-                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
-                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
 
                         <div class="flex flex-col items-center text-center">
-                            <!-- Mask Image -->
-                            <div class="w-20 h-20 mb-3 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <!-- Smaller Mask Image -->
+                            <div class="w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
                                 <img src="{{ 'double.png' | asset_url }}" 
                                     alt="Two Face & Neck Masks" 
-                                    class="w-16 h-16 object-contain"
+                                    class="w-10 h-10 object-contain"
                                     onerror="this.style.display='none'">
-                                <div class="text-2xl">2x</div>
+                                <div class="text-lg font-bold text-gray-700">2x</div>
                             </div>
                             
                             <!-- Option Details -->
-                            <h4 class="font-medium text-gray-900 mb-1">Double Pack</h4>
-                            <p class="text-sm text-gray-600 mb-2">Great for couples or backup</p>
-                            <div class="text-lg font-bold text-[#FA8072]">
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">Double Pack</h4>
+                            <div class="text-base font-bold text-[#FA8072]">
                                 {{ product.price | times: 2 | money }}
                             </div>
+                            {% if product.compare_at_price > product.price %}
                             <div class="text-xs text-green-600 font-medium mt-1">
                                 Save {{ product.compare_at_price | minus: product.price | times: 2 | money }}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Add to Cart Button -->
-            <div class="mt-8">
+            <div class="mt-6">
                 <button id="addToCartButton" 
-                        class="bg-[#FA8072] text-white p-4 rounded-xl w-full text-lg font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
-                        data-default-quantity="1">
+                        class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
+                        data-variant-id="{{ product.selected_or_first_available_variant.id }}">
                     Add to Cart - <span class="quantity-text">1 Mask</span>
                 </button>
             </div>
@@ -438,240 +438,157 @@
 </div> 
 
 <script>
-    // Mask selection functionality - ADD THIS NEW FUNCTION
-    let selectedQuantity = 1; // Track selected quantity globally
+// Mask selection functionality
+let selectedQuantity = 1;
 
-    function selectMaskOption(element, quantity) {
-        // Remove selection from all options
-        document.querySelectorAll('.mask-option').forEach(option => {
-            option.classList.remove('border-[#FA8072]', 'bg-rose-50');
-            option.classList.add('border-gray-200');
-            const checkmark = option.querySelector('.absolute');
-            if (checkmark) checkmark.style.display = 'none';
-        });
-
-        // Add selection to clicked option
-        element.classList.add('border-[#FA8072]', 'bg-rose-50');
-        element.classList.remove('border-gray-200');
-        const checkmark = element.querySelector('.absolute');
-        if (checkmark) checkmark.style.display = 'flex';
-
-        // Update selected quantity
-        selectedQuantity = quantity;
-
-        // Update button text
-        const button = document.getElementById('addToCartButton');
-        const quantityText = button.querySelector('.quantity-text');
-        
-        if (quantity === 1) {
-            quantityText.textContent = '1 Mask';
-        } else {
-            quantityText.textContent = '2 Masks';
-        }
-    }
-
-    // Initialize with single mask selected by default
-    document.addEventListener('DOMContentLoaded', function() {
-        const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
-        if (singleMaskOption) {
-            selectMaskOption(singleMaskOption, 1);
-        }
+function selectMaskOption(element, quantity) {
+    // Remove selection from all options
+    document.querySelectorAll('.mask-option').forEach(option => {
+        option.classList.remove('border-[#FA8072]', 'bg-rose-50');
+        option.classList.add('border-gray-200', 'bg-white');
+        const checkmark = option.querySelector('.absolute');
+        if (checkmark) checkmark.style.display = 'none';
     });
 
-    /**
-     * Swaps the main product image and updates the active state of the thumbnails.
-     */
-    function swapMedia(clickedThumb, fullImageUrl) {
-        const display = document.getElementById('media-display');
+    // Add selection to clicked option
+    element.classList.add('border-[#FA8072]', 'bg-rose-50');
+    element.classList.remove('border-gray-200', 'bg-white');
+    const checkmark = element.querySelector('.absolute');
+    if (checkmark) checkmark.style.display = 'flex';
 
-        // 1. Update main image source and alt text
-        display.src = fullImageUrl;
-        display.alt = clickedThumb.alt;
+    // Update selected quantity
+    selectedQuantity = quantity;
 
-        // 2. Update active state for all thumbnails
-        document.querySelectorAll('.media-thumbnail').forEach(thumb => {
-            // Remove active classes (blue border)
-            thumb.classList.remove('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
-            // Add inactive styling (gray border, lower opacity)
-            thumb.classList.add('border-gray-300', 'border', 'opacity-75');
-        });
-
-        // 3. Apply active state to the clicked thumbnail
-        clickedThumb.classList.add('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
-        clickedThumb.classList.remove('border-gray-300', 'border', 'opacity-75');
+    // Update button text
+    const button = document.getElementById('addToCartButton');
+    const quantityText = button.querySelector('.quantity-text');
+    
+    if (quantity === 1) {
+        quantityText.textContent = '1 Mask';
+    } else {
+        quantityText.textContent = '2 Masks';
     }
+}
 
-    // Safely inject styles for scrollbar hiding
-    let scrollbarStyle = document.getElementById('scrollbar-style-fix');
-    if (!scrollbarStyle) {
-        const style = document.createElement('style');
-        style.id = 'scrollbar-style-fix';
-        style.innerHTML = `
-            .no-scrollbar::-webkit-scrollbar { display: none; }
-            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `;
-        document.head.appendChild(style);
+// Initialize with single mask selected by default
+document.addEventListener('DOMContentLoaded', function() {
+    const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
+    if (singleMaskOption) {
+        selectMaskOption(singleMaskOption, 1);
     }
+});
 
-    // Call learn_shopify_api if available
-    try {
-        if (typeof learn_shopify_api === 'function') {
-            learn_shopify_api();
-        }
-    } catch (e) {
-        // noop
-    }
-
-    /**
-     * Enhanced Fly-to-Cart Animation - UPDATED TO USE SELECTED QUANTITY
-     */
-    document.getElementById('addToCartButton').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const productImg = document.getElementById('media-display');
-        
-        // UPDATED: Now looking for the class 'cart-icon-btn' instead of ID
-        let cart = document.querySelector('.cart-icon-btn');
-
-        if (!productImg) {
-            console.error('Animation failed: Missing media-display element.');
-            return;
-        }
-
-        if (!cart) {
-            console.warn('Cart icon not found with class ".cart-icon-btn". Searching for alternative selectors...');
-            // Try to find cart by common selectors
-            const possibleCartSelectors = [
-                'a[href*="/cart"]',
-                '.cart-toggle',
-                '.header-cart',
-                '.nav-cart',
-                '.js-cart-toggle',
-                'button[onclick*="CartDrawer"]',
-                'button[onclick*="cart"]'
-            ];
-            
-            for (const selector of possibleCartSelectors) {
-                const foundCart = document.querySelector(selector);
-                if (foundCart) {
-                    cart = foundCart;
-                    console.log('Found cart using selector:', selector);
-                    break;
-                }
-            }
-            
-            if (!cart) {
-                console.error('Cart icon not found. Using fallback position.');
-                // Fallback: animate to top right corner
-                cart = { 
-                    getBoundingClientRect: () => ({ 
-                        left: window.innerWidth - 50, 
-                        top: 20, 
-                        width: 40, 
-                        height: 40 
-                    }) 
-                };
-            }
-        }
-
-        // Get positions
-        const startRect = productImg.getBoundingClientRect();
-        const endRect = cart.getBoundingClientRect();
-        
-        // Add scroll position to coordinates since getBoundingClientRect() returns viewport-relative coordinates
-        const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
-        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-
-        // Create flying image
-        const flyingImg = new Image();
-        flyingImg.src = productImg.src;
-        flyingImg.alt = productImg.alt;
-        flyingImg.classList.add('flying-item');
-        
-        // Set initial position and size (absolute positioning relative to document)
-        flyingImg.style.position = 'fixed';
-        flyingImg.style.width = startRect.width + 'px';
-        flyingImg.style.height = startRect.height + 'px';
-        flyingImg.style.left = (startRect.left + scrollX) + 'px';
-        flyingImg.style.top = (startRect.top + scrollY) + 'px';
-        
-        document.body.appendChild(flyingImg);
-        
-        // Force reflow
-        flyingImg.offsetHeight;
-        
-        const finalSize = 20; // Final size in pixels
-
-        // Animate to cart
-        setTimeout(() => {
-            const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
-            const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
-            
-            flyingImg.style.left = endX + 'px';
-            flyingImg.style.top = endY + 'px';
-            flyingImg.style.width = finalSize + 'px';
-            flyingImg.style.height = finalSize + 'px';
-            flyingImg.style.opacity = '0.3';
-            flyingImg.style.transform = 'rotate(360deg)'; // Add a little spin for fun
-        }, 10);
-
-        // Add bounce effect to cart icon (only if it's a real DOM element)
-        if (cart.classList) {
-            cart.classList.add('cart-bounce');
-            setTimeout(() => {
-                if (cart.classList) {
-                    cart.classList.remove('cart-bounce');
-                }
-            }, 600);
-        }
-
-        // Clean up and add to cart - UPDATED TO USE SELECTED QUANTITY
-        setTimeout(() => {
-            if (flyingImg.parentNode) {
-                flyingImg.parentNode.removeChild(flyingImg);
-            }
-            
-            // YOUR ACTUAL ADD TO CART LOGIC GOES HERE
-            addToCartFunction(selectedQuantity); // Pass the selected quantity
-            
-        }, 800);
+// Your existing media swap function
+function swapMedia(thumbnail, fullImageUrl) {
+    const mediaDisplay = document.getElementById('media-display');
+    const thumbnails = document.querySelectorAll('.media-thumbnail');
+    
+    // Update main image
+    mediaDisplay.style.opacity = '0';
+    setTimeout(() => {
+        mediaDisplay.src = fullImageUrl;
+        mediaDisplay.style.opacity = '1';
+    }, 150);
+    
+    // Update thumbnail states
+    thumbnails.forEach(thumb => {
+        thumb.classList.remove('border-blue-600', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+        thumb.classList.add('border-gray-300', 'opacity-75');
     });
+    
+    // Activate clicked thumbnail
+    thumbnail.classList.add('border-blue-600', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+    thumbnail.classList.remove('border-gray-300', 'opacity-75');
+}
 
-    /**
-     * Your actual add to cart function - UPDATED TO ACCEPT QUANTITY
-     * Replace this with your Shopify cart implementation
-     */
-    function addToCartFunction(quantity = 1) {
-        console.log(`Adding ${quantity} product(s) to cart...`);
+// Add to Cart with Shopify Integration
+document.getElementById('addToCartButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const button = this;
+    const variantId = button.getAttribute('data-variant-id');
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.innerHTML = 'Adding to Cart...';
+    button.disabled = true;
+    
+    // Prepare cart data
+    const cartData = {
+        items: [{
+            id: variantId,
+            quantity: selectedQuantity
+        }]
+    };
+    
+    // Add to cart via Shopify AJAX API
+    fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cartData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Success
+        console.log('Product added to cart:', data);
         
-        // Example Shopify AJAX cart addition - UPDATED WITH QUANTITY:
-        /*
-        fetch('/cart/add.js', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                items: [{
-                    id: {{ product.selected_or_first_available_variant.id }},
-                    quantity: quantity // Use the selected quantity
-                }]
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Update cart count or show success message
-            console.log('Product added to cart:', data);
-            
-            // Update cart count display if needed
-            const cartCount = document.querySelector('.cart-count');
-            if (cartCount) {
-                cartCount.textContent = data.item_count || (parseInt(cartCount.textContent) + quantity);
-            }
-        })
-        .catch(error => {
-            console.error('Error adding to cart:', error);
-        });
-        */
-    }
+        // Update cart count
+        updateCartCount(data.item_count || (parseInt(document.querySelector('.cart-count')?.textContent || 0) + selectedQuantity));
+        
+        // Show success message
+        button.innerHTML = '✓ Added to Cart!';
+        button.style.backgroundColor = '#10B981';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.backgroundColor = '';
+            button.disabled = false;
+        }, 2000);
+        
+        // Trigger fly-to-cart animation if you have it
+        triggerFlyToCartAnimation();
+        
+    })
+    .catch(error => {
+        // Error handling
+        console.error('Error adding to cart:', error);
+        button.innerHTML = 'Error - Try Again';
+        button.style.backgroundColor = '#EF4444';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.backgroundColor = '';
+            button.disabled = false;
+        }, 2000);
+    });
+});
+
+// Update cart count in header
+function updateCartCount(count) {
+    const cartCountElements = document.querySelectorAll('.cart-count');
+    cartCountElements.forEach(element => {
+        element.textContent = count;
+    });
+}
+
+// Your existing fly-to-cart animation function
+function triggerFlyToCartAnimation() {
+    // Add your existing fly-to-cart animation code here
+    console.log('Trigger fly to cart animation');
+}
+
+// Scrollbar hiding styles
+let scrollbarStyle = document.getElementById('scrollbar-style-fix');
+if (!scrollbarStyle) {
+    const style = document.createElement('style');
+    style.id = 'scrollbar-style-fix';
+    style.innerHTML = `
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    `;
+    document.head.appendChild(style);
+}
 </script>
