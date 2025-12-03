@@ -8,7 +8,7 @@
         <div class="relative w-full min-h-[280px] sm:min-h-[300px] lg:min-h-auto bg-cover bg-center flex items-center justify-center lg:justify-start p-4 sm:p-6 lg:p-12"
             style="background-image: linear-gradient(to bottom, rgba(120, 0, 45, 0.5), rgba(120, 0, 45, 0.8)), 
                             {% if featured_product.featured_image != blank %}
-                                url('{{ featured_product.featured_image | img_url: '1200x800' }}')
+                                url('{{ Marina-sexy-woman.jpg | img_url: '1200x800' }}')
                             {% else %}
                                 url('{{ 'Marina-sexy-woman.jpg' | asset_url }}')
                             {% endif %};">
@@ -106,7 +106,7 @@
                 <div id="thumbnails-container"
                     class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
                 >
-                    {% for media in product.media %}
+                    {% for media in featured_product.media %}
                         {% assign is_active = false %}
                         {% if product.featured_media.id == media.id %}
                             {% assign is_active = true %}
