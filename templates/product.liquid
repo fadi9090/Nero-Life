@@ -1,28 +1,28 @@
 <style>
-/* Enhanced Flying Item Animation */
-.flying-item {
-    position: fixed;
-    z-index: 10000; /* Increased z-index to ensure it's above everything */
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    opacity: 1;
-    pointer-events: none;
-    /* Ensure smooth rendering */
-    will-change: transform, opacity, width, height, left, top;
-}
+    /* Enhanced Flying Item Animation */
+    .flying-item {
+        position: fixed;
+        z-index: 10000; /* Increased z-index to ensure it's above everything */
+        transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        opacity: 1;
+        pointer-events: none;
+        /* Ensure smooth rendering */
+        will-change: transform, opacity, width, height, left, top;
+    }
 
-/* Add a subtle bounce effect to the cart icon when item arrives */
-@keyframes cartBounce {
-    0%, 20%, 60%, 100% { transform: scale(1); }
-    40% { transform: scale(1.1); }
-    80% { transform: scale(1.05); }
-}
+    /* Add a subtle bounce effect to the cart icon when item arrives */
+    @keyframes cartBounce {
+        0%, 20%, 60%, 100% { transform: scale(1); }
+        40% { transform: scale(1.1); }
+        80% { transform: scale(1.05); }
+    }
 
-.cart-bounce {
-    animation: cartBounce 0.6s ease;
-}
+    .cart-bounce {
+        animation: cartBounce 0.6s ease;
+    }
 </style>
 
 <div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
@@ -71,14 +71,13 @@
                 {{ product.title }}
             </h1>
 
-            <!-- Price Display - UPDATED -->
+            <!-- Price Display - 30% DISCOUNT -->
             <div class="mt-2 mb-6">
-                <!-- Calculate the 30% increased price -->
-                {% assign increased_price = product.price | times: 1.30 %}
+                {% comment %} Calculate 30% OFF price (70% of original) {% endcomment %}
+                {% assign discounted_price = product.price | times: 0.7 %}
                 
-                <!-- Always show the original price with strike-through and increased price -->
                 <span class="text-xl font-bold text-gray-900">
-                    {{ increased_price | money }}
+                    {{ discounted_price | money }}
                 </span>
                 <span class="text-base line-through text-gray-500 ml-2">
                     {{ product.price | money }}
@@ -97,7 +96,7 @@
                     <div id="singleMaskOption" class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
                         data-quantity="1"
                         data-original-price="{{ product.price | money }}"
-                        data-increased-price="{{ increased_price | money }}"
+                        data-discounted-price="{{ discounted_price | money }}"
                         onclick="selectMaskOption(this, 1)">
                         
                         <!-- Selected Indicator -->
@@ -117,10 +116,10 @@
                                 <div class="text-lg font-bold text-gray-700">1x</div>
                             </div>
                             
-                            <!-- Option Details - UPDATED -->
+                            <!-- Option Details -->
                             <h4 class="text-sm font-medium text-gray-900 mb-1">Single Mask</h4>
                             <div class="text-base font-bold text-[#FA8072]">
-                                {{ increased_price | money }}
+                                {{ discounted_price | money }}
                             </div>
                             <div class="text-xs line-through text-gray-500">
                                 {{ product.price | money }}
@@ -132,7 +131,7 @@
                     <div id="doubleMaskOption" class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
                         data-quantity="2"
                         data-original-price="{{ product.price | times: 2 | money }}"
-                        data-increased-price="{{ increased_price | times: 2 | money }}"
+                        data-discounted-price="{{ discounted_price | times: 2 | money }}"
                         onclick="selectMaskOption(this, 2)">
                         
                         <!-- Selected Indicator -->
@@ -149,19 +148,20 @@
                                     alt="Two Face & Neck Masks" 
                                     class="w-10 h-10 object-contain"
                                     onerror="this.style.display='none'">
-                                <div class="text-lg font-bold text-gray-700">2x</div>
+                                    <div class="text-lg font-bold text-gray-700">2x</div>
                             </div>
                             
-                            <!-- Option Details - UPDATED -->
+                            <!-- Option Details -->
                             <h4 class="text-sm font-medium text-gray-900 mb-1">Double Pack</h4>
                             <div class="text-base font-bold text-[#FA8072]">
-                                {{ increased_price | times: 2 | money }}
+                                {{ discounted_price | times: 2 | money }}
                             </div>
                             <div class="text-xs line-through text-gray-500">
                                 {{ product.price | times: 2 | money }}
                             </div>
-                            <div class="text-xs text-green-600 font-medium mt-1">
-                                Save {{ product.price | times: 2 | minus: increased_price | times: 2 | abs | money }}
+                            {% assign save_amount = product.price | times: 2 | minus: discounted_price | times: 2 %}
+                            <div class="text-xs text-green-600 font-medium mt-1" data-save-amount="Save {{ save_amount | money }}">
+                                Save {{ save_amount | money }}
                             </div>
                         </div>
                     </div>
@@ -479,8 +479,8 @@
             quantityText.textContent = '2 Masks';
         }
 
-        // Get the increased price from the data attribute
-        const increasedPrice = element.getAttribute('data-increased-price');
+        // Get the discounted price from the data attribute
+        const discountedPrice = element.getAttribute('data-discounted-price');
         
         // Update the main price display (if it exists)
         const priceDisplay = document.querySelector('.price-display') || document.querySelector('.mt-2.mb-6');
@@ -490,7 +490,7 @@
             // Create the updated price display
             let priceHTML = `
                 <span class="text-xl font-bold text-gray-900">
-                    ${increasedPrice}
+                    ${discountedPrice}
                 </span>
                 <span class="text-base line-through text-gray-500 ml-2">
                     ${originalPrice}
@@ -665,7 +665,7 @@
         flyPackageToCart();
         
         // Prepare cart data - IMPORTANT: Shopify uses the variant price automatically
-        // The displayed price is just for show - Shopify will use the variant's actual price
+        // The displayed discounted price is just for show - Shopify will use the variant's actual price
         const cartData = {
             items: [{
                 id: parseInt(variantId),
