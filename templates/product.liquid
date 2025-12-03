@@ -71,19 +71,20 @@
                 {{ product.title }}
             </h1>
 
+            <!-- Price Display - 30% DISCOUNT -->
             <div class="mt-2 mb-6">
-                {% if product.compare_at_price > product.price %}
-                    <span class="text-xl font-bold text-red-600">
-                        {{ product.price | money }}
-                    </span>
-                    <span class="text-base line-through text-gray-500 ml-2">
-                        {{ product.compare_at_price | money }}
-                    </span>
-                {% else %}
-                    <span class="text-xl font-bold text-gray-900">
-                        {{ product.price | money }}
-                    </span>
-                {% endif %}
+                {% comment %} Calculate 30% OFF price (70% of original) {% endcomment %}
+                {% assign discounted_price = product.price | times: 0.7 %}
+                
+                <span class="text-xl font-bold text-gray-900">
+                    {{ discounted_price | money }}
+                </span>
+                <span class="text-base line-through text-gray-500 ml-2">
+                    {{ product.price | money }}
+                </span>
+                <div class="text-sm text-green-600 font-medium mt-1">
+                    Save 30%
+                </div>
             </div>
 
             <!-- Smaller Mask Options Section -->
@@ -94,7 +95,8 @@
                     <!-- Single Mask Option -->
                     <div id="singleMaskOption" class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
                         data-quantity="1"
-                        data-price="{{ product.price | money }}"
+                        data-original-price="{{ product.price | money }}"
+                        data-discounted-price="{{ discounted_price | money }}"
                         onclick="selectMaskOption(this, 1)">
                         
                         <!-- Selected Indicator -->
@@ -117,6 +119,9 @@
                             <!-- Option Details -->
                             <h4 class="text-sm font-medium text-gray-900 mb-1">Single Mask</h4>
                             <div class="text-base font-bold text-[#FA8072]">
+                                {{ discounted_price | money }}
+                            </div>
+                            <div class="text-xs line-through text-gray-500">
                                 {{ product.price | money }}
                             </div>
                         </div>
@@ -125,7 +130,8 @@
                     <!-- Double Mask Option -->
                     <div id="doubleMaskOption" class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
                         data-quantity="2"
-                        data-price="{{ product.price | times: 2 | money }}"
+                        data-original-price="{{ product.price | times: 2 | money }}"
+                        data-discounted-price="{{ discounted_price | times: 2 | money }}"
                         onclick="selectMaskOption(this, 2)">
                         
                         <!-- Selected Indicator -->
@@ -142,19 +148,21 @@
                                     alt="Two Face & Neck Masks" 
                                     class="w-10 h-10 object-contain"
                                     onerror="this.style.display='none'">
-                                <div class="text-lg font-bold text-gray-700">2x</div>
+                                    <div class="text-lg font-bold text-gray-700">2x</div>
                             </div>
                             
                             <!-- Option Details -->
                             <h4 class="text-sm font-medium text-gray-900 mb-1">Double Pack</h4>
                             <div class="text-base font-bold text-[#FA8072]">
+                                {{ discounted_price | times: 2 | money }}
+                            </div>
+                            <div class="text-xs line-through text-gray-500">
                                 {{ product.price | times: 2 | money }}
                             </div>
-                            {% if product.compare_at_price > product.price %}
-                            <div class="text-xs text-green-600 font-medium mt-1">
-                                Save {{ product.compare_at_price | minus: product.price | times: 2 | money }}
+                            {% assign save_amount = product.price | times: 2 | minus: discounted_price | times: 2 %}
+                            <div class="text-xs text-green-600 font-medium mt-1" data-save-amount="Save {{ save_amount | money }}">
+                                Save {{ save_amount | money }}
                             </div>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -470,9 +478,39 @@
         } else {
             quantityText.textContent = '2 Masks';
         }
+
+        // Get the discounted price from the data attribute
+        const discountedPrice = element.getAttribute('data-discounted-price');
+        
+        // Update the main price display (if it exists)
+        const priceDisplay = document.querySelector('.mt-2.mb-6');
+        if (priceDisplay) {
+            const originalPrice = element.getAttribute('data-original-price');
+            
+            // Create the updated price display
+            let priceHTML = `
+                <span class="text-xl font-bold text-gray-900">
+                    ${discountedPrice}
+                </span>
+                <span class="text-base line-through text-gray-500 ml-2">
+                    ${originalPrice}
+                </span>
+            `;
+            
+            // Add save percentage for single mask
+            if (quantity === 1) {
+                priceHTML += '<div class="text-sm text-green-600 font-medium mt-1">Save 30%</div>';
+            }
+            // Add save amount for double pack (if available in data attribute)
+            else if (element.getAttribute('data-save-amount')) {
+                const saveAmount = element.getAttribute('data-save-amount');
+                priceHTML += `<div class="text-xs text-green-600 font-medium mt-1">${saveAmount}</div>`;
+            }
+            
+            priceDisplay.innerHTML = priceHTML;
+        }
     }
 
-    // Initialize with single mask selected by default
     document.addEventListener('DOMContentLoaded', function() {
         const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
         if (singleMaskOption) {
@@ -504,46 +542,57 @@
         thumbnail.classList.remove('border-gray-300', 'opacity-75');
     }
 
-    // Enhanced Fly-to-Cart Animation for Selected Package
+    // Enhanced Fly-to-Cart Animation - Flies to cart icon in header
     function flyPackageToCart() {
         if (!selectedPackageElement) return;
         
         const packageImage = selectedPackageElement.querySelector('.package-image');
-        let cart = document.querySelector('.cart-icon-btn');
-
+        
         if (!packageImage) {
             console.error('Animation failed: Missing package image element.');
             return;
         }
 
+        // Find cart icon in header - common selectors for Shopify themes
+        let cart = document.querySelector('a[href="/cart"], a[href*="cart"], .cart-icon, .header-cart, .site-header__cart, .cart-link');
+        
         if (!cart) {
-            console.warn('Cart icon not found with class ".cart-icon-btn". Searching for alternative selectors...');
-            // Try to find cart by common selectors
-            const possibleCartSelectors = [
-                'a[href*="/cart"]',
-                '.cart-toggle',
-                '.header-cart',
-                '.nav-cart',
+            // Try more specific selectors
+            const selectors = [
+                'header a[href*="/cart"]',
+                '.site-header a[href*="/cart"]',
+                'nav a[href*="/cart"]',
+                '.header__icons a[href*="/cart"]',
+                '[data-cart-icon]',
                 '.js-cart-toggle',
-                'button[onclick*="CartDrawer"]',
-                'button[onclick*="cart"]'
+                '.cart-toggle'
             ];
             
-            for (const selector of possibleCartSelectors) {
-                const foundCart = document.querySelector(selector);
-                if (foundCart) {
-                    cart = foundCart;
-                    console.log('Found cart using selector:', selector);
-                    break;
-                }
+            for (const selector of selectors) {
+                cart = document.querySelector(selector);
+                if (cart) break;
             }
-            
-            if (!cart) {
-                console.error('Cart icon not found. Using fallback position.');
-                // Fallback: animate to top right corner
+        }
+        
+        if (!cart) {
+            console.warn('Cart icon not found. Using header right corner as fallback.');
+            // Fallback to top right corner of header
+            const header = document.querySelector('header');
+            if (header) {
+                const headerRect = header.getBoundingClientRect();
+                cart = {
+                    getBoundingClientRect: () => ({
+                        left: headerRect.right - 60,
+                        top: headerRect.top + 20,
+                        width: 40,
+                        height: 40
+                    })
+                };
+            } else {
+                // Ultimate fallback: top right of viewport
                 cart = { 
                     getBoundingClientRect: () => ({ 
-                        left: window.innerWidth - 50, 
+                        left: window.innerWidth - 60, 
                         top: 20, 
                         width: 40, 
                         height: 40 
@@ -572,16 +621,18 @@
         flyingElement.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         flyingElement.style.borderRadius = '8px';
         flyingElement.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
+        flyingElement.style.backgroundColor = 'white'; // Add background for visibility
         
         document.body.appendChild(flyingElement);
         
         // Force reflow
         flyingElement.offsetHeight;
         
-        const finalSize = 20; // Final size in pixels
+        const finalSize = 30; // Slightly larger for visibility
 
-        // Animate to cart
+        // Animate to cart icon
         setTimeout(() => {
+            // Calculate end position to center on cart icon
             const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
             const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
             
@@ -589,8 +640,9 @@
             flyingElement.style.top = endY + 'px';
             flyingElement.style.width = finalSize + 'px';
             flyingElement.style.height = finalSize + 'px';
-            flyingElement.style.opacity = '0.7';
-            flyingElement.style.transform = 'rotate(360deg) scale(0.8)';
+            flyingElement.style.opacity = '0.9';
+            flyingElement.style.transform = 'rotate(360deg) scale(1.1)';
+            flyingElement.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
         }, 50);
 
         // Add bounce effect to cart icon
@@ -629,7 +681,7 @@
         // Prepare cart data
         const cartData = {
             items: [{
-                id: variantId,
+                id: parseInt(variantId),
                 quantity: selectedQuantity
             }]
         };
@@ -680,8 +732,14 @@
 
     // Update cart count in header
     function updateCartCount(count) {
-        const cartCountElements = document.querySelectorAll('.cart-count');
+        const cartCountElements = document.querySelectorAll('.cart-count, .cart-bubble, .cart-item-count');
         cartCountElements.forEach(element => {
+            element.textContent = count;
+        });
+        
+        // Also try to update any badge elements
+        const badgeElements = document.querySelectorAll('[data-cart-count], .cart-badge');
+        badgeElements.forEach(element => {
             element.textContent = count;
         });
     }
