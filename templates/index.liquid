@@ -1,6 +1,5 @@
-{% comment %} Get your specific product by its handle {% endcomment %}
-{% assign product_handle = '14-silicone-face-neck-photon-mask' %}
 {% assign featured_product = all_products[product_handle] %}
+{% assign discounted_price = featured_product.price | times: 0.7 %}
 
 <div class="w-full max-w-7xl mx-auto space-y-8">
     <!-- First Card - Hero Section -->
@@ -96,8 +95,8 @@
             <div class="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center">
                 <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
                     <img id="media-display"
-                        src="{{ product.featured_media | img_url: '1024x1024' }}"
-                        alt="{{ product.featured_media.alt | escape }}"
+                        src="{{ featured_product.featured_image | img_url: '1024x1024' }}"
+                        alt="{{ featured_product.featured_image.alt | escape }}"
                         class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
                         onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
                     />
@@ -108,7 +107,7 @@
                 >
                     {% for media in featured_product.media %}
                         {% assign is_active = false %}
-                        {% if product.featured_media.id == media.id %}
+                        {% if forloop.first %}
                             {% assign is_active = true %}
                         {% endif %}
                         <img src="{{ media.preview_image | img_url: 'medium' }}"
@@ -136,14 +135,11 @@
 
             <!-- Price Display - 30% DISCOUNT -->
             <div class="mt-2 mb-6">
-                {% comment %} Calculate 30% OFF price (70% of original) {% endcomment %}
-                {% assign discounted_price = featured_product.price | times: 0.7 %}
-                
                 <span class="text-xl font-bold text-gray-900">
                     {{ discounted_price | money }}
                 </span>
                 <span class="text-base line-through text-gray-500 ml-2">
-                    {{ product.price | money }}
+                    {{ featured_product.price | money }}
                 </span>
                 <div class="text-sm text-green-600 font-medium mt-1">
                     Save 30%
@@ -158,7 +154,7 @@
                     <!-- Single Mask Option -->
                     <div id="singleMaskOption" class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
                         data-quantity="1"
-                        data-original-price="{{ product.price | money }}"
+                        data-original-price="{{ featured_product.price | money }}"
                         data-discounted-price="{{ discounted_price | money }}"
                         onclick="selectMaskOption(this, 1)">
                         
@@ -185,7 +181,7 @@
                                 {{ discounted_price | money }}
                             </div>
                             <div class="text-xs line-through text-gray-500">
-                                {{ product.price | money }}
+                                {{ featured_product.price | money }}
                             </div>
                         </div>
                     </div>
@@ -193,7 +189,7 @@
                     <!-- Double Mask Option -->
                     <div id="doubleMaskOption" class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
                         data-quantity="2"
-                        data-original-price="{{ product.price | times: 2 | money }}"
+                        data-original-price="{{ featured_product.price | times: 2 | money }}"
                         data-discounted-price="{{ discounted_price | times: 2 | money }}"
                         onclick="selectMaskOption(this, 2)">
                         
@@ -220,9 +216,9 @@
                                 {{ discounted_price | times: 2 | money }}
                             </div>
                             <div class="text-xs line-through text-gray-500">
-                                {{ product.price | times: 2 | money }}
+                                {{ featured_product.price | times: 2 | money }}
                             </div>
-                            {% assign save_amount = product.price | times: 2 | minus: discounted_price | times: 2 %}
+                            {% assign save_amount = featured_product.price | times: 2 | minus: discounted_price | times: 2 %}
                             <div class="text-xs text-green-600 font-medium mt-1" data-save-amount="Save {{ save_amount | money }}">
                                 Save {{ save_amount | money }}
                             </div>
@@ -235,7 +231,7 @@
             <div class="mt-6">
                 <button id="addToCartButton" 
                         class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
-                        data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+                        data-variant-id="{{ featured_product.selected_or_first_available_variant.id }}">
                     Add to Cart - <span class="quantity-text">1 Mask</span>
                 </button>
             </div>
