@@ -1,3 +1,5 @@
+{% comment %} Get your specific product by its handle at the TOP of the file {% endcomment %}
+{% assign product_handle = '14-silicone-face-neck-photon-mask' %}
 {% assign featured_product = all_products[product_handle] %}
 {% assign discounted_price = featured_product.price | times: 0.7 %}
 
