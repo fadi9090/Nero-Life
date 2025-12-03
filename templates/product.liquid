@@ -483,7 +483,7 @@
         const discountedPrice = element.getAttribute('data-discounted-price');
         
         // Update the main price display (if it exists)
-        const priceDisplay = document.querySelector('.price-display') || document.querySelector('.mt-2.mb-6');
+        const priceDisplay = document.querySelector('.mt-2.mb-6');
         if (priceDisplay) {
             const originalPrice = element.getAttribute('data-original-price');
             
@@ -664,8 +664,7 @@
         // Trigger fly-to-cart animation
         flyPackageToCart();
         
-        // Prepare cart data - IMPORTANT: Shopify uses the variant price automatically
-        // The displayed discounted price is just for show - Shopify will use the variant's actual price
+        // Prepare cart data
         const cartData = {
             items: [{
                 id: parseInt(variantId),
