@@ -58,7 +58,7 @@
                 <!-- CTA Button -->
                 <div class="mb-4 sm:mb-6">
                     {% assign discount = product.discount_percent | default: 35 %}
-                    <a href="https://nerolifesciences.com/products/14-silicone-face-neck-photon-mask"
+                    <a href="{{ product.url }}"
                         class="inline-block px-6 sm:px-8 py-3 text-sm sm:text-base font-black text-white bg-gradient-to-r from-rose-600 to-pink-500 hover:from-rose-700 hover:to-pink-600 transition-all duration-300 rounded-full shadow-2xl hover:shadow-3xl uppercase tracking-wider transform hover:scale-105 active:scale-95 border border-rose-400/30">
                         GET {{ discount }}% OFF NOW
                     </a>
