@@ -553,52 +553,36 @@
             return;
         }
 
-        // Find cart icon in header - common selectors for Shopify themes
-        let cart = document.querySelector('a[href="/cart"], a[href*="cart"], .cart-icon, .header-cart, .site-header__cart, .cart-link');
+        // First, try to find the header to locate top-right corner
+        const header = document.querySelector('header, .site-header, .header, .main-header');
+        let cart;
         
-        if (!cart) {
-            // Try more specific selectors
-            const selectors = [
-                'header a[href*="/cart"]',
-                '.site-header a[href*="/cart"]',
-                'nav a[href*="/cart"]',
-                '.header__icons a[href*="/cart"]',
-                '[data-cart-icon]',
-                '.js-cart-toggle',
-                '.cart-toggle'
-            ];
+        if (header) {
+            // Use top-right corner of header
+            const headerRect = header.getBoundingClientRect();
+            const targetX = headerRect.right - 50; // 50px from right edge of header
+            const targetY = headerRect.top + 25; // 25px from top of header
             
-            for (const selector of selectors) {
-                cart = document.querySelector(selector);
-                if (cart) break;
-            }
-        }
-        
-        if (!cart) {
-            console.warn('Cart icon not found. Using header right corner as fallback.');
-            // Fallback to top right corner of header
-            const header = document.querySelector('header');
-            if (header) {
-                const headerRect = header.getBoundingClientRect();
-                cart = {
-                    getBoundingClientRect: () => ({
-                        left: headerRect.right - 60,
-                        top: headerRect.top + 20,
-                        width: 40,
-                        height: 40
-                    })
-                };
-            } else {
-                // Ultimate fallback: top right of viewport
-                cart = { 
-                    getBoundingClientRect: () => ({ 
-                        left: window.innerWidth - 60, 
-                        top: 20, 
-                        width: 40, 
-                        height: 40 
-                    }) 
-                };
-            }
+            cart = { 
+                getBoundingClientRect: () => ({ 
+                    left: targetX, 
+                    top: targetY, 
+                    width: 40, 
+                    height: 40 
+                }) 
+            };
+            console.log('Using header corner for animation');
+        } else {
+            // Fallback to viewport top-right corner
+            cart = { 
+                getBoundingClientRect: () => ({ 
+                    left: window.innerWidth - 60, 
+                    top: 20, 
+                    width: 40, 
+                    height: 40 
+                }) 
+            };
+            console.log('Using viewport corner for animation');
         }
 
         // Get positions
@@ -616,42 +600,43 @@
         flyingElement.style.height = startRect.height + 'px';
         flyingElement.style.left = (startRect.left + scrollX) + 'px';
         flyingElement.style.top = (startRect.top + scrollY) + 'px';
-        flyingElement.style.zIndex = '10000';
+        flyingElement.style.zIndex = '99999';
         flyingElement.style.pointerEvents = 'none';
         flyingElement.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         flyingElement.style.borderRadius = '8px';
         flyingElement.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
-        flyingElement.style.backgroundColor = 'white'; // Add background for visibility
+        flyingElement.style.backgroundColor = 'white';
+        flyingElement.style.border = '2px solid #FA8072';
+        flyingElement.style.overflow = 'hidden';
         
         document.body.appendChild(flyingElement);
         
         // Force reflow
         flyingElement.offsetHeight;
         
-        const finalSize = 30; // Slightly larger for visibility
+        const finalSize = 35;
 
         // Animate to cart icon
         setTimeout(() => {
-            // Calculate end position to center on cart icon
-            const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
-            const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
+            // Calculate end position to center on target
+            const endX = endRect.left + (endRect.width / 2) - (finalSize / 2);
+            const endY = endRect.top + (endRect.height / 2) - (finalSize / 2);
             
             flyingElement.style.left = endX + 'px';
             flyingElement.style.top = endY + 'px';
             flyingElement.style.width = finalSize + 'px';
             flyingElement.style.height = finalSize + 'px';
-            flyingElement.style.opacity = '0.9';
-            flyingElement.style.transform = 'rotate(360deg) scale(1.1)';
-            flyingElement.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            flyingElement.style.opacity = '0.8';
+            flyingElement.style.transform = 'rotate(360deg) scale(0.8)';
+            flyingElement.style.boxShadow = '0 5px 15px rgba(250, 128, 114, 0.5)';
         }, 50);
 
-        // Add bounce effect to cart icon
-        if (cart.classList) {
-            cart.classList.add('cart-bounce');
+        // Try to find and bounce actual cart icon
+        const cartIcon = document.querySelector('a[href*="cart"], .cart-icon, .header-cart, [data-cart-icon]');
+        if (cartIcon && cartIcon.classList) {
+            cartIcon.classList.add('cart-bounce');
             setTimeout(() => {
-                if (cart.classList) {
-                    cart.classList.remove('cart-bounce');
-                }
+                cartIcon.classList.remove('cart-bounce');
             }, 1000);
         }
 
@@ -670,6 +655,12 @@
         const button = this;
         const variantId = button.getAttribute('data-variant-id');
         const originalText = button.innerHTML;
+        
+        if (!variantId || variantId === '') {
+            console.error('No variant ID found on button');
+            alert('Please select a product option first');
+            return;
+        }
         
         // Show loading state
         button.innerHTML = 'Adding to Cart...';
@@ -732,15 +723,22 @@
 
     // Update cart count in header
     function updateCartCount(count) {
-        const cartCountElements = document.querySelectorAll('.cart-count, .cart-bubble, .cart-item-count');
-        cartCountElements.forEach(element => {
-            element.textContent = count;
-        });
+        // Try multiple selectors for cart count
+        const cartCountSelectors = [
+            '.cart-count',
+            '.cart-bubble',
+            '.cart-item-count',
+            '[data-cart-count]',
+            '.js-cart-count',
+            '.header-cart-count',
+            '.site-header__cart-count'
+        ];
         
-        // Also try to update any badge elements
-        const badgeElements = document.querySelectorAll('[data-cart-count], .cart-badge');
-        badgeElements.forEach(element => {
-            element.textContent = count;
+        cartCountSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                element.textContent = count;
+            });
         });
     }
 
@@ -762,6 +760,17 @@
                 0%, 20%, 60%, 100% { transform: scale(1); }
                 40% { transform: scale(1.3); }
                 80% { transform: scale(1.1); }
+            }
+            
+            /* Animation for the flying element */
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(250, 128, 114, 0.7); }
+                70% { box-shadow: 0 0 0 10px rgba(250, 128, 114, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(250, 128, 114, 0); }
+            }
+            
+            .flying-element {
+                animation: pulse 2s infinite;
             }
         `;
         document.head.appendChild(style);
