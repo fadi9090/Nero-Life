@@ -13,6 +13,47 @@
     {{ 'application.js' | asset_url | script_tag }}
     <!-- Keep only one Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Add CSS to fix black overlay issue -->
+    <style>
+      /* Fix for cart drawer overlay */
+      #CartDrawerOverlay {
+        opacity: 1 !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+      }
+      
+      /* Ensure cart drawer content is visible */
+      #CartDrawerContent {
+        background-color: #F5F5DC !important;
+        color: #000000 !important;
+      }
+      
+      /* Fix text colors in cart drawer */
+      #CartDrawerContent * {
+        color: #000000 !important;
+      }
+      
+      /* Fix links in cart drawer */
+      #CartDrawerContent a {
+        color: #0077B6 !important;
+      }
+      
+      #CartDrawerContent a:hover {
+        color: #FA8072 !important;
+      }
+      
+      /* Fix button colors */
+      #CartDrawerContent button {
+        color: #000000 !important;
+      }
+      
+      /* Fix input colors */
+      #CartDrawerContent input {
+        color: #000000 !important;
+        background-color: white !important;
+        border-color: #ccc !important;
+      }
+    </style>
   </head>
   <body class="bg-[#F5F5DC] font-sans font-bold text-white flex flex-col min-h-screen">
     {% section 'announcement-bar' %}
@@ -24,12 +65,6 @@
     {% section 'footer' %}
 
     {% section 'cart-drawer' %}
-
-    <!-- Temporary test button -->
-    <button onclick="testCartFunctions()" 
-            style="position: fixed; bottom: 20px; left: 20px; background: #FA8072; color: white; padding: 10px; z-index: 99999; border-radius: 5px;">
-        Test Cart Functions
-    </button>
 
     <script>
       // Global cart functions
@@ -86,22 +121,6 @@
 
           return formatString.replace(placeholderRegex, value);
       };
-
-      // Test cart functions
-      function testCartFunctions() {
-          console.log('=== Testing Cart Functions ===');
-          console.log('toggleCartDrawer exists:', typeof toggleCartDrawer);
-          console.log('openCartDrawer exists:', typeof openCartDrawer);
-          console.log('CartDrawer element:', document.getElementById('CartDrawer'));
-          
-          // Test opening cart drawer
-          if (typeof toggleCartDrawer === 'function') {
-              console.log('Calling toggleCartDrawer()...');
-              toggleCartDrawer();
-          } else {
-              console.error('toggleCartDrawer is not a function!');
-          }
-      }
     </script>
   </body>
 </html>
