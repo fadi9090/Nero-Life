@@ -4,44 +4,31 @@
     {% assign empty_cart_class = 'is-empty' %}
 {% endif %}
 
-<div x-data="{ open: false }" 
-     id="CartDrawer" 
-     x-ref="CartDrawer"
-     class="fixed inset-0 z-50 pointer-events-none {{ empty_cart_class }}" 
+<div id="CartDrawer" 
+     class="fixed inset-0 z-50 pointer-events-none {{ empty_cart_class }}"
+     style="display: none;" 
      aria-modal="true" 
      role="dialog" 
-     aria-label="Shopping Cart"
-     @keydown.escape.window="open = false">
+     aria-label="Shopping Cart">
 
     <!-- Overlay -->
-    <div x-show="open" 
-         @click="open = false" 
-         x-transition:enter="ease-in-out duration-500"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="ease-in-out duration-500"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="absolute inset-0 bg-black bg-opacity-50 transition-opacity">
+    <div id="CartDrawerOverlay"
+         onclick="closeCartDrawer()"
+         class="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+         style="display: none;">
     </div>
 
     <!-- Cart Drawer Content -->
-    <div x-show="open" 
-         x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
-         x-transition:enter-start="translate-x-full"
-         x-transition:enter-end="translate-x-0"
-         x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
-         x-transition:leave-start="translate-x-0"
-         x-transition:leave-end="translate-x-full"
-         class="absolute right-0 top-0 bottom-0 w-full sm:w-96 overflow-y-auto bg-[#F5F5DC] shadow-xl transform transition-transform duration-300 pointer-events-auto">
+    <div id="CartDrawerContent"
+         class="absolute right-0 top-0 bottom-0 w-full sm:w-96 overflow-y-auto bg-[#F5F5DC] shadow-xl transform translate-x-full transition-transform duration-300 pointer-events-auto">
         
         <div class="h-full flex flex-col justify-between">
             
             <div class="p-6">
                 <div class="flex items-center justify-between border-b pb-4 mb-4">
-                    <h2 class="text-2xl font-bold text-black">Your Bag ({{ cart.item_count }})</h2>
+                    <h2 class="text-2xl font-bold text-black">Your Bag (<span id="cart-drawer-count">{{ cart.item_count }}</span>)</h2>
                     <button type="button" 
-                            @click="open = false" 
+                            onclick="closeCartDrawer()"
                             class="p-2 text-black hover:text-[#0077B6]">
                         ✕
                     </button>
@@ -49,9 +36,9 @@
 
                 {% if cart.item_count > 0 %}
                     <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm">
-                        <div class="space-y-4">
+                        <div class="space-y-4" id="cart-drawer-items">
                             {% for item in cart.items %}
-                                <div class="flex items-start">
+                                <div class="flex items-start cart-item" data-key="{{ item.key }}">
                                     <a href="{{ item.url }}" class="w-20 h-20 flex-shrink-0 mr-3">
                                         <img src="{{ item | img_url: 'small' }}" alt="{{ item.title | escape }}" class="w-full h-full object-cover rounded-md border">
                                     </a>
@@ -71,8 +58,11 @@
                                                    class="w-12 p-1 border text-center text-black rounded-md"
                                                    aria-label="Quantity">
                                             
-                                            <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0" 
-                                               class="text-xs text-black hover:text-[#FA8072] underline">Remove</a>
+                                            <button type="button" 
+                                                    onclick="removeCartItem('{{ item.key }}')"
+                                                    class="text-xs text-black hover:text-[#FA8072] underline">
+                                                Remove
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +73,7 @@
                     <div class="py-10 text-center">
                         <p class="text-lg text-black">Your bag is lonely! Add some products.</p>
                         <a href="{{ routes.all_products_collection_url }}" 
-                           @click="open = false"
+                           onclick="closeCartDrawer()"
                            class="mt-4 inline-block text-base font-medium text-black bg-[#FA8072] px-4 py-2 rounded transition duration-300 hover:bg-[#0077B6] hover:text-white">
                             Shop All
                         </a>
@@ -95,7 +85,7 @@
                 <div class="p-6 border-t bg-white">
                     <div class="flex justify-between text-xl font-bold mb-3">
                         <span>Subtotal:</span>
-                        <span class="text-black">{{ cart.total_price | money }}</span>
+                        <span class="text-black" id="cart-drawer-total">{{ cart.total_price | money }}</span>
                     </div>
 
                     <p class="text-sm text-gray-600 mb-4">Shipping and taxes calculated at checkout.</p>
@@ -107,7 +97,7 @@
                     </button>
                     
                     <a href="{{ routes.cart_url }}" 
-                       @click="open = false"
+                       onclick="closeCartDrawer()"
                        class="mt-3 w-full p-3 block text-center border border-black text-black rounded transition duration-300 hover:bg-gray-100">
                        View Full Cart
                     </a>
@@ -118,32 +108,108 @@
 </div>
 
 <script>
-    // Listen for cart open events
-    document.addEventListener('open-cart-drawer', function() {
-        console.log('Cart drawer received open event');
+    // Cart Drawer Functions
+    function toggleCartDrawer() {
+        const drawer = document.getElementById('CartDrawer');
+        const overlay = document.getElementById('CartDrawerOverlay');
+        const content = document.getElementById('CartDrawerContent');
         
-        // Try to access Alpine.js component
-        const cartDrawer = document.getElementById('CartDrawer');
-        if (cartDrawer && cartDrawer.__x) {
-            cartDrawer.__x.$data.open = true;
+        if (drawer.style.display === 'none' || drawer.style.display === '') {
+            // Open drawer
+            drawer.style.display = 'block';
+            setTimeout(() => {
+                overlay.style.display = 'block';
+                content.style.transform = 'translateX(0)';
+                document.body.style.overflow = 'hidden';
+            }, 10);
         } else {
-            // Fallback: show the drawer
-            cartDrawer.style.display = 'block';
-            cartDrawer.setAttribute('style', 'display: block !important');
+            // Close drawer
+            closeCartDrawer();
+        }
+    }
+
+    function openCartDrawer() {
+        const drawer = document.getElementById('CartDrawer');
+        const overlay = document.getElementById('CartDrawerOverlay');
+        const content = document.getElementById('CartDrawerContent');
+        
+        drawer.style.display = 'block';
+        setTimeout(() => {
+            overlay.style.display = 'block';
+            content.style.transform = 'translateX(0)';
+            document.body.style.overflow = 'hidden';
+        }, 10);
+        
+        console.log('Cart drawer opened');
+    }
+
+    function closeCartDrawer() {
+        const drawer = document.getElementById('CartDrawer');
+        const overlay = document.getElementById('CartDrawerOverlay');
+        const content = document.getElementById('CartDrawerContent');
+        
+        content.style.transform = 'translateX(100%)';
+        overlay.style.opacity = '0';
+        
+        setTimeout(() => {
+            drawer.style.display = 'none';
+            overlay.style.display = 'none';
+            overlay.style.opacity = '1';
+            document.body.style.overflow = '';
+        }, 300);
+    }
+
+    function removeCartItem(key) {
+        fetch('/cart/change.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: key,
+                quantity: 0
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateCartDrawer(data);
+            updateCartCount(data.item_count);
+        })
+        .catch(error => console.error('Error removing item:', error));
+    }
+
+    function updateCartDrawer(cartData) {
+        // Update cart count in drawer
+        const countElement = document.getElementById('cart-drawer-count');
+        if (countElement) {
+            countElement.textContent = cartData.item_count;
+        }
+        
+        // Update total
+        const totalElement = document.getElementById('cart-drawer-total');
+        if (totalElement) {
+            totalElement.textContent = Shopify.formatMoney(cartData.total_price, '{{ shop.money_format }}');
+        }
+        
+        // Reload cart items if cart is empty
+        if (cartData.item_count === 0) {
+            setTimeout(() => {
+                location.reload(); // Simple reload to show empty state
+            }, 500);
+        }
+    }
+
+    // Close drawer with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCartDrawer();
         }
     });
 
-    // Also listen for cart updates to refresh content
-    document.addEventListener('cart:updated', function() {
-        // Refresh cart drawer content
-        fetch('/cart?section_id=cart-drawer')
-            .then(response => response.text())
-            .then(html => {
-                const newDrawer = new DOMParser().parseFromString(html, 'text/html');
-                const oldDrawer = document.getElementById('CartDrawer');
-                if (oldDrawer && newDrawer.getElementById('CartDrawer')) {
-                    oldDrawer.innerHTML = newDrawer.getElementById('CartDrawer').innerHTML;
-                }
-            });
+    // Listen for cart updates from other parts of the site
+    document.addEventListener('cart:updated', function(e) {
+        if (e.detail && e.detail.item_count !== undefined) {
+            updateCartCount(e.detail.item_count);
+        }
     });
 </script>

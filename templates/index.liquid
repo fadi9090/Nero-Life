@@ -967,48 +967,21 @@
 
     // NEW FUNCTION: Open Cart Drawer
     function openCartDrawer() {
-        console.log('Attempting to open cart drawer...');
+        console.log('Opening cart drawer...');
         
-        // Method 1: If using Alpine.js with x-ref
-        const cartDrawer = document.querySelector('[x-ref="CartDrawer"]');
-        if (cartDrawer && cartDrawer.__x) {
-            // Access Alpine.js component
-            cartDrawer.__x.$data.open = true;
-            console.log('Cart drawer opened via Alpine.js x-ref');
+        // Try to call the global function from cart-drawer.liquid
+        if (typeof window.openCartDrawer === 'function') {
+            window.openCartDrawer();
             return;
         }
         
-        // Method 2: If using Alpine.js without x-ref
-        const alpineCart = document.querySelector('[x-data*="open"]');
-        if (alpineCart && alpineCart.__x) {
-            alpineCart.__x.$data.open = true;
-            console.log('Cart drawer opened via Alpine.js x-data');
-            return;
-        }
-        
-        // Method 3: Trigger click event on cart button
-        const cartButton = document.querySelector('.cart-icon-btn, [@click*="open"], button[onclick*="cart"]');
+        // Fallback: try to find and click cart button
+        const cartButton = document.querySelector('.cart-icon-btn, [onclick*="cart"], button');
         if (cartButton) {
             cartButton.click();
-            console.log('Cart drawer opened via button click');
-            return;
+        } else {
+            console.error('Could not open cart drawer - no function or button found');
         }
-        
-        // Method 4: Dispatch custom event
-        const cartEvent = new CustomEvent('open-cart-drawer');
-        document.dispatchEvent(cartEvent);
-        console.log('Cart drawer open event dispatched');
-        
-        // Method 5: Direct DOM manipulation as last resort
-        setTimeout(() => {
-            const drawer = document.getElementById('CartDrawer');
-            if (drawer) {
-                // Try to set open state
-                drawer.setAttribute('x-data', '{ open: true }');
-                drawer.style.display = 'block';
-                console.log('Cart drawer opened via direct DOM');
-            }
-        }, 500);
     }
 
     // Also add this event listener at the bottom of your script

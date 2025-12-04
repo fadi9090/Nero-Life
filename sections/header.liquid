@@ -66,9 +66,7 @@
 
         <!-- Cart -->
         <div class="flex items-center -mr-2 -my-2 ml-3">
-            <button type="button" 
-                    @click="open = true" 
-                    class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn">
+            <button type="button" onclick="toggleCartDrawer()" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn">
                 {% render 'icon-shopping-bag' %}
                 <span class="cart-count">{{ cart.item_count }}</span>
             </button>
