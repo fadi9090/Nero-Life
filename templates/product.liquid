@@ -544,7 +544,10 @@
 
     // Enhanced Fly-to-Cart Animation - Flies to cart icon in header
     function flyPackageToCart() {
-        if (!selectedPackageElement) return;
+        if (!selectedPackageElement) {
+            console.log('No package selected for animation');
+            return;
+        }
         
         const packageImage = selectedPackageElement.querySelector('.package-image');
         
@@ -553,19 +556,25 @@
             return;
         }
 
-        // Find cart icon in header - common selectors for Shopify themes
-        let cart = document.querySelector('a[href="/cart"], a[href*="cart"], .cart-icon, .header-cart, .site-header__cart, .cart-link');
+        // 1. FIRST try to find your specific cart button with class .cart-icon-btn
+        let cart = document.querySelector('.cart-icon-btn');
         
+        // 2. If not found, try Alpine.js cart buttons
         if (!cart) {
-            // Try more specific selectors
+            cart = document.querySelector('[x-ref="CartDrawer"] button, [@click*="open"], button[onclick*="cart"]');
+        }
+        
+        // 3. If still not found, try common cart selectors
+        if (!cart) {
             const selectors = [
-                'header a[href*="/cart"]',
-                '.site-header a[href*="/cart"]',
-                'nav a[href*="/cart"]',
-                '.header__icons a[href*="/cart"]',
+                'a[href="/cart"]',
+                'a[href*="cart"]',
+                '.cart-icon',
+                '.header-cart',
+                '.site-header__cart',
+                '.cart-link',
                 '[data-cart-icon]',
-                '.js-cart-toggle',
-                '.cart-toggle'
+                '[data-cart-drawer-toggle]'
             ];
             
             for (const selector of selectors) {
@@ -574,61 +583,79 @@
             }
         }
         
+        // 4. If cart is still not found, create a virtual target at top-right corner
         if (!cart) {
-            console.warn('Cart icon not found. Using header right corner as fallback.');
-            // Fallback to top right corner of header
-            const header = document.querySelector('header');
+            console.log('Cart icon not found by selectors. Using top right corner of viewport.');
+            
+            // Try to find header for better positioning
+            const header = document.querySelector('header, .site-header, .header');
             if (header) {
                 const headerRect = header.getBoundingClientRect();
                 cart = {
                     getBoundingClientRect: () => ({
                         left: headerRect.right - 60,
-                        top: headerRect.top + 20,
+                        top: headerRect.top + 30,
                         width: 40,
                         height: 40
                     })
                 };
             } else {
-                // Ultimate fallback: top right of viewport
+                // Fallback to viewport top-right corner
                 cart = { 
                     getBoundingClientRect: () => ({ 
-                        left: window.innerWidth - 60, 
-                        top: 20, 
+                        left: window.innerWidth - 80, 
+                        top: 70, 
                         width: 40, 
                         height: 40 
                     }) 
                 };
             }
+        } else {
+            console.log('Cart icon found:', cart);
         }
 
         // Get positions
         const startRect = packageImage.getBoundingClientRect();
         const endRect = cart.getBoundingClientRect();
         
+        console.log('Animation start position:', startRect);
+        console.log('Animation end position:', endRect);
+        
         // Add scroll position to coordinates
         const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
         const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-        // Create flying element (clone the package image)
+        // Create flying element
         const flyingElement = packageImage.cloneNode(true);
+        
+        // Make sure the flying element is visible
         flyingElement.style.position = 'fixed';
         flyingElement.style.width = startRect.width + 'px';
         flyingElement.style.height = startRect.height + 'px';
         flyingElement.style.left = (startRect.left + scrollX) + 'px';
         flyingElement.style.top = (startRect.top + scrollY) + 'px';
-        flyingElement.style.zIndex = '10000';
+        flyingElement.style.zIndex = '99999';
         flyingElement.style.pointerEvents = 'none';
         flyingElement.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         flyingElement.style.borderRadius = '8px';
         flyingElement.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
-        flyingElement.style.backgroundColor = 'white'; // Add background for visibility
+        flyingElement.style.backgroundColor = '#FA8072'; // Use your theme color
+        flyingElement.style.border = '2px solid white';
+        flyingElement.style.overflow = 'hidden';
+        
+        // Ensure content is visible
+        const textElement = flyingElement.querySelector('.text-lg');
+        if (textElement) {
+            textElement.style.color = 'white';
+            textElement.style.fontWeight = 'bold';
+        }
         
         document.body.appendChild(flyingElement);
         
         // Force reflow
         flyingElement.offsetHeight;
         
-        const finalSize = 30; // Slightly larger for visibility
+        const finalSize = 35;
 
         // Animate to cart icon
         setTimeout(() => {
@@ -636,20 +663,22 @@
             const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
             const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
             
+            console.log('Animating to:', endX, endY);
+            
             flyingElement.style.left = endX + 'px';
             flyingElement.style.top = endY + 'px';
             flyingElement.style.width = finalSize + 'px';
             flyingElement.style.height = finalSize + 'px';
             flyingElement.style.opacity = '0.9';
-            flyingElement.style.transform = 'rotate(360deg) scale(1.1)';
-            flyingElement.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            flyingElement.style.transform = 'rotate(360deg) scale(0.9)';
+            flyingElement.style.boxShadow = '0 5px 15px rgba(250, 128, 114, 0.7)';
         }, 50);
 
-        // Add bounce effect to cart icon
-        if (cart.classList) {
+        // Add bounce effect to cart icon if it's a real DOM element
+        if (cart.classList && typeof cart.classList.add === 'function') {
             cart.classList.add('cart-bounce');
             setTimeout(() => {
-                if (cart.classList) {
+                if (cart.classList && typeof cart.classList.remove === 'function') {
                     cart.classList.remove('cart-bounce');
                 }
             }, 1000);
@@ -660,7 +689,8 @@
             if (flyingElement.parentNode) {
                 flyingElement.parentNode.removeChild(flyingElement);
             }
-        }, 1000);
+            console.log('Animation completed');
+        }, 1200);
     }
 
     // Add to Cart with Shopify Integration and Animation
