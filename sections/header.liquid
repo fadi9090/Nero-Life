@@ -65,54 +65,53 @@
         </nav>
 
         <!-- Cart -->
-        <div x-data="{ open: false }" 
-            id="CartDrawer" 
-            x-ref="CartDrawer"
-            class="fixed inset-0 z-50 pointer-events-none {{ empty_cart_class }}" 
-            aria-modal="true" 
-            role="dialog" 
-            aria-label="Shopping Cart">
-              </div>
+        <div class="flex items-center -mr-2 -my-2 ml-3">
+            <button type="button" @click="open = true" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
+                {% render 'icon-shopping-bag' %}
+                <span class="cart-count">{{ cart.item_count }}</span>
+            </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div x-show="mobileMenu" 
+          @click.away="mobileMenu = false" 
+          x-transition:enter="duration-200 ease-out"
+          x-transition:enter-start="opacity-0 scale-95"
+          x-transition:enter-end="opacity-100 scale-100"
+          x-transition:leave="duration-100 ease-in"
+          x-transition:leave-start="opacity-100 scale-100"
+          x-transition:leave-end="opacity-0 scale-95"
+          class="absolute z-50 top-16 inset-x-0 p-2 transform origin-top-left md:hidden">
+      
+      <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-white w-full">
+        <div class="p-5 divide-y-2 divide-gray-100"> 
+          <div class="flex items-center justify-between pb-3">
+            <div>
+              <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title | default: "Menu" }}</h1>
             </div>
-            
-            <!-- Mobile Menu -->
-            <div x-show="mobileMenu" 
-                  @click.away="mobileMenu = false" 
-                  x-transition:enter="duration-200 ease-out"
-                  x-transition:enter-start="opacity-0 scale-95"
-                  x-transition:enter-end="opacity-100 scale-100"
-                  x-transition:leave="duration-100 ease-in"
-                  x-transition:leave-start="opacity-100 scale-100"
-                  x-transition:leave-end="opacity-0 scale-95"
-                  class="absolute z-50 top-16 inset-x-0 p-2 transform origin-top-left md:hidden">
-              
-              <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-white w-full">
-                <div class="p-5 divide-y-2 divide-gray-100"> 
-                  <div class="flex items-center justify-between pb-3">
-                    <div>
-                      <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title | default: "Menu" }}</h1>
-                    </div>
-                    <div class="-mr-2">
-                      <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
-                          {% render 'icon-close' %}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="pt-3">
-                    <nav class="grid gap-y-2">
-                      {% for link in main_menu_linklist %}
-                        <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6] font-medium">
-                          {{ link.title }}
-                        </a>
-                      {% endfor %}
-                    </nav>
-                  </div>
-                </div>
-              </div>
+            <div class="-mr-2">
+              <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
+                  {% render 'icon-close' %}
+              </button>
             </div>
           </div>
+
+          <div class="pt-3">
+            <nav class="grid gap-y-2">
+              {% for link in main_menu_linklist %}
+                <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6] font-medium">
+                  {{ link.title }}
+                </a>
+              {% endfor %}
+            </nav>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% schema %}
 {
