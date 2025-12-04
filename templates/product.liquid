@@ -693,13 +693,18 @@
         }, 1200);
     }
 
-    // Add to Cart with Shopify Integration and Animation
     document.getElementById('addToCartButton').addEventListener('click', function(e) {
         e.preventDefault();
         
         const button = this;
         const variantId = button.getAttribute('data-variant-id');
         const originalText = button.innerHTML;
+        
+        if (!variantId || variantId === '') {
+            console.error('No variant ID found on button');
+            alert('Please select a product option first');
+            return;
+        }
         
         // Show loading state
         button.innerHTML = 'Adding to Cart...';
@@ -732,7 +737,10 @@
             // Update cart count
             updateCartCount(data.item_count || (parseInt(document.querySelector('.cart-count')?.textContent || 0) + selectedQuantity));
             
-            // Show success message
+            // TRIGGER CART DRAWER TO OPEN
+            openCartDrawer();
+            
+            // Show success message on button
             setTimeout(() => {
                 button.innerHTML = '✓ Added to Cart!';
                 button.style.backgroundColor = '#10B981';
@@ -758,6 +766,59 @@
                 button.disabled = false;
             }, 2000);
         });
+    });
+
+    // NEW FUNCTION: Open Cart Drawer
+    function openCartDrawer() {
+        console.log('Attempting to open cart drawer...');
+        
+        // Method 1: If using Alpine.js with x-ref
+        const cartDrawer = document.querySelector('[x-ref="CartDrawer"]');
+        if (cartDrawer && cartDrawer.__x) {
+            // Access Alpine.js component
+            cartDrawer.__x.$data.open = true;
+            console.log('Cart drawer opened via Alpine.js x-ref');
+            return;
+        }
+        
+        // Method 2: If using Alpine.js without x-ref
+        const alpineCart = document.querySelector('[x-data*="open"]');
+        if (alpineCart && alpineCart.__x) {
+            alpineCart.__x.$data.open = true;
+            console.log('Cart drawer opened via Alpine.js x-data');
+            return;
+        }
+        
+        // Method 3: Trigger click event on cart button
+        const cartButton = document.querySelector('.cart-icon-btn, [@click*="open"], button[onclick*="cart"]');
+        if (cartButton) {
+            cartButton.click();
+            console.log('Cart drawer opened via button click');
+            return;
+        }
+        
+        // Method 4: Dispatch custom event
+        const cartEvent = new CustomEvent('open-cart-drawer');
+        document.dispatchEvent(cartEvent);
+        console.log('Cart drawer open event dispatched');
+        
+        // Method 5: Direct DOM manipulation as last resort
+        setTimeout(() => {
+            const drawer = document.getElementById('CartDrawer');
+            if (drawer) {
+                // Try to set open state
+                drawer.setAttribute('x-data', '{ open: true }');
+                drawer.style.display = 'block';
+                console.log('Cart drawer opened via direct DOM');
+            }
+        }, 500);
+    }
+
+    // Also add this event listener at the bottom of your script
+    document.addEventListener('open-cart-drawer', function() {
+        console.log('Received open-cart-drawer event');
+        // Try to open cart drawer again
+        openCartDrawer();
     });
 
     // Update cart count in header

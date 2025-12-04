@@ -115,53 +115,6 @@
   </div>
 </div>
 
-<script>
-  // SIMPLE Cart Drawer Open Function
-  function openCartDrawerSimple() {
-      console.log('Opening cart drawer (simple method)');
-      
-      // 1. Show the overlay
-      const overlay = document.querySelector('#CartDrawer > div:first-child');
-      if (overlay) {
-          overlay.style.display = 'block';
-          overlay.style.opacity = '1';
-      }
-      
-      // 2. Show the drawer content
-      const drawerContent = document.querySelector('#CartDrawer > div:last-child');
-      if (drawerContent) {
-          drawerContent.style.display = 'block';
-          drawerContent.style.transform = 'translateX(0)';
-      }
-      
-      // 3. Add a class to body to prevent scrolling
-      document.body.style.overflow = 'hidden';
-      
-      // 4. Make drawer clickable
-      const cartDrawer = document.getElementById('CartDrawer');
-      if (cartDrawer) {
-          cartDrawer.style.pointerEvents = 'auto';
-          cartDrawer.classList.remove('pointer-events-none');
-      }
-  }
-
-  // And add a close function
-  function closeCartDrawer() {
-      const overlay = document.querySelector('#CartDrawer > div:first-child');
-      const drawerContent = document.querySelector('#CartDrawer > div:last-child');
-      const cartDrawer = document.getElementById('CartDrawer');
-      
-      if (overlay) overlay.style.display = 'none';
-      if (drawerContent) drawerContent.style.transform = 'translateX(100%)';
-      if (cartDrawer) {
-          cartDrawer.style.pointerEvents = 'none';
-          cartDrawer.classList.add('pointer-events-none');
-      }
-      
-      document.body.style.overflow = '';
-  }
-</script>
-
 {% schema %}
 {
   "name": "Header",

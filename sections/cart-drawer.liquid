@@ -116,3 +116,34 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Listen for cart open events
+    document.addEventListener('open-cart-drawer', function() {
+        console.log('Cart drawer received open event');
+        
+        // Try to access Alpine.js component
+        const cartDrawer = document.getElementById('CartDrawer');
+        if (cartDrawer && cartDrawer.__x) {
+            cartDrawer.__x.$data.open = true;
+        } else {
+            // Fallback: show the drawer
+            cartDrawer.style.display = 'block';
+            cartDrawer.setAttribute('style', 'display: block !important');
+        }
+    });
+
+    // Also listen for cart updates to refresh content
+    document.addEventListener('cart:updated', function() {
+        // Refresh cart drawer content
+        fetch('/cart?section_id=cart-drawer')
+            .then(response => response.text())
+            .then(html => {
+                const newDrawer = new DOMParser().parseFromString(html, 'text/html');
+                const oldDrawer = document.getElementById('CartDrawer');
+                if (oldDrawer && newDrawer.getElementById('CartDrawer')) {
+                    oldDrawer.innerHTML = newDrawer.getElementById('CartDrawer').innerHTML;
+                }
+            });
+    });
+</script>
