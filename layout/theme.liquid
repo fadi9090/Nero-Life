@@ -58,13 +58,14 @@
   <body class="bg-[#F5F5DC] font-sans font-bold text-white flex flex-col min-h-screen">
     {% section 'announcement-bar' %}
     {% section 'header' %}
+    
+    {% section 'cart-drawer' %}
+    
     <main role="main" class="flex-grow">
       {{ content_for_layout }}
     </main>
     
     {% section 'footer' %}
-
-    {% section 'cart-drawer' %}
 
     <script>
       // Global cart functions
