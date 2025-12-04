@@ -1,8 +1,3 @@
-{% comment %} 
-  SECTION: CART DRAWER / MINICART 
-  This requires Alpine.js or similar library for state (x-show).
-{% endcomment %}
-
 {% if cart.item_count > 0 %}
     {% assign empty_cart_class = '' %}
 {% else %}
@@ -11,12 +6,14 @@
 
 <div x-data="{ open: false }" 
      id="CartDrawer" 
+     x-ref="CartDrawer"
      class="fixed inset-0 z-50 pointer-events-none {{ empty_cart_class }}" 
      aria-modal="true" 
      role="dialog" 
-     aria-label="Shopping Cart">
+     aria-label="Shopping Cart"
+     @keydown.escape.window="open = false">
 
-
+    <!-- Overlay -->
     <div x-show="open" 
          @click="open = false" 
          x-transition:enter="ease-in-out duration-500"
@@ -28,6 +25,7 @@
          class="absolute inset-0 bg-black bg-opacity-50 transition-opacity">
     </div>
 
+    <!-- Cart Drawer Content -->
     <div x-show="open" 
          x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
          x-transition:enter-start="translate-x-full"
@@ -43,10 +41,9 @@
                 <div class="flex items-center justify-between border-b pb-4 mb-4">
                     <h2 class="text-2xl font-bold text-black">Your Bag ({{ cart.item_count }})</h2>
                     <button type="button" 
-                            @click="$refs.CartDrawer.open = true" 
-                            class="cart-icon-btn p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6]">
-                        {% render 'icon-shopping-bag' %}
-                        <span class="cart-count">{{ cart.item_count }}</span>
+                            @click="open = false" 
+                            class="p-2 text-black hover:text-[#0077B6]">
+                        ✕
                     </button>
                 </div>
 
@@ -66,7 +63,6 @@
                                         <div class="flex items-center justify-between text-sm">
                                             <p class="font-bold text-black">{{ item.line_price | money }}</p>
                                             
-                                            {# Simple Quantity Input #}
                                             <input type="number" 
                                                    name="updates[]" 
                                                    id="updates_{{ item.key }}" 
