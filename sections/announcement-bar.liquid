@@ -1,77 +1,471 @@
+{%- liquid
+  assign message_1 = section.settings.message_1 | default: "30% OFF! On all Orders."
+  assign message_2 = section.settings.message_2 | default: "Free Shipping on Orders."
+  assign speed_factor = section.settings.speed_factor | default: 25
+  assign movement_direction = section.settings.movement_direction | default: "normal"
+  assign gap_between_elements = section.settings.gap_between_elements | default: 48
+  assign pause_on_hover = section.settings.pause_on_hover
+-%}
+
 <style>
-    @keyframes scroll-left {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-15%); }
+  .marquee-component {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .marquee-wrapper {
+    display: flex;
+    width: fit-content;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  
+  .marquee-content {
+    display: flex;
+    align-items: center;
+    gap: {{ gap_between_elements }}px;
+  }
+  
+  .marquee-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Animation */
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee-wrapper {
+      animation: marquee-scroll var(--marquee-speed) linear infinite {{ movement_direction }};
     }
-
-    .scrolling-banner {
-        animation: scroll-left 20s linear infinite;
-        white-space: nowrap;
-        display: inline-block;
+    
+    {% if pause_on_hover %}
+    .marquee-component:hover .marquee-wrapper {
+      animation-play-state: paused;
     }
-
-    .banner-container {
-        overflow: hidden;
+    {% endif %}
+  }
+  
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
     }
-
-    /* Pause animation on hover */
-    .scrolling-banner:hover {
-        animation-play-state: paused;
+    100% {
+      transform: translateX(calc(-50% - {{ gap_between_elements | divided_by: 2 }}px));
     }
+  }
+  
+  /* Banner styling */
+  .scrolling-banner {
+    background-color: #FA8072;
+    color: #F5F5DC;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    {% if section.settings.padding_top != blank %}
+    padding-top: {{ section.settings.padding_top }}px;
+    {% endif %}
+    {% if section.settings.padding_bottom != blank %}
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    {% endif %}
+  }
+  
+  .banner-message {
+    font-weight: bold;
+    padding: 8px 0;
+  }
+  
+  .message-primary {
+    font-size: 0.875rem;
+  }
+  
+  .message-secondary {
+    font-size: 0.75rem;
+  }
+  
+  @media (min-width: 768px) {
+    .message-primary {
+      font-size: 1rem;
+    }
+    
+    .message-secondary {
+      font-size: 0.875rem;
+    }
+  }
+  
+  /* Accessibility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 </style>
 
-<div class="bg-[#FA8072] text-[#F5F5DC] overflow-hidden font-sans sticky top-0 z-50">
-    <div class="banner-container">
-        <div class="scrolling-banner">
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-            
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
+<div class="scrolling-banner" role="marquee" aria-live="polite">
+  <span class="sr-only">Announcement: {{ message_1 }}. {{ message_2 }}</span>
+  
+  <marquee-component 
+    class="marquee-component"
+    data-speed-factor="{{ speed_factor }}"
+    data-movement-direction="{{ movement_direction }}"
+  >
+    <div class="marquee-wrapper" ref="wrapper">
+      <div class="marquee-content" ref="content">
+        <div class="marquee-repeated-items" ref="marqueeItems[]">
+          {%- for i in (1..4) -%}
+            <div class="marquee-item">
+              <span class="banner-message message-primary">✨ {{ message_1 }}</span>
+              <span class="banner-message message-secondary">🚚 {{ message_2 }}</span>
+            </div>
+          {%- endfor -%}
         </div>
+      </div>
     </div>
+  </marquee-component>
 </div>
+
+<script type="module">
+class MarqueeComponent extends HTMLElement {
+  static get observedAttributes() {
+    return ['data-speed-factor', 'data-movement-direction'];
+  }
+  
+  constructor() {
+    super();
+    this._refs = {};
+    this._animation = null;
+    this._resizeObserver = null;
+    this._intersectionObserver = null;
+    this._speedFactor = 25;
+    this._direction = 'normal';
+    this._isVisible = true;
+  }
+  
+  connectedCallback() {
+    this._speedFactor = Number(this.dataset.speedFactor) || 25;
+    this._direction = this.dataset.movementDirection || 'normal';
+    
+    this._initRefs();
+    this._setupMarquee();
+    this._setupObservers();
+    this._setupEventListeners();
+    
+    // Initial animation
+    this._restartAnimation();
+  }
+  
+  disconnectedCallback() {
+    this._cleanupObservers();
+    this._cleanupEventListeners();
+    if (this._animation) {
+      this._animation.cancel();
+    }
+  }
+  
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) return;
+    
+    switch(name) {
+      case 'data-speed-factor':
+        this._speedFactor = Number(newValue) || 25;
+        this._updateSpeed();
+        break;
+      case 'data-movement-direction':
+        this._direction = newValue || 'normal';
+        this._restartAnimation();
+        break;
+    }
+  }
+  
+  // Private methods
+  _initRefs() {
+    const refElements = this.querySelectorAll('[ref]');
+    
+    refElements.forEach(element => {
+      const refName = element.getAttribute('ref');
+      
+      if (refName.endsWith('[]')) {
+        const name = refName.slice(0, -2);
+        if (!this._refs[name]) this._refs[name] = [];
+        this._refs[name].push(element);
+      } else {
+        this._refs[refName] = element;
+      }
+    });
+  }
+  
+  _setupMarquee() {
+    if (!this._refs.marqueeItems || this._refs.marqueeItems.length === 0) return;
+    
+    this._addRepeatedItems();
+    this._duplicateContent();
+    this._updateSpeed();
+  }
+  
+  _setupObservers() {
+    // Resize Observer
+    this._resizeObserver = new ResizeObserver(this._handleResize.bind(this));
+    this._resizeObserver.observe(this);
+    
+    // Intersection Observer for visibility
+    this._intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        this._isVisible = entries[0].isIntersecting;
+        if (this._isVisible) {
+          this._restartAnimation();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    this._intersectionObserver.observe(this);
+  }
+  
+  _setupEventListeners() {
+    this._handleResize = this._debounce(this._handleResize.bind(this), 250);
+    window.addEventListener('resize', this._handleResize);
+  }
+  
+  _cleanupObservers() {
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
+    }
+    if (this._intersectionObserver) {
+      this._intersectionObserver.disconnect();
+      this._intersectionObserver = null;
+    }
+  }
+  
+  _cleanupEventListeners() {
+    window.removeEventListener('resize', this._handleResize);
+  }
+  
+  _debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+  
+  _handleResize() {
+    const marqueeItems = this._refs.marqueeItems;
+    if (!marqueeItems || marqueeItems.length === 0) return;
+    
+    const newNumberOfCopies = this._calculateNumberOfCopies();
+    const currentNumberOfCopies = marqueeItems.length;
+    
+    if (newNumberOfCopies > currentNumberOfCopies) {
+      this._addRepeatedItems(newNumberOfCopies - currentNumberOfCopies);
+    } else if (newNumberOfCopies < currentNumberOfCopies) {
+      this._removeRepeatedItems(currentNumberOfCopies - newNumberOfCopies);
+    }
+    
+    this._duplicateContent();
+    this._updateSpeed();
+    this._restartAnimation();
+  }
+  
+  _calculateNumberOfCopies() {
+    const marqueeItems = this._refs.marqueeItems;
+    const marqueeWidth = this.offsetWidth;
+    const marqueeItemWidth = marqueeItems[0]?.offsetWidth || 1;
+    
+    return marqueeItemWidth === 0 ? 2 : Math.max(2, Math.ceil(marqueeWidth / marqueeItemWidth));
+  }
+  
+  _addRepeatedItems(numberOfCopies = this._calculateNumberOfCopies()) {
+    const content = this._refs.content;
+    const marqueeItems = this._refs.marqueeItems;
+    
+    if (!marqueeItems || marqueeItems.length === 0) return;
+    
+    const template = marqueeItems[0];
+    
+    for (let i = 0; i < numberOfCopies; i++) {
+      const clone = template.cloneNode(true);
+      content.querySelector('.marquee-repeated-items').appendChild(clone);
+    }
+    
+    // Update refs
+    this._initRefs();
+  }
+  
+  _removeRepeatedItems(numberToRemove) {
+    const content = this._refs.content;
+    const itemsContainer = content.querySelector('.marquee-repeated-items');
+    const children = Array.from(itemsContainer.children);
+    
+    const itemsToRemove = Math.min(numberToRemove, children.length - 1);
+    
+    for (let i = 0; i < itemsToRemove; i++) {
+      itemsContainer.lastElementChild?.remove();
+    }
+    
+    // Update refs
+    this._initRefs();
+  }
+  
+  _duplicateContent() {
+    const wrapper = this._refs.wrapper;
+    const content = this._refs.content;
+    const clonedContent = wrapper.lastElementChild;
+    
+    if (clonedContent !== content && clonedContent?.classList.contains('marquee-content-clone')) {
+      clonedContent.remove();
+    }
+    
+    const clone = content.cloneNode(true);
+    clone.classList.add('marquee-content-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    
+    wrapper.appendChild(clone);
+  }
+  
+  _calculateSpeed() {
+    const marqueeItems = this._refs.marqueeItems;
+    const marqueeWidth = this.offsetWidth;
+    const marqueeItemWidth = marqueeItems[0]?.offsetWidth || 1;
+    
+    const count = marqueeItemWidth === 0 ? 1 : Math.ceil(marqueeWidth / marqueeItemWidth);
+    const speed = Math.sqrt(count) * this._speedFactor;
+    
+    return Math.max(10, Math.min(speed, 100)); // Clamp between 10-100 seconds
+  }
+  
+  _updateSpeed() {
+    const speed = this._calculateSpeed();
+    this.style.setProperty('--marquee-speed', `${speed}s`);
+  }
+  
+  _restartAnimation() {
+    if (!this._isVisible) return;
+    
+    const wrapper = this._refs.wrapper;
+    if (!wrapper) return;
+    
+    const animations = wrapper.getAnimations();
+    
+    if (animations.length > 0) {
+      requestAnimationFrame(() => {
+        animations.forEach(animation => {
+          animation.cancel();
+          animation.play();
+        });
+      });
+    }
+  }
+  
+  get clonedContent() {
+    const wrapper = this._refs.wrapper;
+    const content = this._refs.content;
+    const lastChild = wrapper.lastElementChild;
+    
+    return content !== lastChild ? lastChild : null;
+  }
+}
+
+// Register the custom element
+if (!customElements.get('marquee-component')) {
+  customElements.define('marquee-component', MarqueeComponent);
+}
+</script>
 
 {% schema %}
 {
-  "name": "Scrolling Banner",
+  "name": "Enhanced Scrolling Banner",
   "settings": [
     {
       "type": "text",
       "id": "message_1",
-      "label": "First Banner Message",
+      "label": "Primary Message",
       "default": "30% OFF! On all Orders."
     },
     {
       "type": "text",
       "id": "message_2",
-      "label": "Second Banner Message",
+      "label": "Secondary Message",
       "default": "Free Shipping on Orders."
+    },
+    {
+      "type": "range",
+      "id": "speed_factor",
+      "label": "Animation Speed",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 25,
+      "info": "Higher values = slower animation"
+    },
+    {
+      "type": "select",
+      "id": "movement_direction",
+      "label": "Movement Direction",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Left to Right"
+        },
+        {
+          "value": "reverse",
+          "label": "Right to Left"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "gap_between_elements",
+      "label": "Gap Between Items",
+      "min": 8,
+      "max": 100,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause Animation on Hover",
+      "default": true
     }
   ],
   "presets": [
     {
-      "name": "Scrolling Banner",
+      "name": "Enhanced Scrolling Banner",
       "category": "Promotional"
     }
   ]
