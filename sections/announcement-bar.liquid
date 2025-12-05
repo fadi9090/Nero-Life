@@ -35,10 +35,11 @@
     gap: 8px;
   }
   
-  /* Animation */
+  /* Animation - only show one continuous line */
   @media (prefers-reduced-motion: no-preference) {
     .marquee-wrapper {
-      animation: marquee-scroll var(--marquee-speed) linear infinite {{ movement_direction }};
+      animation: marquee-scroll var(--marquee-speed) linear infinite;
+      animation-direction: {{ movement_direction }};
     }
     
     {% if pause_on_hover %}
@@ -57,7 +58,7 @@
     }
   }
   
-  /* Banner styling */
+  /* Banner styling - single line */
   .scrolling-banner {
     background-color: #FA8072;
     color: #F5F5DC;
@@ -65,17 +66,14 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    {% if section.settings.padding_top != blank %}
-    padding-top: {{ section.settings.padding_top }}px;
-    {% endif %}
-    {% if section.settings.padding_bottom != blank %}
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    {% endif %}
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;
+    overflow: hidden;
   }
   
   .banner-message {
     font-weight: bold;
-    padding: 8px 0;
+    padding: 0;
+    line-height: 1.2;
   }
   
   .message-primary {
@@ -96,7 +94,13 @@
     }
   }
   
-  /* Accessibility */
+  /* Hide duplicate content visually but keep for screen readers */
+  .marquee-content-clone {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
   .sr-only {
     position: absolute;
     width: 1px;
@@ -120,13 +124,9 @@
   >
     <div class="marquee-wrapper" ref="wrapper">
       <div class="marquee-content" ref="content">
-        <div class="marquee-repeated-items" ref="marqueeItems[]">
-          {%- for i in (1..4) -%}
-            <div class="marquee-item">
-              <span class="banner-message message-primary">✨ {{ message_1 }}</span>
-              <span class="banner-message message-secondary">🚚 {{ message_2 }}</span>
-            </div>
-          {%- endfor -%}
+        <div class="marquee-item">
+          <span class="banner-message message-primary">✨ {{ message_1 }}</span>
+          <span class="banner-message message-secondary">🚚 {{ message_2 }}</span>
         </div>
       </div>
     </div>
@@ -142,12 +142,12 @@ class MarqueeComponent extends HTMLElement {
   constructor() {
     super();
     this._refs = {};
-    this._animation = null;
     this._resizeObserver = null;
     this._intersectionObserver = null;
     this._speedFactor = 25;
     this._direction = 'normal';
     this._isVisible = true;
+    this._clonesAdded = 0;
   }
   
   connectedCallback() {
@@ -157,18 +157,14 @@ class MarqueeComponent extends HTMLElement {
     this._initRefs();
     this._setupMarquee();
     this._setupObservers();
-    this._setupEventListeners();
     
     // Initial animation
+    this._updateSpeed();
     this._restartAnimation();
   }
   
   disconnectedCallback() {
     this._cleanupObservers();
-    this._cleanupEventListeners();
-    if (this._animation) {
-      this._animation.cancel();
-    }
   }
   
   attributeChangedCallback(name, oldValue, newValue) {
@@ -181,7 +177,7 @@ class MarqueeComponent extends HTMLElement {
         break;
       case 'data-movement-direction':
         this._direction = newValue || 'normal';
-        this._restartAnimation();
+        this.style.setProperty('--marquee-direction', this._direction);
         break;
     }
   }
@@ -204,10 +200,13 @@ class MarqueeComponent extends HTMLElement {
   }
   
   _setupMarquee() {
-    if (!this._refs.marqueeItems || this._refs.marqueeItems.length === 0) return;
+    if (!this._refs.content) return;
     
-    this._addRepeatedItems();
-    this._duplicateContent();
+    // Clear any existing clones
+    this._removeAllClones();
+    
+    // Add just enough clones for a seamless loop (usually 2)
+    this._addClonesForSeamlessLoop();
     this._updateSpeed();
   }
   
@@ -229,11 +228,6 @@ class MarqueeComponent extends HTMLElement {
     this._intersectionObserver.observe(this);
   }
   
-  _setupEventListeners() {
-    this._handleResize = this._debounce(this._handleResize.bind(this), 250);
-    window.addEventListener('resize', this._handleResize);
-  }
-  
   _cleanupObservers() {
     if (this._resizeObserver) {
       this._resizeObserver.disconnect();
@@ -245,105 +239,71 @@ class MarqueeComponent extends HTMLElement {
     }
   }
   
-  _cleanupEventListeners() {
-    window.removeEventListener('resize', this._handleResize);
-  }
-  
-  _debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-  
   _handleResize() {
-    const marqueeItems = this._refs.marqueeItems;
-    if (!marqueeItems || marqueeItems.length === 0) return;
-    
-    const newNumberOfCopies = this._calculateNumberOfCopies();
-    const currentNumberOfCopies = marqueeItems.length;
-    
-    if (newNumberOfCopies > currentNumberOfCopies) {
-      this._addRepeatedItems(newNumberOfCopies - currentNumberOfCopies);
-    } else if (newNumberOfCopies < currentNumberOfCopies) {
-      this._removeRepeatedItems(currentNumberOfCopies - newNumberOfCopies);
-    }
-    
-    this._duplicateContent();
+    this._removeAllClones();
+    this._addClonesForSeamlessLoop();
     this._updateSpeed();
     this._restartAnimation();
   }
   
-  _calculateNumberOfCopies() {
-    const marqueeItems = this._refs.marqueeItems;
-    const marqueeWidth = this.offsetWidth;
-    const marqueeItemWidth = marqueeItems[0]?.offsetWidth || 1;
-    
-    return marqueeItemWidth === 0 ? 2 : Math.max(2, Math.ceil(marqueeWidth / marqueeItemWidth));
-  }
-  
-  _addRepeatedItems(numberOfCopies = this._calculateNumberOfCopies()) {
-    const content = this._refs.content;
-    const marqueeItems = this._refs.marqueeItems;
-    
-    if (!marqueeItems || marqueeItems.length === 0) return;
-    
-    const template = marqueeItems[0];
-    
-    for (let i = 0; i < numberOfCopies; i++) {
-      const clone = template.cloneNode(true);
-      content.querySelector('.marquee-repeated-items').appendChild(clone);
-    }
-    
-    // Update refs
-    this._initRefs();
-  }
-  
-  _removeRepeatedItems(numberToRemove) {
-    const content = this._refs.content;
-    const itemsContainer = content.querySelector('.marquee-repeated-items');
-    const children = Array.from(itemsContainer.children);
-    
-    const itemsToRemove = Math.min(numberToRemove, children.length - 1);
-    
-    for (let i = 0; i < itemsToRemove; i++) {
-      itemsContainer.lastElementChild?.remove();
-    }
-    
-    // Update refs
-    this._initRefs();
-  }
-  
-  _duplicateContent() {
+  _addClonesForSeamlessLoop() {
     const wrapper = this._refs.wrapper;
     const content = this._refs.content;
-    const clonedContent = wrapper.lastElementChild;
+    const originalItem = content.querySelector('.marquee-item');
     
-    if (clonedContent !== content && clonedContent?.classList.contains('marquee-content-clone')) {
-      clonedContent.remove();
+    if (!originalItem) return;
+    
+    // Calculate how many clones we need
+    const containerWidth = this.offsetWidth;
+    const itemWidth = originalItem.offsetWidth;
+    
+    if (itemWidth === 0) return;
+    
+    // We need at least 2 copies for a seamless loop
+    const neededClones = Math.max(2, Math.ceil(containerWidth / itemWidth) + 1);
+    
+    // Add clones to the wrapper (not inside content)
+    for (let i = 0; i < neededClones; i++) {
+      const clone = originalItem.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      wrapper.appendChild(clone);
     }
     
-    const clone = content.cloneNode(true);
-    clone.classList.add('marquee-content-clone');
-    clone.setAttribute('aria-hidden', 'true');
+    this._clonesAdded = neededClones;
+  }
+  
+  _removeAllClones() {
+    const wrapper = this._refs.wrapper;
+    const content = this._refs.content;
     
-    wrapper.appendChild(clone);
+    if (!wrapper || !content) return;
+    
+    // Remove all elements except the original content
+    const children = Array.from(wrapper.children);
+    
+    for (const child of children) {
+      if (child !== content && child.classList.contains('marquee-item')) {
+        child.remove();
+      }
+    }
+    
+    this._clonesAdded = 0;
   }
   
   _calculateSpeed() {
-    const marqueeItems = this._refs.marqueeItems;
-    const marqueeWidth = this.offsetWidth;
-    const marqueeItemWidth = marqueeItems[0]?.offsetWidth || 1;
+    const content = this._refs.content;
+    const originalItem = content?.querySelector('.marquee-item');
     
-    const count = marqueeItemWidth === 0 ? 1 : Math.ceil(marqueeWidth / marqueeItemWidth);
-    const speed = Math.sqrt(count) * this._speedFactor;
+    if (!originalItem) return 20;
     
-    return Math.max(10, Math.min(speed, 100)); // Clamp between 10-100 seconds
+    const itemWidth = originalItem.offsetWidth || 1;
+    const containerWidth = this.offsetWidth;
+    
+    // Calculate speed based on how many items would fit
+    const itemsThatFit = containerWidth / itemWidth;
+    const speed = Math.max(10, Math.min(itemsThatFit * this._speedFactor, 60));
+    
+    return speed;
   }
   
   _updateSpeed() {
@@ -368,14 +328,6 @@ class MarqueeComponent extends HTMLElement {
       });
     }
   }
-  
-  get clonedContent() {
-    const wrapper = this._refs.wrapper;
-    const content = this._refs.content;
-    const lastChild = wrapper.lastElementChild;
-    
-    return content !== lastChild ? lastChild : null;
-  }
 }
 
 // Register the custom element
@@ -386,7 +338,7 @@ if (!customElements.get('marquee-component')) {
 
 {% schema %}
 {
-  "name": "Enhanced Scrolling Banner",
+  "name": "Single Line Scrolling Banner",
   "settings": [
     {
       "type": "text",
@@ -405,7 +357,7 @@ if (!customElements.get('marquee-component')) {
       "id": "speed_factor",
       "label": "Animation Speed",
       "min": 10,
-      "max": 50,
+      "max": 60,
       "step": 1,
       "default": 25,
       "info": "Higher values = slower animation"
@@ -429,18 +381,18 @@ if (!customElements.get('marquee-component')) {
     {
       "type": "range",
       "id": "gap_between_elements",
-      "label": "Gap Between Items",
+      "label": "Gap Between Messages",
       "min": 8,
       "max": 100,
       "step": 4,
-      "default": 48,
+      "default": 24,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "padding_top",
       "label": "Top Padding",
-      "min": 0,
+      "min": 4,
       "max": 32,
       "step": 2,
       "default": 8,
@@ -450,7 +402,7 @@ if (!customElements.get('marquee-component')) {
       "type": "range",
       "id": "padding_bottom",
       "label": "Bottom Padding",
-      "min": 0,
+      "min": 4,
       "max": 32,
       "step": 2,
       "default": 8,
@@ -465,8 +417,14 @@ if (!customElements.get('marquee-component')) {
   ],
   "presets": [
     {
-      "name": "Enhanced Scrolling Banner",
-      "category": "Promotional"
+      "name": "Single Line Scrolling Banner",
+      "category": "Promotional",
+      "settings": {
+        "message_1": "30% OFF! On all Orders.",
+        "message_2": "Free Shipping on Orders.",
+        "speed_factor": 25,
+        "gap_between_elements": 24
+      }
     }
   ]
 }
