@@ -1,430 +1,78 @@
-{%- liquid
-  assign message_1 = section.settings.message_1 | default: "30% OFF! On all Orders."
-  assign message_2 = section.settings.message_2 | default: "Free Shipping on Orders."
-  assign speed_factor = section.settings.speed_factor | default: 25
-  assign movement_direction = section.settings.movement_direction | default: "normal"
-  assign gap_between_elements = section.settings.gap_between_elements | default: 48
-  assign pause_on_hover = section.settings.pause_on_hover
--%}
-
 <style>
-  .marquee-component {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .marquee-wrapper {
-    display: flex;
-    width: fit-content;
-    white-space: nowrap;
-    will-change: transform;
-  }
-  
-  .marquee-content {
-    display: flex;
-    align-items: center;
-    gap: {{ gap_between_elements }}px;
-  }
-  
-  .marquee-item {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  /* Animation - only show one continuous line */
-  @media (prefers-reduced-motion: no-preference) {
-    .marquee-wrapper {
-      animation: marquee-scroll var(--marquee-speed) linear infinite;
-      animation-direction: {{ movement_direction }};
+    @keyframes scroll-left {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-15%); }
     }
-    
-    {% if pause_on_hover %}
-    .marquee-component:hover .marquee-wrapper {
-      animation-play-state: paused;
+
+    .scrolling-banner {
+        animation: scroll-left 20s linear infinite;
+        white-space: nowrap;
+        display: inline-block;
     }
-    {% endif %}
-  }
-  
-  @keyframes marquee-scroll {
-    0% {
-      transform: translateX(0);
+
+    .banner-container {
+        overflow: hidden;
     }
-    100% {
-      transform: translateX(calc(-50% - {{ gap_between_elements | divided_by: 2 }}px));
+
+    /* Pause animation on hover */
+    .scrolling-banner:hover {
+        animation-play-state: paused;
     }
-  }
-  
-  /* Banner styling - single line */
-  .scrolling-banner {
-    background-color: #FA8072;
-    color: #F5F5DC;
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px 0;
-    overflow: hidden;
-  }
-  
-  .banner-message {
-    font-weight: bold;
-    padding: 0;
-    line-height: 1.2;
-  }
-  
-  .message-primary {
-    font-size: 0.875rem;
-  }
-  
-  .message-secondary {
-    font-size: 0.75rem;
-  }
-  
-  @media (min-width: 768px) {
-    .message-primary {
-      font-size: 1rem;
-    }
-    
-    .message-secondary {
-      font-size: 0.875rem;
-    }
-  }
-  
-  /* Hide duplicate content visually but keep for screen readers */
-  .marquee-content-clone {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
 </style>
 
-<div class="scrolling-banner" role="marquee" aria-live="polite">
-  <span class="sr-only">Announcement: {{ message_1 }}. {{ message_2 }}</span>
-  
-  <marquee-component 
-    class="marquee-component"
-    data-speed-factor="{{ speed_factor }}"
-    data-movement-direction="{{ movement_direction }}"
-  >
-    <div class="marquee-wrapper" ref="wrapper">
-      <div class="marquee-content" ref="content">
-        <div class="marquee-item">
-          <span class="banner-message message-primary">✨ {{ message_1 }}</span>
-          <span class="banner-message message-secondary">🚚 {{ message_2 }}</span>
+<div class="bg-[#FA8072] text-[#F5F5DC] overflow-hidden font-sans sticky top-0 z-50">
+    <div class="banner-container">
+        <div class="scrolling-banner">
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+            
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
+            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
+            </span>
+            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
+            </span>
         </div>
-      </div>
     </div>
-  </marquee-component>
 </div>
-
-<script type="module">
-class MarqueeComponent extends HTMLElement {
-  static get observedAttributes() {
-    return ['data-speed-factor', 'data-movement-direction'];
-  }
-  
-  constructor() {
-    super();
-    this._refs = {};
-    this._resizeObserver = null;
-    this._intersectionObserver = null;
-    this._speedFactor = 25;
-    this._direction = 'normal';
-    this._isVisible = true;
-    this._clonesAdded = 0;
-  }
-  
-  connectedCallback() {
-    this._speedFactor = Number(this.dataset.speedFactor) || 25;
-    this._direction = this.dataset.movementDirection || 'normal';
-    
-    this._initRefs();
-    this._setupMarquee();
-    this._setupObservers();
-    
-    // Initial animation
-    this._updateSpeed();
-    this._restartAnimation();
-  }
-  
-  disconnectedCallback() {
-    this._cleanupObservers();
-  }
-  
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue) return;
-    
-    switch(name) {
-      case 'data-speed-factor':
-        this._speedFactor = Number(newValue) || 25;
-        this._updateSpeed();
-        break;
-      case 'data-movement-direction':
-        this._direction = newValue || 'normal';
-        this.style.setProperty('--marquee-direction', this._direction);
-        break;
-    }
-  }
-  
-  // Private methods
-  _initRefs() {
-    const refElements = this.querySelectorAll('[ref]');
-    
-    refElements.forEach(element => {
-      const refName = element.getAttribute('ref');
-      
-      if (refName.endsWith('[]')) {
-        const name = refName.slice(0, -2);
-        if (!this._refs[name]) this._refs[name] = [];
-        this._refs[name].push(element);
-      } else {
-        this._refs[refName] = element;
-      }
-    });
-  }
-  
-  _setupMarquee() {
-    if (!this._refs.content) return;
-    
-    // Clear any existing clones
-    this._removeAllClones();
-    
-    // Add just enough clones for a seamless loop (usually 2)
-    this._addClonesForSeamlessLoop();
-    this._updateSpeed();
-  }
-  
-  _setupObservers() {
-    // Resize Observer
-    this._resizeObserver = new ResizeObserver(this._handleResize.bind(this));
-    this._resizeObserver.observe(this);
-    
-    // Intersection Observer for visibility
-    this._intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        this._isVisible = entries[0].isIntersecting;
-        if (this._isVisible) {
-          this._restartAnimation();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    this._intersectionObserver.observe(this);
-  }
-  
-  _cleanupObservers() {
-    if (this._resizeObserver) {
-      this._resizeObserver.disconnect();
-      this._resizeObserver = null;
-    }
-    if (this._intersectionObserver) {
-      this._intersectionObserver.disconnect();
-      this._intersectionObserver = null;
-    }
-  }
-  
-  _handleResize() {
-    this._removeAllClones();
-    this._addClonesForSeamlessLoop();
-    this._updateSpeed();
-    this._restartAnimation();
-  }
-  
-  _addClonesForSeamlessLoop() {
-    const wrapper = this._refs.wrapper;
-    const content = this._refs.content;
-    const originalItem = content.querySelector('.marquee-item');
-    
-    if (!originalItem) return;
-    
-    // Calculate how many clones we need
-    const containerWidth = this.offsetWidth;
-    const itemWidth = originalItem.offsetWidth;
-    
-    if (itemWidth === 0) return;
-    
-    // We need at least 2 copies for a seamless loop
-    const neededClones = Math.max(2, Math.ceil(containerWidth / itemWidth) + 1);
-    
-    // Add clones to the wrapper (not inside content)
-    for (let i = 0; i < neededClones; i++) {
-      const clone = originalItem.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
-      wrapper.appendChild(clone);
-    }
-    
-    this._clonesAdded = neededClones;
-  }
-  
-  _removeAllClones() {
-    const wrapper = this._refs.wrapper;
-    const content = this._refs.content;
-    
-    if (!wrapper || !content) return;
-    
-    // Remove all elements except the original content
-    const children = Array.from(wrapper.children);
-    
-    for (const child of children) {
-      if (child !== content && child.classList.contains('marquee-item')) {
-        child.remove();
-      }
-    }
-    
-    this._clonesAdded = 0;
-  }
-  
-  _calculateSpeed() {
-    const content = this._refs.content;
-    const originalItem = content?.querySelector('.marquee-item');
-    
-    if (!originalItem) return 20;
-    
-    const itemWidth = originalItem.offsetWidth || 1;
-    const containerWidth = this.offsetWidth;
-    
-    // Calculate speed based on how many items would fit
-    const itemsThatFit = containerWidth / itemWidth;
-    const speed = Math.max(10, Math.min(itemsThatFit * this._speedFactor, 60));
-    
-    return speed;
-  }
-  
-  _updateSpeed() {
-    const speed = this._calculateSpeed();
-    this.style.setProperty('--marquee-speed', `${speed}s`);
-  }
-  
-  _restartAnimation() {
-    if (!this._isVisible) return;
-    
-    const wrapper = this._refs.wrapper;
-    if (!wrapper) return;
-    
-    const animations = wrapper.getAnimations();
-    
-    if (animations.length > 0) {
-      requestAnimationFrame(() => {
-        animations.forEach(animation => {
-          animation.cancel();
-          animation.play();
-        });
-      });
-    }
-  }
-}
-
-// Register the custom element
-if (!customElements.get('marquee-component')) {
-  customElements.define('marquee-component', MarqueeComponent);
-}
-</script>
 
 {% schema %}
 {
-  "name": "Single Line Scrolling Banner",
+  "name": "Scrolling Banner",
   "settings": [
     {
       "type": "text",
       "id": "message_1",
-      "label": "Primary Message",
+      "label": "First Banner Message",
       "default": "30% OFF! On all Orders."
     },
     {
       "type": "text",
       "id": "message_2",
-      "label": "Secondary Message",
+      "label": "Second Banner Message",
       "default": "Free Shipping on Orders."
-    },
-    {
-      "type": "range",
-      "id": "speed_factor",
-      "label": "Animation Speed",
-      "min": 10,
-      "max": 60,
-      "step": 1,
-      "default": 25,
-      "info": "Higher values = slower animation"
-    },
-    {
-      "type": "select",
-      "id": "movement_direction",
-      "label": "Movement Direction",
-      "options": [
-        {
-          "value": "normal",
-          "label": "Left to Right"
-        },
-        {
-          "value": "reverse",
-          "label": "Right to Left"
-        }
-      ],
-      "default": "normal"
-    },
-    {
-      "type": "range",
-      "id": "gap_between_elements",
-      "label": "Gap Between Messages",
-      "min": 8,
-      "max": 100,
-      "step": 4,
-      "default": 24,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top Padding",
-      "min": 4,
-      "max": 32,
-      "step": 2,
-      "default": 8,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom Padding",
-      "min": 4,
-      "max": 32,
-      "step": 2,
-      "default": 8,
-      "unit": "px"
-    },
-    {
-      "type": "checkbox",
-      "id": "pause_on_hover",
-      "label": "Pause Animation on Hover",
-      "default": true
     }
   ],
   "presets": [
     {
-      "name": "Single Line Scrolling Banner",
-      "category": "Promotional",
-      "settings": {
-        "message_1": "30% OFF! On all Orders.",
-        "message_2": "Free Shipping on Orders.",
-        "speed_factor": 25,
-        "gap_between_elements": 24
-      }
+      "name": "Scrolling Banner",
+      "category": "Promotional"
     }
   ]
 }
