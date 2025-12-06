@@ -9,17 +9,35 @@
     overflow: hidden;
     border-radius: 1.5rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+  }
+  
+  .image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
   }
   
   .before-image-overlay, .after-image-overlay {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
     height: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+  }
+  
+  .before-image-overlay {
+    width: 50%;
+    z-index: 1;
+    background-color: #f0f0f0; /* Fallback color */
+  }
+  
+  .after-image-overlay {
+    width: 100%;
+    z-index: 0;
+    background-color: #f5f5f5; /* Fallback color */
   }
   
   .slider-divider {
@@ -82,9 +100,10 @@
     font-size: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 35;
-    pointer-events: none;
+    pointer-events: all;
     opacity: 0;
     transition: opacity 0.3s ease;
+    cursor: pointer;
   }
   
   .arrow-left {
@@ -108,7 +127,7 @@
     z-index: 30;
     display: flex;
     gap: 8px;
-    pointer-events: none;
+    pointer-events: all;
   }
   
   .progress-dot {
@@ -117,6 +136,7 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
+    cursor: pointer;
   }
   
   .progress-dot.active {
@@ -133,6 +153,15 @@
     70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
     100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
   }
+  
+  /* Image loading states */
+  .image-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 16px;
+  }
 </style>
 
 <div class="mb-12">
@@ -140,45 +169,63 @@
   <div class="comparison-slider-container h-[500px] md:h-[600px] cursor-ew-resize" 
        id="ledComparisonContainer">
     
-    <!-- Before Image - CORRECTED LIQUID SYNTAX -->
-    <div class="before-image-overlay rounded-2xl" 
-         style="background-image: url('{{ 'before.jpg' | asset_url }}');"
-         id="ledBeforeImage"></div>
-    
-    <!-- After Image - CORRECTED LIQUID SYNTAX -->
-    <div class="after-image-overlay rounded-2xl"
-         style="background-image: url('{{ 'after.png' | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
-         id="ledAfterImage"></div>
-    
-    <!-- Slider Divider Line -->
-    <div class="slider-divider" id="ledSliderDivider"></div>
-    
-    <!-- Slider Handle -->
-    <div class="slider-handle" id="ledSliderHandle">
-      <div class="slider-circle pulse-glow">
-        <div class="flex">
-          <i class="fas fa-chevron-left text-sky-600 text-sm"></i>
-          <i class="fas fa-grip-lines-vertical mx-1 text-sky-600"></i>
-          <i class="fas fa-chevron-right text-sky-600 text-sm"></i>
+    <div class="image-wrapper">
+      <!-- After Image (Full background) -->
+      <div class="after-image-overlay rounded-2xl"
+           style="background-image: url('{{ 'after.png' | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
+           id="ledAfterImage">
+        <!-- Fallback if image doesn't load -->
+        <div class="image-loading hidden h-full items-center justify-center">
+          <div class="text-center">
+            <i class="fas fa-image text-4xl text-gray-300 mb-2"></i>
+            <p class="text-gray-500">After 8 Weeks</p>
+          </div>
         </div>
       </div>
-    </div>
-    
-    <!-- Arrow Controls -->
-    <div class="arrow-left">
-      <i class="fas fa-chevron-left"></i>
-    </div>
-    <div class="arrow-right">
-      <i class="fas fa-chevron-right"></i>
-    </div>
-    
-    <!-- Progress Dots -->
-    <div class="progress-dots" id="ledProgressDots">
-      <div class="progress-dot active" data-pos="0"></div>
-      <div class="progress-dot" data-pos="25"></div>
-      <div class="progress-dot" data-pos="50"></div>
-      <div class="progress-dot" data-pos="75"></div>
-      <div class="progress-dot" data-pos="100"></div>
+      
+      <!-- Before Image (Overlay that slides) -->
+      <div class="before-image-overlay rounded-2xl" 
+           style="background-image: url('{{ 'before.jpg' | asset_url }}');"
+           id="ledBeforeImage">
+        <!-- Fallback if image doesn't load -->
+        <div class="image-loading hidden h-full items-center justify-center">
+          <div class="text-center">
+            <i class="fas fa-image text-4xl text-gray-300 mb-2"></i>
+            <p class="text-gray-500">Before Treatment</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slider Divider Line -->
+      <div class="slider-divider" id="ledSliderDivider"></div>
+      
+      <!-- Slider Handle -->
+      <div class="slider-handle" id="ledSliderHandle">
+        <div class="slider-circle pulse-glow">
+          <div class="flex">
+            <i class="fas fa-chevron-left text-sky-600 text-sm"></i>
+            <i class="fas fa-grip-lines-vertical mx-1 text-sky-600"></i>
+            <i class="fas fa-chevron-right text-sky-600 text-sm"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Arrow Controls -->
+      <div class="arrow-left" id="ledArrowLeft">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="arrow-right" id="ledArrowRight">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <!-- Progress Dots -->
+      <div class="progress-dots" id="ledProgressDots">
+        <div class="progress-dot active" data-pos="0"></div>
+        <div class="progress-dot" data-pos="25"></div>
+        <div class="progress-dot" data-pos="50"></div>
+        <div class="progress-dot" data-pos="75"></div>
+        <div class="progress-dot" data-pos="100"></div>
+      </div>
     </div>
   </div>
   
@@ -195,183 +242,225 @@
   </div>
 </div>
 
+<!-- Font Awesome for icons (if not already included) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <!-- JavaScript for the slider -->
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const beforeImage = document.getElementById('ledBeforeImage');
-    const sliderDivider = document.getElementById('ledSliderDivider');
-    const sliderHandle = document.getElementById('ledSliderHandle');
-    const comparisonContainer = document.getElementById('ledComparisonContainer');
-    const progressDots = document.getElementById('ledProgressDots').children;
+document.addEventListener('DOMContentLoaded', function() {
+  const beforeImage = document.getElementById('ledBeforeImage');
+  const afterImage = document.getElementById('ledAfterImage');
+  const sliderDivider = document.getElementById('ledSliderDivider');
+  const sliderHandle = document.getElementById('ledSliderHandle');
+  const comparisonContainer = document.getElementById('ledComparisonContainer');
+  const progressDots = document.getElementById('ledProgressDots').children;
+  const arrowLeft = document.getElementById('ledArrowLeft');
+  const arrowRight = document.getElementById('ledArrowRight');
+  
+  let isDragging = false;
+  let currentPosition = 50;
+  
+  // Debug: Check if images are loading
+  console.log('Before image URL:', beforeImage.style.backgroundImage);
+  console.log('After image URL:', afterImage.style.backgroundImage);
+  
+  // Check if images loaded successfully
+  function checkImageLoad() {
+    const beforeImg = new Image();
+    const afterImg = new Image();
     
-    let isDragging = false;
-    let currentPosition = 50;
+    beforeImg.onload = function() {
+      console.log('Before image loaded successfully');
+      beforeImage.querySelector('.image-loading').classList.add('hidden');
+    };
     
-    // Debug: Check if images are loading
-    console.log('Before image URL:', beforeImage.style.backgroundImage);
-    console.log('After image URL:', document.getElementById('ledAfterImage').style.backgroundImage);
+    beforeImg.onerror = function() {
+      console.error('Failed to load before image');
+      beforeImage.querySelector('.image-loading').classList.remove('hidden');
+      beforeImage.style.backgroundColor = '#f0f0f0';
+    };
     
-    // Set fallback background colors in case images fail to load
-    beforeImage.style.backgroundColor = '#f0f0f0';
-    document.getElementById('ledAfterImage').style.backgroundColor = '#f5f5f5';
+    afterImg.onload = function() {
+      console.log('After image loaded successfully');
+      afterImage.querySelector('.image-loading').classList.add('hidden');
+    };
     
-    // Update slider position
-    function updateSliderPosition(clientX) {
-      const containerRect = comparisonContainer.getBoundingClientRect();
-      let newPosition = ((clientX - containerRect.left) / containerRect.width) * 100;
-      
-      // Constrain between 0% and 100%
-      newPosition = Math.max(0, Math.min(newPosition, 100));
-      currentPosition = newPosition;
-      
-      beforeImage.style.width = `${newPosition}%`;
-      sliderDivider.style.left = `${newPosition}%`;
-      sliderHandle.style.left = `${newPosition}%`;
-      
-      // Update progress dots
-      updateProgressDots(newPosition);
-    }
+    afterImg.onerror = function() {
+      console.error('Failed to load after image');
+      afterImage.querySelector('.image-loading').classList.remove('hidden');
+      afterImage.style.backgroundColor = '#f5f5f5';
+    };
     
-    // Update progress dots based on position
-    function updateProgressDots(position) {
-      const positions = [0, 25, 50, 75, 100];
-      let activeIndex = 0;
-      let minDiff = 100;
-      
-      // Find closest dot position
-      positions.forEach((pos, index) => {
-        const diff = Math.abs(position - pos);
-        if (diff < minDiff) {
-          minDiff = diff;
-          activeIndex = index;
-        }
-      });
-      
-      // Update active dot
-      Array.from(progressDots).forEach((dot, index) => {
-        if (index === activeIndex) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
-      });
-    }
+    // Use the actual URLs from the elements
+    beforeImg.src = beforeImage.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+    afterImg.src = afterImage.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+  }
+  
+  // Call image check after a short delay
+  setTimeout(checkImageLoad, 1000);
+  
+  // Update slider position
+  function updateSliderPosition(clientX) {
+    const containerRect = comparisonContainer.getBoundingClientRect();
+    let newPosition = ((clientX - containerRect.left) / containerRect.width) * 100;
     
-    // Click on progress dot to jump to position
-    Array.from(progressDots).forEach((dot) => {
-      dot.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const position = parseInt(this.getAttribute('data-pos'));
-        const containerRect = comparisonContainer.getBoundingClientRect();
-        const clientX = containerRect.left + (containerRect.width * position / 100);
-        updateSliderPosition(clientX);
-      });
-    });
+    // Constrain between 0% and 100%
+    newPosition = Math.max(0, Math.min(newPosition, 100));
+    currentPosition = newPosition;
     
-    // Mouse events
-    sliderHandle.addEventListener('mousedown', function(e) {
-      e.preventDefault();
-      isDragging = true;
-      document.body.style.cursor = 'ew-resize';
-      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
-    });
+    beforeImage.style.width = `${newPosition}%`;
+    sliderDivider.style.left = `${newPosition}%`;
+    sliderHandle.style.left = `${newPosition}%`;
     
-    comparisonContainer.addEventListener('mousedown', function(e) {
-      if (!isDragging) {
-        isDragging = true;
-        updateSliderPosition(e.clientX);
-        document.body.style.cursor = 'ew-resize';
-        sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+    // Update progress dots
+    updateProgressDots(newPosition);
+  }
+  
+  // Update progress dots based on position
+  function updateProgressDots(position) {
+    const positions = [0, 25, 50, 75, 100];
+    let activeIndex = 0;
+    let minDiff = 100;
+    
+    // Find closest dot position
+    positions.forEach((pos, index) => {
+      const diff = Math.abs(position - pos);
+      if (diff < minDiff) {
+        minDiff = diff;
+        activeIndex = index;
       }
     });
     
-    document.addEventListener('mousemove', function(e) {
-      if (isDragging) {
-        updateSliderPosition(e.clientX);
+    // Update active dot
+    Array.from(progressDots).forEach((dot, index) => {
+      if (index === activeIndex) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
       }
     });
-    
-    document.addEventListener('mouseup', function() {
-      if (isDragging) {
-        isDragging = false;
-        document.body.style.cursor = 'default';
-        sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1)';
-      }
-    });
-    
-    // Touch events for mobile
-    sliderHandle.addEventListener('touchstart', function(e) {
-      e.preventDefault();
-      isDragging = true;
-      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
-    });
-    
-    comparisonContainer.addEventListener('touchstart', function(e) {
-      if (!isDragging) {
-        isDragging = true;
-        const touch = e.touches[0];
-        updateSliderPosition(touch.clientX);
-        sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
-      }
-    });
-    
-    document.addEventListener('touchmove', function(e) {
-      if (isDragging) {
-        const touch = e.touches[0];
-        updateSliderPosition(touch.clientX);
-        e.preventDefault();
-      }
-    }, { passive: false });
-    
-    document.addEventListener('touchend', function() {
-      if (isDragging) {
-        isDragging = false;
-        sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1)';
-      }
-    });
-    
-    // Keyboard controls
-    document.addEventListener('keydown', function(e) {
-      const containerRect = comparisonContainer.getBoundingClientRect();
-      
-      if (e.key === 'ArrowLeft') {
-        currentPosition = Math.max(0, currentPosition - 5);
-        updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
-      } else if (e.key === 'ArrowRight') {
-        currentPosition = Math.min(100, currentPosition + 5);
-        updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
-      }
-    });
-    
-    // Initialize slider at 50%
-    updateSliderPosition(window.innerWidth / 2);
-    
-    // Click on arrows
-    document.querySelector('.arrow-left').addEventListener('click', function(e) {
+  }
+  
+  // Click on progress dot to jump to position
+  Array.from(progressDots).forEach((dot) => {
+    dot.addEventListener('click', function(e) {
       e.stopPropagation();
+      const position = parseInt(this.getAttribute('data-pos'));
       const containerRect = comparisonContainer.getBoundingClientRect();
-      currentPosition = Math.max(0, currentPosition - 25);
-      updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
-    });
-    
-    document.querySelector('.arrow-right').addEventListener('click', function(e) {
-      e.stopPropagation();
-      const containerRect = comparisonContainer.getBoundingClientRect();
-      currentPosition = Math.min(100, currentPosition + 25);
-      updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
-    });
-    
-    // Add visual feedback on container hover
-    comparisonContainer.addEventListener('mouseenter', function() {
-      document.querySelector('.arrow-left').style.opacity = '1';
-      document.querySelector('.arrow-right').style.opacity = '1';
-    });
-    
-    comparisonContainer.addEventListener('mouseleave', function() {
-      if (!isDragging) {
-        document.querySelector('.arrow-left').style.opacity = '0';
-        document.querySelector('.arrow-right').style.opacity = '0';
-      }
+      const clientX = containerRect.left + (containerRect.width * position / 100);
+      updateSliderPosition(clientX);
     });
   });
+  
+  // Mouse events
+  sliderHandle.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    isDragging = true;
+    document.body.style.cursor = 'ew-resize';
+    sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+  });
+  
+  comparisonContainer.addEventListener('mousedown', function(e) {
+    if (!isDragging) {
+      isDragging = true;
+      updateSliderPosition(e.clientX);
+      document.body.style.cursor = 'ew-resize';
+      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+    }
+  });
+  
+  document.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+      updateSliderPosition(e.clientX);
+    }
+  });
+  
+  document.addEventListener('mouseup', function() {
+    if (isDragging) {
+      isDragging = false;
+      document.body.style.cursor = 'default';
+      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1)';
+    }
+  });
+  
+  // Touch events for mobile
+  sliderHandle.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    isDragging = true;
+    sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+  });
+  
+  comparisonContainer.addEventListener('touchstart', function(e) {
+    if (!isDragging) {
+      isDragging = true;
+      const touch = e.touches[0];
+      updateSliderPosition(touch.clientX);
+      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+    }
+  });
+  
+  document.addEventListener('touchmove', function(e) {
+    if (isDragging) {
+      const touch = e.touches[0];
+      updateSliderPosition(touch.clientX);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  
+  document.addEventListener('touchend', function() {
+    if (isDragging) {
+      isDragging = false;
+      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1)';
+    }
+  });
+  
+  // Keyboard controls
+  document.addEventListener('keydown', function(e) {
+    const containerRect = comparisonContainer.getBoundingClientRect();
+    
+    if (e.key === 'ArrowLeft') {
+      currentPosition = Math.max(0, currentPosition - 5);
+      updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
+    } else if (e.key === 'ArrowRight') {
+      currentPosition = Math.min(100, currentPosition + 5);
+      updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
+    }
+  });
+  
+  // Arrow click events
+  arrowLeft.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const containerRect = comparisonContainer.getBoundingClientRect();
+    currentPosition = Math.max(0, currentPosition - 25);
+    updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
+  });
+  
+  arrowRight.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const containerRect = comparisonContainer.getBoundingClientRect();
+    currentPosition = Math.min(100, currentPosition + 25);
+    updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
+  });
+  
+  // Add visual feedback on container hover
+  comparisonContainer.addEventListener('mouseenter', function() {
+    arrowLeft.style.opacity = '1';
+    arrowRight.style.opacity = '1';
+  });
+  
+  comparisonContainer.addEventListener('mouseleave', function() {
+    if (!isDragging) {
+      arrowLeft.style.opacity = '0';
+      arrowRight.style.opacity = '0';
+    }
+  });
+  
+  // Initialize slider at 50%
+  updateSliderPosition(window.innerWidth / 2);
+  
+  // Force initial image check
+  window.addEventListener('load', function() {
+    checkImageLoad();
+  });
+});
 </script>
