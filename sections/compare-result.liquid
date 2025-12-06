@@ -1,43 +1,42 @@
 {% comment %}
-  Simple Before-After Slider - Images fit container
+  Minimal Before-After Slider
 {% endcomment %}
 
 <style>
-  .comparison-slider-container {
+  .simple-slider {
     position: relative;
-    overflow: hidden;
-    border-radius: 1rem;
     width: 100%;
-    background: #f8fafc;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
   }
   
-  .image-wrapper {
+  .slider-images {
     position: relative;
     width: 100%;
     height: 100%;
   }
   
-  .before-image, .after-image {
+  .slider-images img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background-color: #f8fafc;
   }
   
-  .before-image {
+  .slider-before {
     width: 50%;
     z-index: 2;
     clip-path: inset(0 50% 0 0);
   }
   
-  .after-image {
+  .slider-after {
     z-index: 1;
   }
   
-  .slider-divider {
+  .slider-line {
     position: absolute;
     top: 0;
     left: 50%;
@@ -45,158 +44,93 @@
     width: 2px;
     background: white;
     transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 30;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    z-index: 3;
   }
   
-  .slider-handle {
+  .slider-drag {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 40;
-    pointer-events: none;
-  }
-  
-  .handle-circle {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     background: white;
     border-radius: 50%;
+    cursor: ew-resize;
+    z-index: 4;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    cursor: ew-resize;
-    pointer-events: all;
-  }
-  
-  .handle-circle:hover {
-    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   }
 </style>
 
-<div class="mb-8">
-  <!-- Main Comparison Container -->
-  <div class="comparison-slider-container h-[500px] md:h-[600px]" 
-       id="ledComparisonContainer">
-    
-    <div class="image-wrapper">
-      <!-- Images as regular img tags -->
-      <img class="after-image" 
-           src="{{ 'after.png' | asset_url }}" 
-           alt="After 8 weeks of use"
-           id="ledAfterImage"
-           onerror="this.style.display='none'">
-      
-      <img class="before-image" 
-           src="{{ 'before.jpg' | asset_url }}" 
-           alt="Before GlowPro LED Mask"
-           id="ledBeforeImage"
-           onerror="this.style.display='none'">
-      
-      <!-- Slider Divider Line -->
-      <div class="slider-divider" id="ledSliderDivider"></div>
-      
-      <!-- Slider Handle -->
-      <div class="slider-handle" id="ledSliderHandle">
-        <div class="handle-circle">
-          <i class="fas fa-arrows-alt-h text-gray-600"></i>
-        </div>
+<div class="mb-6">
+  <div class="simple-slider h-[400px] md:h-[500px]" id="simpleSlider">
+    <div class="slider-images">
+      <img class="slider-after" src="{{ 'after.png' | asset_url }}" alt="After">
+      <img class="slider-before" src="{{ 'before.jpg' | asset_url }}" alt="Before">
+      <div class="slider-line" id="sliderLine"></div>
+      <div class="slider-drag" id="sliderDrag">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
+          <path d="M8 7l4-4 4 4M8 17l4 4 4-4M12 3v18"/>
+        </svg>
       </div>
     </div>
   </div>
   
-  <!-- Simple Labels -->
-  <div class="flex justify-between mt-4 px-2">
-    <div class="flex items-center gap-2">
-      <div class="w-3 h-3 rounded-full bg-red-500"></div>
-      <span class="text-sm font-medium text-gray-800">Before Treatment</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="text-sm font-medium text-gray-800">After 8 Weeks</span>
-      <div class="w-3 h-3 rounded-full bg-green-500"></div>
-    </div>
+  <div class="flex justify-between mt-3 text-sm">
+    <div class="text-gray-700 font-medium">Before</div>
+    <div class="text-gray-700 font-medium">After</div>
   </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const beforeImage = document.getElementById('ledBeforeImage');
-  const afterImage = document.getElementById('ledAfterImage');
-  const sliderDivider = document.getElementById('ledSliderDivider');
-  const sliderHandle = document.getElementById('ledSliderHandle');
-  const comparisonContainer = document.getElementById('ledComparisonContainer');
+  const beforeImg = document.querySelector('.slider-before');
+  const line = document.getElementById('sliderLine');
+  const drag = document.getElementById('sliderDrag');
+  const slider = document.getElementById('simpleSlider');
+  let dragging = false;
   
-  let isDragging = false;
-  let currentPosition = 50;
-  
-  // Update slider position
-  function updateSliderPosition(clientX) {
-    const containerRect = comparisonContainer.getBoundingClientRect();
-    let newPosition = ((clientX - containerRect.left) / containerRect.width) * 100;
+  function moveSlider(x) {
+    const rect = slider.getBoundingClientRect();
+    let pos = ((x - rect.left) / rect.width) * 100;
+    pos = Math.max(0, Math.min(pos, 100));
     
-    // Constrain between 0% and 100%
-    newPosition = Math.max(0, Math.min(newPosition, 100));
-    currentPosition = newPosition;
-    
-    // Update before image clip path and handle position
-    beforeImage.style.clipPath = `inset(0 ${100 - newPosition}% 0 0)`;
-    sliderDivider.style.left = `${newPosition}%`;
-    sliderHandle.style.left = `${newPosition}%`;
+    beforeImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+    line.style.left = `${pos}%`;
+    drag.style.left = `${pos}%`;
   }
   
-  // Mouse events
-  sliderHandle.addEventListener('mousedown', function(e) {
+  drag.addEventListener('mousedown', () => dragging = true);
+  slider.addEventListener('mousedown', (e) => {
+    dragging = true;
+    moveSlider(e.clientX);
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (dragging) moveSlider(e.clientX);
+  });
+  
+  document.addEventListener('mouseup', () => dragging = false);
+  
+  // Touch support
+  drag.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    isDragging = true;
+    dragging = true;
   });
   
-  comparisonContainer.addEventListener('mousedown', function(e) {
-    if (!isDragging) {
-      isDragging = true;
-      updateSliderPosition(e.clientX);
-    }
+  slider.addEventListener('touchstart', (e) => {
+    dragging = true;
+    moveSlider(e.touches[0].clientX);
   });
   
-  document.addEventListener('mousemove', function(e) {
-    if (isDragging) {
-      updateSliderPosition(e.clientX);
-    }
+  document.addEventListener('touchmove', (e) => {
+    if (dragging) moveSlider(e.touches[0].clientX);
   });
   
-  document.addEventListener('mouseup', function() {
-    isDragging = false;
-  });
-  
-  // Touch events for mobile
-  sliderHandle.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    isDragging = true;
-  });
-  
-  comparisonContainer.addEventListener('touchstart', function(e) {
-    if (!isDragging) {
-      isDragging = true;
-      const touch = e.touches[0];
-      updateSliderPosition(touch.clientX);
-    }
-  });
-  
-  document.addEventListener('touchmove', function(e) {
-    if (isDragging) {
-      const touch = e.touches[0];
-      updateSliderPosition(touch.clientX);
-      e.preventDefault();
-    }
-  }, { passive: false });
-  
-  document.addEventListener('touchend', function() {
-    isDragging = false;
-  });
-  
-  // Initialize slider at 50%
-  updateSliderPosition(window.innerWidth / 2);
+  document.addEventListener('touchend', () => dragging = false);
 });
 </script>
