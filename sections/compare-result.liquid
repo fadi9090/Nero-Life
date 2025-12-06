@@ -142,12 +142,12 @@
     
     <!-- Before Image -->
     <div class="before-image-overlay rounded-2xl" 
-         style="background-image: url('{{ 'before.jpg' | asset_url }}');"
+         style="background-image: url('{{ before.jpg | asset_url}}');"
          id="ledBeforeImage"></div>
     
     <!-- After Image -->
     <div class="after-image-overlay rounded-2xl"
-         style="background-image: url('{{ 'after.png' | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
+         style="background-image: url('{{ after.png | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
          id="ledAfterImage"></div>
     
     <!-- Slider Divider Line -->
@@ -171,6 +171,15 @@
     <div class="arrow-right">
       <i class="fas fa-chevron-right"></i>
     </div>
+    
+    <!-- Progress Dots -->
+    <div class="progress-dots" id="ledProgressDots">
+      <div class="progress-dot active" data-pos="0"></div>
+      <div class="progress-dot" data-pos="25"></div>
+      <div class="progress-dot" data-pos="50"></div>
+      <div class="progress-dot" data-pos="75"></div>
+      <div class="progress-dot" data-pos="100"></div>
+    </div>
   </div>
   
   <!-- Labels -->
@@ -188,7 +197,7 @@
 
 <!-- JavaScript for the slider -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     const beforeImage = document.getElementById('ledBeforeImage');
     const sliderDivider = document.getElementById('ledSliderDivider');
     const sliderHandle = document.getElementById('ledSliderHandle');
@@ -200,130 +209,130 @@
     
     // Update slider position
     function updateSliderPosition(clientX) {
-        const containerRect = comparisonContainer.getBoundingClientRect();
-        let newPosition = ((clientX - containerRect.left) / containerRect.width) * 100;
-        
-        // Constrain between 0% and 100%
-        newPosition = Math.max(0, Math.min(newPosition, 100));
-        currentPosition = newPosition;
-        
-        beforeImage.style.width = `${newPosition}%`;
-        sliderDivider.style.left = `${newPosition}%`;
-        sliderHandle.style.left = `${newPosition}%`;
-        
-        // Update progress dots
-        updateProgressDots(newPosition);
+      const containerRect = comparisonContainer.getBoundingClientRect();
+      let newPosition = ((clientX - containerRect.left) / containerRect.width) * 100;
+      
+      // Constrain between 0% and 100%
+      newPosition = Math.max(0, Math.min(newPosition, 100));
+      currentPosition = newPosition;
+      
+      beforeImage.style.width = `${newPosition}%`;
+      sliderDivider.style.left = `${newPosition}%`;
+      sliderHandle.style.left = `${newPosition}%`;
+      
+      // Update progress dots
+      updateProgressDots(newPosition);
     }
     
     // Update progress dots based on position
     function updateProgressDots(position) {
-        const positions = [0, 25, 50, 75, 100];
-        let activeIndex = 0;
-        let minDiff = 100;
-        
-        // Find closest dot position
-        positions.forEach((pos, index) => {
+      const positions = [0, 25, 50, 75, 100];
+      let activeIndex = 0;
+      let minDiff = 100;
+      
+      // Find closest dot position
+      positions.forEach((pos, index) => {
         const diff = Math.abs(position - pos);
         if (diff < minDiff) {
-            minDiff = diff;
-            activeIndex = index;
+          minDiff = diff;
+          activeIndex = index;
         }
-        });
-        
-        // Update active dot
-        Array.from(progressDots).forEach((dot, index) => {
+      });
+      
+      // Update active dot
+      Array.from(progressDots).forEach((dot, index) => {
         if (index === activeIndex) {
-            dot.classList.add('active');
+          dot.classList.add('active');
         } else {
-            dot.classList.remove('active');
+          dot.classList.remove('active');
         }
-        });
+      });
     }
     
     // Click on progress dot to jump to position
     Array.from(progressDots).forEach((dot) => {
-        dot.addEventListener('click', function(e) {
+      dot.addEventListener('click', function(e) {
         e.stopPropagation();
         const position = parseInt(this.getAttribute('data-pos'));
         const containerRect = comparisonContainer.getBoundingClientRect();
         const clientX = containerRect.left + (containerRect.width * position / 100);
         updateSliderPosition(clientX);
-        });
+      });
     });
     
     // Mouse events
     sliderHandle.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        isDragging = true;
-        document.body.style.cursor = 'ew-resize';
-        sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+      e.preventDefault();
+      isDragging = true;
+      document.body.style.cursor = 'ew-resize';
+      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
     });
     
     comparisonContainer.addEventListener('mousedown', function(e) {
-        if (!isDragging) {
+      if (!isDragging) {
         isDragging = true;
         updateSliderPosition(e.clientX);
         document.body.style.cursor = 'ew-resize';
         sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
-        }
+      }
     });
     
     document.addEventListener('mousemove', function(e) {
-        if (isDragging) {
+      if (isDragging) {
         updateSliderPosition(e.clientX);
-        }
+      }
     });
     
     document.addEventListener('mouseup', function() {
-        if (isDragging) {
+      if (isDragging) {
         isDragging = false;
         document.body.style.cursor = 'default';
         sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1)';
-        }
+      }
     });
     
     // Touch events for mobile
     sliderHandle.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        isDragging = true;
-        sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
+      e.preventDefault();
+      isDragging = true;
+      sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
     });
     
     comparisonContainer.addEventListener('touchstart', function(e) {
-        if (!isDragging) {
+      if (!isDragging) {
         isDragging = true;
         const touch = e.touches[0];
         updateSliderPosition(touch.clientX);
         sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1.1)';
-        }
+      }
     });
     
     document.addEventListener('touchmove', function(e) {
-        if (isDragging) {
+      if (isDragging) {
         const touch = e.touches[0];
         updateSliderPosition(touch.clientX);
         e.preventDefault();
-        }
+      }
     }, { passive: false });
     
     document.addEventListener('touchend', function() {
-        if (isDragging) {
+      if (isDragging) {
         isDragging = false;
         sliderHandle.querySelector('.slider-circle').style.transform = 'scale(1)';
-        }
+      }
     });
     
     // Keyboard controls
     document.addEventListener('keydown', function(e) {
-        const containerRect = comparisonContainer.getBoundingClientRect();
-        
-        if (e.key === 'ArrowLeft') {
+      const containerRect = comparisonContainer.getBoundingClientRect();
+      
+      if (e.key === 'ArrowLeft') {
         currentPosition = Math.max(0, currentPosition - 5);
         updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
-        } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight') {
         currentPosition = Math.min(100, currentPosition + 5);
         updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
-        }
+      }
     });
     
     // Initialize slider at 50%
@@ -331,30 +340,30 @@
     
     // Click on arrows
     document.querySelector('.arrow-left').addEventListener('click', function(e) {
-        e.stopPropagation();
-        const containerRect = comparisonContainer.getBoundingClientRect();
-        currentPosition = Math.max(0, currentPosition - 25);
-        updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
+      e.stopPropagation();
+      const containerRect = comparisonContainer.getBoundingClientRect();
+      currentPosition = Math.max(0, currentPosition - 25);
+      updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
     });
     
     document.querySelector('.arrow-right').addEventListener('click', function(e) {
-        e.stopPropagation();
-        const containerRect = comparisonContainer.getBoundingClientRect();
-        currentPosition = Math.min(100, currentPosition + 25);
-        updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
+      e.stopPropagation();
+      const containerRect = comparisonContainer.getBoundingClientRect();
+      currentPosition = Math.min(100, currentPosition + 25);
+      updateSliderPosition(containerRect.left + (containerRect.width * currentPosition / 100));
     });
     
     // Add visual feedback on container hover
     comparisonContainer.addEventListener('mouseenter', function() {
-        document.querySelector('.arrow-left').style.opacity = '1';
-        document.querySelector('.arrow-right').style.opacity = '1';
+      document.querySelector('.arrow-left').style.opacity = '1';
+      document.querySelector('.arrow-right').style.opacity = '1';
     });
     
     comparisonContainer.addEventListener('mouseleave', function() {
-        if (!isDragging) {
+      if (!isDragging) {
         document.querySelector('.arrow-left').style.opacity = '0';
         document.querySelector('.arrow-right').style.opacity = '0';
-        }
+      }
     });
-    });
+  });
 </script>
