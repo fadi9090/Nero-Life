@@ -1,298 +1,127 @@
 {% comment %}
-  Modern Proficient Cart Template
-  - Adapts to theme colors
-  - Includes Free Shipping Progress Bar
+  Modern Proficient Cart Template - Optimized for Tailwind CSS
 {% endcomment %}
 
-{% layout settings %}
+{% assign free_shipping_threshold = 10000 %} 
+{% assign cart_total = cart.total_price %}
+{% assign threshold_reached = cart_total >= free_shipping_threshold %}
 
-<style>
-  /* 1. DYNAMIC COLOR MAPPING 
-     We map Shopify settings to CSS variables here. 
-     Adjust the 'settings.X' values to match your theme's schema if needed. 
-  */
-  :root {
-    --cart-bg: {{ settings.colors_background_1 | default: '#ffffff' }};
-    --cart-text: {{ settings.colors_text | default: '#121212' }};
-    --cart-accent: {{ settings.colors_accent_1 | default: '#333333' }};
-    --cart-btn-bg: {{ settings.colors_solid_button_background | default: '#000000' }};
-    --cart-btn-text: {{ settings.colors_solid_button_labels | default: '#ffffff' }};
-    --cart-border: rgba(0,0,0,0.1);
-  }
-
-  .proficient-cart {
-    background-color: var(--cart-bg);
-    color: var(--cart-text);
-    padding: 4rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: inherit; /* Inherit theme font */
-  }
-
-  /* Header & Shipping Bar */
-  .cart-header {
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-  
-  .shipping-bar-container {
-    background: #f4f4f4;
-    height: 8px;
-    border-radius: 4px;
-    max-width: 600px;
-    margin: 1rem auto;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .shipping-bar-fill {
-    background: var(--cart-accent);
-    height: 100%;
-    transition: width 0.5s ease;
-    display: block;
-  }
-
-  /* Grid Layout */
-  .cart-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 3rem;
-  }
-
-  /* Cart Items Table */
-  .cart-items {
-    border-top: 1px solid var(--cart-border);
-  }
-
-  .cart-item {
-    display: grid;
-    grid-template-columns: 100px 1fr auto;
-    gap: 1.5rem;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--cart-border);
-    align-items: center;
-  }
-
-  .cart-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-    aspect-ratio: 1 / 1;
-  }
-
-  .item-details h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-  }
-
-  .item-variant {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Quantity Selectors */
-  .quantity-wrapper {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--cart-border);
-    border-radius: 4px;
-    width: fit-content;
-    margin-top: 0.5rem;
-  }
-
-  .qty-btn {
-    background: none;
-    border: none;
-    padding: 0.5rem 0.8rem;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: var(--cart-text);
-  }
-
-  .qty-input {
-    width: 40px;
-    text-align: center;
-    border: none;
-    background: transparent;
-    color: var(--cart-text);
-    font-weight: bold;
-    -moz-appearance: textfield;
-  }
-  .qty-input::-webkit-outer-spin-button,
-  .qty-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  .remove-link {
-    font-size: 0.8rem;
-    text-decoration: underline;
-    color: #999;
-    margin-top: 0.5rem;
-    display: block;
-  }
-
-  /* Sticky Summary */
-  .cart-summary {
-    background: #f9f9f9; /* Light contrast */
-    padding: 2rem;
-    border-radius: 12px;
-    height: fit-content;
-    position: sticky;
-    top: 2rem;
-  }
-
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-  }
-
-  .total-row {
-    font-weight: bold;
-    font-size: 1.3rem;
-    border-top: 1px solid var(--cart-border);
-    padding-top: 1rem;
-    margin-top: 1rem;
-  }
-
-  /* Checkout Button */
-  .checkout-btn {
-    width: 100%;
-    background-color: var(--cart-btn-bg);
-    color: var(--cart-btn-text);
-    padding: 1rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    margin-top: 1.5rem;
-    transition: opacity 0.3s;
-  }
-
-  .checkout-btn:hover {
-    opacity: 0.9;
-  }
-
-  /* Empty State */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 0;
-  }
-
-  @media (max-width: 768px) {
-    .cart-grid {
-      grid-template-columns: 1fr;
-    }
-    .cart-item {
-      grid-template-columns: 80px 1fr;
-    }
-    .item-total-price {
-      grid-column: 2;
-      text-align: left;
-    }
-  }
-</style>
-
-<div class="proficient-cart">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-800">
 
   {% if cart.item_count > 0 %}
     
-    <div class="cart-header">
-      <h1>Your Cart</h1>
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Your Shopping Cart</h1>
       
-      {% comment %} FREE SHIPPING LOGIC (Default threshold: 10000 cents = $100) {% endcomment %}
-      {% assign free_shipping_threshold = 10000 %}
-      {% assign cart_total = cart.total_price %}
-      
-      {% if cart_total >= free_shipping_threshold %}
-        <p><strong>You've unlocked FREE Shipping!</strong> 🎉</p>
-        <div class="shipping-bar-container">
-          <span class="shipping-bar-fill" style="width: 100%;"></span>
+      {# FREE SHIPPING LOGIC #}
+      <div class="max-w-xl mx-auto mt-4">
+        {% if threshold_reached %}
+          <p class="text-green-600 font-semibold">You've unlocked FREE Shipping! 🎉</p>
+          {% assign percent = 100 %}
+        {% else %}
+          {% assign amount_left = free_shipping_threshold | minus: cart_total %}
+          {% assign percent = cart_total | times: 100 | divided_by: free_shipping_threshold %}
+          <p class="text-gray-600">You are <span class="font-bold">{{ amount_left | money }}</span> away from <span class="font-bold">Free Shipping</span></p>
+        {% endif %}
+        
+        <div class="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden">
+          <div class="h-2 rounded-full transition-all duration-500 ease-in-out" 
+               style="width: {{ percent | floor }}%; background-color: {{ settings.colors_accent_1 | default: '#3b82f6' }};">
+          </div>
         </div>
-      {% else %}
-        {% assign amount_left = free_shipping_threshold | minus: cart_total %}
-        {% assign percent = cart_total | times: 100 | divided_by: free_shipping_threshold %}
-        <p>You are {{ amount_left | money }} away from <strong>Free Shipping</strong></p>
-        <div class="shipping-bar-container">
-          <span class="shipping-bar-fill" style="width: {{ percent }}%;"></span>
-        </div>
-      {% endif %}
+      </div>
     </div>
 
     <form action="{{ routes.cart_url }}" method="post" id="cart-form">
-      <div class="cart-grid">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <div class="cart-items">
+        <div class="lg:col-span-2 space-y-6">
+          
           {% for item in cart.items %}
-            <div class="cart-item">
+            <div class="border-b pb-6 flex items-start gap-4">
               
-              <div class="item-image">
+              <div class="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                 <a href="{{ item.url }}">
                   <img src="{{ item.image | image_url: width: 200 }}" 
                        loading="lazy" 
-                       alt="{{ item.image.alt | escape }}">
+                       alt="{{ item.image.alt | escape }}"
+                       class="w-full h-full object-cover object-center">
                 </a>
               </div>
 
-              <div class="item-details">
-                <h3><a href="{{ item.url }}" style="text-decoration: none; color: inherit;">{{ item.product.title }}</a></h3>
-                {% unless item.product.has_only_default_variant %}
-                  <div class="item-variant">{{ item.variant.title }}</div>
-                {% endunless %}
-                
-                <div class="quantity-wrapper">
-                  <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" class="qty-btn">-</a>
-                  <input class="qty-input" type="number" name="updates[]" value="{{ item.quantity }}" min="0" id="updates_{{ item.key }}">
-                  <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" class="qty-btn">+</a>
+              <div class="flex-grow">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="text-lg font-medium text-gray-900 leading-tight">
+                      <a href="{{ item.url }}" class="hover:text-blue-600">{{ item.product.title }}</a>
+                    </h3>
+                    {% unless item.product.has_only_default_variant %}
+                      <p class="text-sm text-gray-500 mt-0.5">{{ item.variant.title }}</p>
+                    {% endunless %}
+                  </div>
+                  <div class="text-lg font-medium text-gray-900 ml-4 whitespace-nowrap">
+                    {% if item.original_line_price != item.final_line_price %}
+                        <span class="line-through text-sm text-gray-400 block">{{ item.original_line_price | money }}</span>
+                        <span>{{ item.final_line_price | money }}</span>
+                    {% else %}
+                        {{ item.original_line_price | money }}
+                    {% endif %}
+                  </div>
                 </div>
-                <a href="/cart/change?line={{ forloop.index }}&quantity=0" class="remove-link">Remove</a>
-              </div>
 
-              <div class="item-total-price">
-                {% if item.original_line_price != item.final_line_price %}
-                  <span style="text-decoration: line-through; color: #999;">{{ item.original_line_price | money }}</span><br>
-                  <span>{{ item.final_line_price | money }}</span>
-                {% else %}
-                  {{ item.original_line_price | money }}
-                {% endif %}
+                <div class="flex items-center mt-3">
+                  <div class="inline-flex border border-gray-300 rounded-md">
+                    <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" class="p-2 text-gray-600 hover:text-gray-900">-</a>
+                    <input class="w-10 text-center border-l border-r border-gray-300 focus:outline-none bg-white text-sm" 
+                           type="number" 
+                           name="updates[]" 
+                           value="{{ item.quantity }}" 
+                           min="0" 
+                           id="updates_{{ item.key }}">
+                    <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" class="p-2 text-gray-600 hover:text-gray-900">+</a>
+                  </div>
+                  <a href="/cart/change?line={{ forloop.index }}&quantity=0" class="ml-4 text-sm text-red-600 hover:text-red-800">Remove</a>
+                </div>
               </div>
 
             </div>
           {% endfor %}
+
+          <div class="text-right">
+            <button type="submit" class="text-sm text-gray-500 underline hover:text-gray-800">
+              Update Cart Quantities
+            </button>
+          </div>
         </div>
 
-        <div class="cart-summary">
-          <div class="summary-row">
-            <span>Subtotal</span>
-            <span>{{ cart.total_price | money }}</span>
+
+        <div class="lg:col-span-1 bg-gray-50 p-6 rounded-xl shadow-lg h-fit sticky top-6">
+          <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+
+          <div class="space-y-3 border-b border-gray-200 pb-4">
+            <div class="flex justify-between text-gray-600">
+              <span>Subtotal</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+            
+            {% if cart.total_discounts > 0 %}
+            <div class="flex justify-between text-green-600 font-medium">
+              <span>Discounts</span>
+              <span>-{{ cart.total_discounts | money }}</span>
+            </div>
+            {% endif %}
           </div>
           
-          {% if cart.total_discounts > 0 %}
-          <div class="summary-row" style="color: #d23f3f;">
-            <span>Discounts</span>
-            <span>-{{ cart.total_discounts | money }}</span>
-          </div>
-          {% endif %}
-
-          <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">Taxes and shipping calculated at checkout</p>
-
-          <div class="summary-row total-row">
-            <span>Total</span>
+          <div class="flex justify-between text-xl font-bold pt-4">
+            <span>Order Total</span>
             <span>{{ cart.total_price | money }}</span>
           </div>
 
-          <button type="submit" name="checkout" class="checkout-btn">
+          <p class="text-xs text-gray-500 mt-4">Shipping and taxes calculated at checkout.</p>
+
+          <button type="submit" name="checkout" class="w-full mt-6 py-3 px-6 rounded-md text-base font-medium text-white shadow-md hover:opacity-90 transition duration-150"
+                  style="background-color: {{ settings.colors_solid_button_background | default: '#000000' }};">
             Proceed to Checkout
-          </button>
-          
-          <button type="submit" class="remove-link" style="background:none; border:none; width:100%; margin-top:10px; cursor:pointer;">
-            Update Cart
           </button>
         </div>
 
@@ -301,10 +130,11 @@
 
   {% else %}
   
-    <div class="empty-state">
-      <h2>Your cart is empty</h2>
-      <p>Looks like you haven't added anything yet.</p>
-      <a href="{{ routes.all_products_collection_url }}" class="checkout-btn" style="display: inline-block; width: auto; text-decoration: none; margin-top: 2rem;">
+    <div class="text-center py-20 bg-gray-50 rounded-lg shadow-inner">
+      <h2 class="text-2xl font-bold mb-4 text-gray-900">Your Cart is Empty 🛒</h2>
+      <p class="text-gray-600 mb-6">Explore our products and fill up your cart!</p>
+      <a href="{{ routes.all_products_collection_url }}" class="inline-flex py-3 px-8 rounded-md text-base font-medium text-white shadow-md hover:opacity-90 transition duration-150"
+         style="background-color: {{ settings.colors_solid_button_background | default: '#000000' }};">
         Continue Shopping
       </a>
     </div>

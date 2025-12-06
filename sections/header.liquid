@@ -66,10 +66,12 @@
 
         <!-- Cart -->
         <div class="flex items-center -mr-2 -my-2 ml-3">
-            <button type="button" onclick="toggleCartDrawer()" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn">
+            <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn" aria-label="Cart link">
                 {% render 'icon-shopping-bag' %}
-                <span class="cart-count">{{ cart.item_count }}</span>
-            </button>
+                {% if cart.item_count > 0 %}
+                  <span class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
+                {% endif %}
+            </a>
         </div>
       </div>
     </div>
