@@ -179,6 +179,7 @@
 
     // --- Mask Option Selection Functionality ---
     function selectMaskOption(element, quantity) {
+        // ... (Your existing selectMaskOption logic is correct and remains here) ...
         // Remove selection from all options
         document.querySelectorAll('.mask-option').forEach(option => {
             option.classList.remove('border-[#FA8072]', 'bg-rose-50');
@@ -230,7 +231,7 @@
         }
     }
 
-    // --- AJAX Add to Cart Functionality ---
+    // 🌟 THIS IS THE CRITICAL AJAX FUNCTION THAT WAS MISSING 🌟
     function addToCart(variantId, quantity) {
         const button = document.getElementById('addToCartButton');
         const originalButtonText = button.innerHTML;
@@ -239,7 +240,6 @@
         button.disabled = true;
         button.innerHTML = 'Adding...';
 
-        // Data payload for the cart API
         const formData = {
             items: [
                 {
@@ -258,28 +258,22 @@
         })
         .then(response => response.json())
         .then(data => {
-            // Success: Optionally display a message or update a mini-cart
-            console.log('Item added to cart:', data);
             
-            // Example: Flash a success message
-            button.innerHTML = 'Added! 🎉';
-            
+            // 💡 SUCCESS: Notify the header (and any other element) to update SILENTLY
+            document.dispatchEvent(new CustomEvent('cart:add-success', { 
+                bubbles: true, 
+                detail: { item_count: data.item_count }
+            }));
+
             // Re-enable button after a short delay
+            button.innerHTML = 'Added! 🎉';
             setTimeout(() => {
                 button.innerHTML = originalButtonText;
                 button.disabled = false;
             }, 1500);
 
-            // --- IMPORTANT: Trigger a global event or refresh cart drawer/icon ---
-            // For a full refresh, you'd redirect: window.location.href = '/cart';
-            // For a seamless update, you'd typically fire an event that a separate 
-            // cart-drawer script listens to, e.g.:
-            // document.dispatchEvent(new CustomEvent('cart:add', { detail: { data } }));
+            // Optional: If you have a cart drawer, you'd open it here.
             
-            // A simple redirect to the cart page for demonstration/simplification:
-            window.location.href = window.Shopify.routes.root + 'cart';
-
-
         })
         .catch(error => {
             console.error('Error adding to cart:', error);
@@ -290,6 +284,7 @@
             }, 3000);
         });
     }
+
 
     // --- Event Listeners and Initialization ---
     document.addEventListener('DOMContentLoaded', function() {
@@ -307,7 +302,7 @@
                 const variantId = addToCartButton.getAttribute('data-variant-id');
                 // 'selectedQuantity' is updated by the selectMaskOption function
                 if (variantId && selectedQuantity) {
-                    addToCart(variantId, selectedQuantity);
+                    addToCart(variantId, selectedQuantity); // Call the AJAX function
                 } else {
                     alert('Please select a package option.');
                 }

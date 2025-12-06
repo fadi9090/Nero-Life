@@ -66,11 +66,13 @@
 
         <!-- Cart -->
         <div class="flex items-center -mr-2 -my-2 ml-3">
-            <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn" aria-label="Cart link">
+            <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative" aria-label="Cart link">
                 {% render 'icon-shopping-bag' %}
-                {% if cart.item_count > 0 %}
-                  <span class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
-                {% endif %}
+                <span id="CartCountWrapper">
+                    {% if cart.item_count > 0 %}
+                        <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
+                    {% endif %}
+                </span>
             </a>
         </div>
       </div>
@@ -114,6 +116,63 @@
     </div>
   </div>
 </div>
+
+<script>
+    // --- AJAX Cart Update Functions for Header ---
+    function updateHeaderCartCount(newCount) {
+        const countElement = document.getElementById('CartCount');
+        const wrapper = document.getElementById('CartCountWrapper');
+
+        if (newCount > 0) {
+            // Create or update the count element
+            if (!countElement) {
+                const newCountSpan = document.createElement('span');
+                newCountSpan.id = 'CartCount';
+                newCountSpan.className = 'cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2';
+                newCountSpan.textContent = newCount;
+                if (wrapper) wrapper.innerHTML = ''; // Clear wrapper before appending
+                if (wrapper) wrapper.appendChild(newCountSpan);
+            } else {
+                countElement.textContent = newCount;
+            }
+            
+            // Optional: Add a subtle flash animation to indicate update
+            if (countElement) {
+                countElement.animate([
+                  { transform: 'scale(1.2)' },
+                  { transform: 'scale(1)' }
+                ], {
+                  duration: 300,
+                  easing: 'ease-out'
+                });
+            }
+        } else {
+            // Remove the count wrapper if the cart is empty
+            if (wrapper) {
+                wrapper.innerHTML = '';
+            }
+        }
+    }
+
+    // Function to fetch the current cart status
+    function getCartDataAndRefresh() {
+        fetch(`${window.Shopify.routes.root}cart.js`)
+            .then(response => response.json())
+            .then(cart => {
+                updateHeaderCartCount(cart.item_count);
+            })
+            .catch(error => {
+                console.error('Error fetching cart data:', error);
+            });
+    }
+
+    // Listen for the custom event sent from the Add To Cart function
+    document.addEventListener('cart:add-success', function(event) {
+        // When the custom event is fired (after successful AJAX add), update the cart
+        getCartDataAndRefresh(); 
+    });
+
+</script>
 
 {% schema %}
 {
