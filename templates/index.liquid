@@ -1,7 +1,7 @@
 {% comment %} Get your specific product by its handle at the TOP of the file {% endcomment %}
 {% assign product_handle = '14-silicone-face-neck-photon-mask' %}
 {% assign featured_product = all_products[product_handle] %}
-{% assign discounted_price = featured_product.price | times: 0.7 %}
+{% assign discounted_price = featured_product.price | times: 0.65 %}
 
 <div class="w-full max-w-7xl mx-auto space-y-8">
     <!-- First Card - Hero Section -->
@@ -134,13 +134,13 @@
             <!-- Price Display - 30% DISCOUNT -->
             <div class="mt-2 mb-6">
                 <span class="text-xl font-bold text-gray-900">
-                    {{ discounted_price | money }}
+                    {{ discounted_price | money_without_trailing_zeros }}
                 </span>
                 <span class="text-base line-through text-gray-500 ml-2">
-                    {{ featured_product.price | money }}
+                    {{ featured_product.price | money_without_trailing_zeros }}
                 </span>
                 <div class="text-sm text-green-600 font-medium mt-1">
-                    Save 30%
+                    Save 35%
                 </div>
             </div>
 
