@@ -2074,6 +2074,11 @@
       display: flex;
     }
   }
+  .lg\:min-h-\[400px\] {
+    @media (width >= 64rem) {
+      min-height: 400px;
+    }
+  }
   .lg\:min-h-auto {
     @media (width >= 64rem) {
       min-height: auto;
