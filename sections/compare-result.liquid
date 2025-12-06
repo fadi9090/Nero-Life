@@ -1,44 +1,44 @@
 {% comment %}
-  Compact Layout: Before/After Slider + LED Technology Card
-  Equal height sections for desktop, stacked for mobile
+  Compact Layout: Before/After Slider + All LED Info in One Card
 {% endcomment %}
 
 <style>
-  .split-layout {
+  .split-slider-container {
     display: flex;
     gap: 2rem;
     width: 100%;
+    align-items: stretch; /* Make both sides same height */
   }
   
-  .slider-column {
+  .slider-section {
     flex: 1;
     min-width: 0;
   }
   
-  .info-column {
+  .info-section {
     flex: 1;
     min-width: 0;
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
   }
   
-  .led-slider {
+  .simple-slider {
     position: relative;
     width: 100%;
     border-radius: 12px;
     overflow: hidden;
     background: #f8fafc;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    height: 100%;
+    height: 100%; /* Take full height of container */
   }
   
-  .slider-inner {
+  .slider-images {
     position: relative;
     width: 100%;
     height: 100%;
   }
   
-  .slider-inner img {
+  .slider-images img {
     position: absolute;
     top: 0;
     left: 0;
@@ -69,13 +69,13 @@
     z-index: 3;
   }
   
-  .slider-handle {
+  .slider-drag {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     background: white;
     border-radius: 50%;
     cursor: ew-resize;
@@ -83,22 +83,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     transition: all 0.2s ease;
   }
   
-  .slider-handle:hover {
+  .slider-drag:hover {
     transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
   }
   
   .slider-labels {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-    gap: 0.5rem;
+    padding: 0 0.5rem;
   }
   
-  .slider-label {
+  .label-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -106,8 +107,6 @@
     background: #f8fafc;
     border-radius: 8px;
     font-weight: 500;
-    flex: 1;
-    justify-content: center;
   }
   
   .label-before {
@@ -119,8 +118,8 @@
   }
   
   .label-dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
   }
   
@@ -132,54 +131,55 @@
     background: #059669;
   }
   
-  /* LED Technology Card */
-  .led-card {
+  /* Compact LED Info Card */
+  .led-info-card {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid #e5e7eb;
-    height: 100%;
+    height: 100%; /* Match slider height */
     display: flex;
     flex-direction: column;
   }
   
-  .card-header {
-    margin-bottom: 1.5rem;
-  }
-  
-  .card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 0.25rem;
-  }
-  
-  .card-subtitle {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-  
   .led-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    flex-grow: 1;
   }
   
   .led-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
     padding: 1rem;
-    background: #f8fafc;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    border: 1px solid #f1f5f9;
   }
   
   .led-item:hover {
-    background: #f1f5f9;
-    transform: translateX(4px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .led-red {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border-left: 4px solid #dc2626;
+  }
+  
+  .led-blue {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-left: 4px solid #2563eb;
+  }
+  
+  .led-green {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-left: 4px solid #059669;
+  }
+  
+  .led-yellow {
+    background: linear-gradient(135deg, #fefce8, #fef3c7);
+    border-left: 4px solid #d97706;
   }
   
   .led-icon {
@@ -189,39 +189,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-  }
-  
-  .led-icon-red {
-    background: linear-gradient(135deg, #fecaca, #f87171);
-  }
-  
-  .led-icon-blue {
-    background: linear-gradient(135deg, #bfdbfe, #60a5fa);
-  }
-  
-  .led-icon-green {
-    background: linear-gradient(135deg, #bbf7d0, #4ade80);
-  }
-  
-  .led-icon-yellow {
-    background: linear-gradient(135deg, #fef3c7, #f59e0b);
-  }
-  
-  .led-content {
-    flex: 1;
+    margin-bottom: 0.75rem;
   }
   
   .led-title {
+    font-size: 1rem;
     font-weight: 600;
-    color: #111827;
     margin-bottom: 0.25rem;
   }
   
   .led-subtitle {
     font-size: 0.875rem;
-    color: #6b7280;
+    font-weight: 500;
     margin-bottom: 0.5rem;
+    opacity: 0.9;
   }
   
   .led-desc {
@@ -230,36 +211,34 @@
     line-height: 1.4;
   }
   
-  /* Stats Section */
-  .stats-section {
+  .treatment-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
     margin-top: auto;
     padding-top: 1.5rem;
     border-top: 1px solid #e5e7eb;
   }
   
-  .stats-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 1rem;
-  }
-  
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .stat-item {
+  .stat-box {
     text-align: center;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .stat-box:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
   }
   
   .stat-value {
-    font-size: 1.125rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: #0ea5e9;
     display: block;
+    margin-bottom: 0.25rem;
   }
   
   .stat-label {
@@ -274,49 +253,68 @@
     gap: 0.5rem;
     background: #10b981;
     color: white;
-    padding: 0.375rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 500;
+    margin-top: 1rem;
+    align-self: flex-start;
   }
   
-  .tech-note {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 1rem;
-    line-height: 1.4;
+  /* Animation for slider handle */
+  @keyframes pulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+  }
+  
+  .slider-drag {
+    animation: pulse 3s infinite;
   }
   
   /* Responsive Design */
   @media (max-width: 768px) {
-    .split-layout {
+    .split-slider-container {
       flex-direction: column;
       gap: 2rem;
     }
     
-    .led-slider {
+    .led-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .treatment-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .simple-slider {
       height: 400px;
     }
     
-    .led-card {
+    .led-info-card {
       height: auto;
     }
-    
-    .led-item {
-      padding: 0.875rem;
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .led-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
     
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
+    .treatment-stats {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>
 
-<div class="split-layout mb-8">
-  <!-- Left Column: Before/After Slider -->
-  <div class="slider-column">
-    <div class="led-slider h-[450px] md:h-[500px]" id="ledSlider">
-      <div class="slider-inner">
+<div class="split-slider-container mb-8">
+  <!-- Left Section: Before/After Slider -->
+  <div class="slider-section">
+    <div class="simple-slider h-[500px] md:h-[550px]" id="simpleSlider">
+      <div class="slider-images">
         <img class="slider-after" 
              src="{{ 'after.png' | asset_url }}" 
              alt="After 8 weeks of LED mask treatment"
@@ -329,8 +327,8 @@
         
         <div class="slider-line" id="sliderLine"></div>
         
-        <div class="slider-handle" id="sliderHandle">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2">
+        <div class="slider-drag" id="sliderDrag">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2">
             <path d="M8 7l4-4 4 4M8 17l4 4 4-4M12 3v18"/>
           </svg>
         </div>
@@ -338,180 +336,169 @@
     </div>
     
     <div class="slider-labels">
-      <div class="slider-label label-before">
+      <div class="label-item label-before">
         <div class="label-dot"></div>
         <span>Before Treatment</span>
       </div>
-      <div class="slider-label label-after">
+      <div class="label-item label-after">
         <div class="label-dot"></div>
-        <span>After 6 Weeks</span>
+        <span>After 8 Weeks</span>
       </div>
     </div>
   </div>
   
-  <!-- Right Column: LED Technology Card -->
-  <div class="info-column">
-    <div class="led-card w-full">
-      <div class="card-header">
-        <div class="card-title">Advanced LED Technology</div>
-        <div class="card-subtitle">Professional Skin Therapy</div>
-      </div>
+  <!-- Right Section: Compact LED Info Card -->
+  <div class="info-section">
+    <div class="led-info-card">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">Advanced LED Technology</h3>
       
       <div class="led-grid">
         <!-- Red Light -->
-        <div class="led-item">
-          <div class="led-icon led-icon-red">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
-              <circle cx="12" cy="12" r="8"/>
-              <circle cx="12" cy="12" r="4" fill="#dc2626"/>
-            </svg>
+        <div class="led-item led-red">
+          <div class="led-icon bg-red-100">
+            <div class="w-4 h-4 rounded-full bg-red-500"></div>
           </div>
-          <div class="led-content">
-            <div class="led-title">Red Light</div>
-            <div class="led-subtitle">Anti-Aging</div>
-            <div class="led-desc">Stimulates collagen production, reduces fine lines and wrinkles</div>
-          </div>
+          <div class="led-title text-red-700">Red Light</div>
+          <div class="led-subtitle text-red-600">Anti-Aging</div>
+          <p class="led-desc">Stimulates collagen production, reduces fine lines and wrinkles</p>
         </div>
         
         <!-- Blue Light -->
-        <div class="led-item">
-          <div class="led-icon led-icon-blue">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
-              <circle cx="12" cy="12" r="8"/>
-              <path d="M8 12h8" stroke="#2563eb" stroke-width="2"/>
-            </svg>
+        <div class="led-item led-blue">
+          <div class="led-icon bg-blue-100">
+            <div class="w-4 h-4 rounded-full bg-blue-500"></div>
           </div>
-          <div class="led-content">
-            <div class="led-title">Blue Light</div>
-            <div class="led-subtitle">Acne Treatment</div>
-            <div class="led-desc">Eliminates acne-causing bacteria, reduces inflammation</div>
-          </div>
+          <div class="led-title text-blue-700">Blue Light</div>
+          <div class="led-subtitle text-blue-600">Acne Treatment</div>
+          <p class="led-desc">Eliminates acne-causing bacteria, reduces inflammation</p>
         </div>
         
         <!-- Green Light -->
-        <div class="led-item">
-          <div class="led-icon led-icon-green">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
-              <circle cx="12" cy="12" r="8"/>
-              <path d="M9 12l2 2 4-4" stroke="#059669" stroke-width="2"/>
-            </svg>
+        <div class="led-item led-green">
+          <div class="led-icon bg-green-100">
+            <div class="w-4 h-4 rounded-full bg-green-500"></div>
           </div>
-          <div class="led-content">
-            <div class="led-title">Green Light</div>
-            <div class="led-subtitle">Brightening</div>
-            <div class="led-desc">Reduces pigmentation, evens skin tone, enhances brightness</div>
-          </div>
+          <div class="led-title text-green-700">Green Light</div>
+          <div class="led-subtitle text-green-600">Brightening</div>
+          <p class="led-desc">Reduces pigmentation, evens skin tone, enhances brightness</p>
         </div>
         
         <!-- Yellow Light -->
-        <div class="led-item">
-          <div class="led-icon led-icon-yellow">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
-              <circle cx="12" cy="12" r="8"/>
-              <path d="M12 8v8M8 12h8" stroke="#d97706" stroke-width="2"/>
-            </svg>
+        <div class="led-item led-yellow">
+          <div class="led-icon bg-yellow-100">
+            <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
           </div>
-          <div class="led-content">
-            <div class="led-title">Yellow Light</div>
-            <div class="led-subtitle">Calming</div>
-            <div class="led-desc">Reduces redness, soothes irritation, improves skin healing</div>
-          </div>
+          <div class="led-title text-yellow-700">Yellow Light</div>
+          <div class="led-subtitle text-yellow-600">Calming</div>
+          <p class="led-desc">Reduces redness, soothes irritation, improves skin healing</p>
         </div>
       </div>
       
-      <div class="stats-section">
-        <div class="stats-title">Treatment Details</div>
-        
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-value">10 min/day</span>
-            <span class="stat-label">Treatment Time</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">4-6 weeks</span>
-            <span class="stat-label">Visible Results</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">150+ LEDs</span>
-            <span class="stat-label">LED Count</span>
-          </div>
+      <!-- Treatment Stats -->
+      <div class="treatment-stats">
+        <div class="stat-box">
+          <span class="stat-value">10 min/day</span>
+          <span class="stat-label">Treatment Time</span>
         </div>
         
-        <div class="fda-badge">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 6L9 17l-5-5"/>
-          </svg>
-          <span>FDA Cleared</span>
+        <div class="stat-box">
+          <span class="stat-value">4-6 weeks</span>
+          <span class="stat-label">Visible Results</span>
         </div>
         
-        <div class="tech-note">
-          Medical-grade LED technology used by dermatologists worldwide
+        <div class="stat-box">
+          <span class="stat-value">150+ LEDs</span>
+          <span class="stat-label">LED Count</span>
         </div>
       </div>
+      
+      <!-- FDA Badge -->
+      <div class="fda-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+        <span>FDA Cleared</span>
+      </div>
+      
+      <p class="text-sm text-gray-600 mt-4">Medical-grade LED technology used by dermatologists worldwide</p>
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const slider = document.getElementById('ledSlider');
-    const beforeImg = slider.querySelector('.slider-before');
-    const line = document.getElementById('sliderLine');
-    const handle = document.getElementById('sliderHandle');
-    let dragging = false;
+document.addEventListener('DOMContentLoaded', function() {
+  const beforeImg = document.querySelector('.slider-before');
+  const line = document.getElementById('sliderLine');
+  const drag = document.getElementById('sliderDrag');
+  const slider = document.getElementById('simpleSlider');
+  let dragging = false;
+  
+  function moveSlider(x) {
+    const rect = slider.getBoundingClientRect();
+    let pos = ((x - rect.left) / rect.width) * 100;
+    pos = Math.max(0, Math.min(pos, 100));
     
-    function moveSlider(x) {
-      const rect = slider.getBoundingClientRect();
-      let pos = ((x - rect.left) / rect.width) * 100;
-      pos = Math.max(0, Math.min(pos, 100));
-      
-      beforeImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
-      line.style.left = `${pos}%`;
-      handle.style.left = `${pos}%`;
-    }
-    
-    // Mouse events
-    handle.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      dragging = true;
-    });
-    
-    slider.addEventListener('mousedown', (e) => {
-      dragging = true;
-      moveSlider(e.clientX);
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-      if (dragging) moveSlider(e.clientX);
-    });
-    
-    document.addEventListener('mouseup', () => {
-      dragging = false;
-    });
-    
-    // Touch events
-    handle.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      dragging = true;
-    });
-    
-    slider.addEventListener('touchstart', (e) => {
-      dragging = true;
-      moveSlider(e.touches[0].clientX);
-    });
-    
-    document.addEventListener('touchmove', (e) => {
-      if (dragging) {
-        e.preventDefault();
-        moveSlider(e.touches[0].clientX);
-      }
-    });
-    
-    document.addEventListener('touchend', () => {
-      dragging = false;
-    });
-    
-    // Initialize
-    moveSlider(window.innerWidth / 2);
+    beforeImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+    line.style.left = `${pos}%`;
+    drag.style.left = `${pos}%`;
+  }
+  
+  drag.addEventListener('mousedown', () => {
+    dragging = true;
+    drag.style.animation = 'none';
   });
+  
+  slider.addEventListener('mousedown', (e) => {
+    dragging = true;
+    moveSlider(e.clientX);
+    drag.style.animation = 'none';
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (dragging) moveSlider(e.clientX);
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (dragging) {
+      dragging = false;
+      drag.style.animation = 'pulse 3s infinite';
+    }
+  });
+  
+  // Touch support
+  drag.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    dragging = true;
+    drag.style.animation = 'none';
+  });
+  
+  slider.addEventListener('touchstart', (e) => {
+    dragging = true;
+    moveSlider(e.touches[0].clientX);
+    drag.style.animation = 'none';
+  });
+  
+  document.addEventListener('touchmove', (e) => {
+    if (dragging) moveSlider(e.touches[0].clientX);
+  });
+  
+  document.addEventListener('touchend', () => {
+    if (dragging) {
+      dragging = false;
+      drag.style.animation = 'pulse 3s infinite';
+    }
+  });
+  
+  // Keyboard support
+  document.addEventListener('keydown', (e) => {
+    const rect = slider.getBoundingClientRect();
+    const currentPos = parseFloat(line.style.left) || 50;
+    
+    if (e.key === 'ArrowLeft') {
+      moveSlider(rect.left + (rect.width * (currentPos - 5) / 100));
+    } else if (e.key === 'ArrowRight') {
+      moveSlider(rect.left + (rect.width * (currentPos + 5) / 100));
+    }
+  });
+});
 </script>
