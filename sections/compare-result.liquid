@@ -142,12 +142,12 @@
     
     <!-- Before Image -->
     <div class="before-image-overlay rounded-2xl" 
-         style="background-image: url('{{ before.jpg | asset_url}}');"
+         style="background-image: url('{{ section.settings.before_image | image_url: width: 1200 }}');"
          id="ledBeforeImage"></div>
     
     <!-- After Image -->
     <div class="after-image-overlay rounded-2xl"
-         style="background-image: url('{{ after.png | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
+         style="background-image: url('{{ section.settings.after_image | image_url: width: 1200 }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
          id="ledAfterImage"></div>
     
     <!-- Slider Divider Line -->
