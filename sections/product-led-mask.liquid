@@ -1,10 +1,11 @@
 {% comment %}
   Section: Product LED Mask
-  Description: Product display with gallery and purchase options
+  Description: Product display with gallery, purchase options, and AJAX cart integration.
 {% endcomment %}
 
 {% assign featured_product = all_products['14-silicone-face-neck-photon-mask'] %}
 {% assign discounted_price = featured_product.price | times: 0.65 %}
+{% assign featured_variant = featured_product.selected_or_first_available_variant %}
 
 <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10 mb-8" id="product-section">
     <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
@@ -22,20 +23,17 @@
                 class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
             >
                 {% for media in featured_product.media %}
-                    {% assign is_active = false %}
-                    {% if forloop.first %}
-                        {% assign is_active = true %}
-                    {% endif %}
+                    {% assign is_active = forloop.first %}
                     <img src="{{ media.preview_image | img_url: 'medium' }}"
                         alt="{{ media.alt | escape }}"
                         data-full-url="{{ media | img_url: '1024x1024' }}"
                         data-media-id="{{ media.id }}"
                         class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100
-                                        {% if is_active %}
-                                            border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
-                                        {% else %}
-                                            border-gray-300 border opacity-75
-                                        {% endif %}"
+                            {% if is_active %}
+                                border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
+                            {% else %}
+                                border-gray-300 border opacity-75
+                            {% endif %}"
                         onclick="swapMedia(this, '{{ media | img_url: '1024x1024' }}')"
                     />
                 {% endfor %}
@@ -48,8 +46,7 @@
             {{ featured_product.title }}
         </h1>
 
-        <!-- Price Display - 35% DISCOUNT -->
-        <div class="mt-2 mb-6">
+        <div class="mt-2 mb-6" id="price-display-container">
             <span class="text-xl font-bold text-gray-900">
                 {{ discounted_price | money_without_trailing_zeros }}
             </span>
@@ -60,95 +57,99 @@
                 Save 35%
             </div>
         </div>
-
-        <!-- Package Options -->
-        <div class="mb-6">
-            <h3 class="text-base font-semibold text-gray-800 mb-3">Choose Your Package:</h3>
+        
+        <form method="post" action="/cart/add" id="product-form-{{ featured_product.id }}" class="mb-6">
             
-            <div class="grid grid-cols-2 gap-3">
-                <!-- Single Mask Option -->
-                <div id="singleMaskOption" class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
-                    data-quantity="1"
-                    data-original-price="{{ featured_product.price | money }}"
-                    data-discounted-price="{{ discounted_price | money }}"
-                    onclick="selectMaskOption(this, 1)">
-                    
-                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center">
-                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
+            <input type="hidden" name="id" value="{{ featured_variant.id }}" id="variant-id-input">
+            <input type="hidden" name="quantity" value="1" id="quantity-input">
 
-                    <div class="flex flex-col items-center text-center">
-                        <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <img src="{{ 'single.jpg' | asset_url }}" 
-                                alt="Single Face & Neck Mask" 
-                                class="w-10 h-10 object-contain"
-                                onerror="this.style.display='none'">
-                            <div class="text-lg font-bold text-gray-700">1x</div>
-                        </div>
+            <div>
+                <h3 class="text-base font-semibold text-gray-800 mb-3">Choose Your Package:</h3>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div id="singleMaskOption" class="mask-option relative border-2 border-[#FA8072] rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md bg-rose-50"
+                        data-quantity="1"
+                        data-original-price="{{ featured_product.price | money_without_trailing_zeros }}"
+                        data-discounted-price="{{ discounted_price | money_without_trailing_zeros }}"
+                        onclick="selectMaskOption(this, 1)">
                         
-                        <h4 class="text-sm font-medium text-gray-900 mb-1">Single Mask</h4>
-                        <div class="text-base font-bold text-[#FA8072]">
-                            {{ discounted_price | money }}
+                        <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
                         </div>
-                        <div class="text-xs line-through text-gray-500">
-                            {{ featured_product.price | money }}
+
+                        <div class="flex flex-col items-center text-center">
+                            <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <div class="text-lg font-bold text-gray-700">1x</div>
+                            </div>
+                            
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">Single Mask</h4>
+                            <div class="text-base font-bold text-[#FA8072]">
+                                {{ discounted_price | money_without_trailing_zeros }}
+                            </div>
+                            <div class="text-xs line-through text-gray-500">
+                                {{ featured_product.price | money_without_trailing_zeros }}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Double Mask Option -->
-                <div id="doubleMaskOption" class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
-                    data-quantity="2"
-                    data-original-price="{{ featured_product.price | times: 2 | money }}"
-                    data-discounted-price="{{ discounted_price | times: 2 | money }}"
-                    onclick="selectMaskOption(this, 2)">
-                    
-                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
-                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
+                    <div id="doubleMaskOption" class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+                        data-quantity="2"
+                        data-original-price="{{ featured_product.price | times: 2 | money_without_trailing_zeros }}"
+                        data-discounted-price="{{ discounted_price | times: 2 | money_without_trailing_zeros }}"
+                        onclick="selectMaskOption(this, 2)">
+                        
+                        <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
 
-                    <div class="flex flex-col items-center text-center">
-                        <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <img src="{{ 'double.png' | asset_url }}" 
-                                alt="Two Face & Neck Masks" 
-                                class="w-10 h-10 object-contain"
-                                onerror="this.style.display='none'">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
                                 <div class="text-lg font-bold text-gray-700">2x</div>
-                        </div>
-                        
-                        <h4 class="text-sm font-medium text-gray-900 mb-1">Double Pack</h4>
-                        <div class="text-base font-bold text-[#FA8072]">
-                            {{ discounted_price | times: 2 | money }}
-                        </div>
-                        <div class="text-xs line-through text-gray-500">
-                            {{ featured_product.price | times: 2 | money }}
-                        </div>
-                        {% assign save_amount = featured_product.price | times: 2 | minus: discounted_price | times: 2 %}
-                        <div class="text-xs text-green-600 font-medium mt-1" data-save-amount="Save {{ save_amount | money }}">
-                            Save {{ save_amount | money }}
+                            </div>
+                            
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">Double Pack</h4>
+                            <div class="text-base font-bold text-[#FA8072]">
+                                {{ discounted_price | times: 2 | money_without_trailing_zeros }}
+                            </div>
+                            <div class="text-xs line-through text-gray-500">
+                                {{ featured_product.price | times: 2 | money_without_trailing_zeros }}
+                            </div>
+                            {% assign save_amount = featured_product.price | times: 2 | minus: discounted_price | times: 2 %}
+                            <div class="text-xs text-green-600 font-medium mt-1" data-save-amount="Save {{ save_amount | money_without_trailing_zeros }}">
+                                Save {{ save_amount | money_without_trailing_zeros }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Add to Cart Button -->
-        <div class="mt-6">
-            <button id="addToCartButton" 
-                    class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
-                    data-variant-id="{{ featured_product.selected_or_first_available_variant.id }}">
-                Add to Cart - <span class="quantity-text">1 Mask</span>
-            </button>
+            <div class="mt-6">
+                <button type="submit" id="addToCartButton" 
+                        class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200">
+                    Add to Cart - <span class="quantity-text">1 Mask</span>
+                </button>
+            </div>
+        </form>
         </div>
-    </div>
 </div>
 
+<div id="cart-notification" class="fixed bottom-4 right-4 bg-green-600 text-white p-3 rounded-lg shadow-xl hidden transition-opacity duration-300 z-50">
+    Product added to cart!
+</div>
+
+
 <script>
-// Product-specific JavaScript
+// Global elements
+const form = document.getElementById('product-form-{{ featured_product.id }}');
+const variantIdInput = document.getElementById('variant-id-input');
+const quantityInput = document.getElementById('quantity-input');
+const notification = document.getElementById('cart-notification');
+
+// Product-specific JavaScript (media swapping remains the same)
 function swapMedia(thumbnail, fullImageUrl) {
     const mediaDisplay = document.getElementById('media-display');
     const thumbnails = document.querySelectorAll('.media-thumbnail');
@@ -172,11 +173,8 @@ function swapMedia(thumbnail, fullImageUrl) {
 }
 
 // Mask selection functionality
-let selectedQuantity = 1;
-let selectedPackageElement = null;
-
 function selectMaskOption(element, quantity) {
-    // Remove selection from all options
+    // Styling/Checkmark update (your existing code)
     document.querySelectorAll('.mask-option').forEach(option => {
         option.classList.remove('border-[#FA8072]', 'bg-rose-50');
         option.classList.add('border-gray-200', 'bg-white');
@@ -184,35 +182,27 @@ function selectMaskOption(element, quantity) {
         if (checkmark) checkmark.style.display = 'none';
     });
 
-    // Add selection to clicked option
     element.classList.add('border-[#FA8072]', 'bg-rose-50');
     element.classList.remove('border-gray-200', 'bg-white');
     const checkmark = element.querySelector('.absolute');
     if (checkmark) checkmark.style.display = 'flex';
 
-    // Update selected quantity and store selected element
-    selectedQuantity = quantity;
-    selectedPackageElement = element;
+    // **CRITICAL FIX 1:** Update the hidden form fields
+    if (quantityInput) {
+        quantityInput.value = quantity;
+    }
 
     // Update button text
     const button = document.getElementById('addToCartButton');
     const quantityText = button.querySelector('.quantity-text');
-    
-    if (quantity === 1) {
-        quantityText.textContent = '1 Mask';
-    } else {
-        quantityText.textContent = '2 Masks';
-    }
+    quantityText.textContent = (quantity === 1) ? '1 Mask' : `${quantity} Masks`;
 
-    // Get the discounted price from the data attribute
-    const discountedPrice = element.getAttribute('data-discounted-price');
-    
-    // Update the main price display (if it exists)
-    const priceDisplay = document.querySelector('.mt-2.mb-6');
+    // Update price display (Your existing logic)
+    const priceDisplay = document.getElementById('price-display-container');
     if (priceDisplay) {
         const originalPrice = element.getAttribute('data-original-price');
+        const discountedPrice = element.getAttribute('data-discounted-price');
         
-        // Create the updated price display
         let priceHTML = `
             <span class="text-xl font-bold text-gray-900">
                 ${discountedPrice}
@@ -222,12 +212,9 @@ function selectMaskOption(element, quantity) {
             </span>
         `;
         
-        // Add save percentage for single mask
         if (quantity === 1) {
             priceHTML += '<div class="text-sm text-green-600 font-medium mt-1">Save 35%</div>';
-        }
-        // Add save amount for double pack (if available in data attribute)
-        else if (element.getAttribute('data-save-amount')) {
+        } else if (element.getAttribute('data-save-amount')) {
             const saveAmount = element.getAttribute('data-save-amount');
             priceHTML += `<div class="text-xs text-green-600 font-medium mt-1">${saveAmount}</div>`;
         }
@@ -236,24 +223,91 @@ function selectMaskOption(element, quantity) {
     }
 }
 
-// Initialize with single mask selected
+// **AJAX FORM SUBMISSION**
+form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Stop the default form submission (page reload)
+
+    const formData = new FormData(event.target);
+    const lineItem = {
+        items: [{
+            id: formData.get('id'),
+            quantity: formData.get('quantity')
+        }]
+    };
+
+    fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(lineItem)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Success: Update UI
+        updateCartCount();
+        showNotification();
+        
+        // Optionally, reset button text after success
+        const button = document.getElementById('addToCartButton');
+        button.textContent = 'Added to Cart!';
+        setTimeout(() => {
+             // Reset button text back to current selection
+             const selectedQuantity = quantityInput.value;
+             button.innerHTML = `Add to Cart - <span class="quantity-text">${selectedQuantity} Mask${selectedQuantity > 1 ? 's' : ''}</span>`;
+        }, 1500);
+
+    })
+    .catch((error) => {
+        console.error('Error adding to cart:', error);
+        alert('There was an error adding the product to your cart. Please try again.');
+    });
+});
+
+function updateCartCount() {
+    // Fetches the current cart data and updates the badge in the header
+    fetch('/cart.js')
+        .then(response => response.json())
+        .then(cart => {
+            const cartCountElements = document.querySelectorAll('.cart-count');
+            cartCountElements.forEach(el => {
+                el.textContent = cart.item_count;
+                el.parentElement.style.display = cart.item_count > 0 ? 'flex' : 'none'; // Show/Hide if 0
+            });
+        });
+}
+
+function showNotification() {
+    notification.classList.remove('hidden');
+    notification.style.opacity = 1;
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+        notification.style.opacity = 0;
+        setTimeout(() => {
+            notification.classList.add('hidden');
+        }, 300);
+    }, 3000);
+}
+
+
+// Initialization
 document.addEventListener('DOMContentLoaded', function() {
     const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
     if (singleMaskOption) {
         selectMaskOption(singleMaskOption, 1);
-        selectedPackageElement = singleMaskOption;
     }
 });
 </script>
 
 {% schema %}
 {
-  "name": "Product LED Mask",
-  "settings": [],
-  "presets": [
-    {
-      "name": "Product LED Mask"
-    }
-  ]
+    "name": "Product LED Mask",
+    "settings": [],
+    "presets": [
+        {
+            "name": "Product LED Mask"
+        }
+    ]
 }
 {% endschema %}
