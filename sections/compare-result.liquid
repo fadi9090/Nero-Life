@@ -313,7 +313,7 @@
 <div class="split-slider-container mb-8">
   <!-- Left Section: Before/After Slider -->
   <div class="slider-section">
-    <div class="simple-slider h-[500px] md:h-[550px]" id="simpleSlider">
+    <div class="simple-slider h-[450px] md:h-[500px]" id="simpleSlider">
       <div class="slider-images">
         <img class="slider-after" 
              src="{{ 'after.png' | asset_url }}" 
@@ -426,79 +426,79 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const beforeImg = document.querySelector('.slider-before');
-  const line = document.getElementById('sliderLine');
-  const drag = document.getElementById('sliderDrag');
-  const slider = document.getElementById('simpleSlider');
-  let dragging = false;
-  
-  function moveSlider(x) {
-    const rect = slider.getBoundingClientRect();
-    let pos = ((x - rect.left) / rect.width) * 100;
-    pos = Math.max(0, Math.min(pos, 100));
+  document.addEventListener('DOMContentLoaded', function() {
+    const beforeImg = document.querySelector('.slider-before');
+    const line = document.getElementById('sliderLine');
+    const drag = document.getElementById('sliderDrag');
+    const slider = document.getElementById('simpleSlider');
+    let dragging = false;
     
-    beforeImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
-    line.style.left = `${pos}%`;
-    drag.style.left = `${pos}%`;
-  }
-  
-  drag.addEventListener('mousedown', () => {
-    dragging = true;
-    drag.style.animation = 'none';
-  });
-  
-  slider.addEventListener('mousedown', (e) => {
-    dragging = true;
-    moveSlider(e.clientX);
-    drag.style.animation = 'none';
-  });
-  
-  document.addEventListener('mousemove', (e) => {
-    if (dragging) moveSlider(e.clientX);
-  });
-  
-  document.addEventListener('mouseup', () => {
-    if (dragging) {
-      dragging = false;
-      drag.style.animation = 'pulse 3s infinite';
+    function moveSlider(x) {
+      const rect = slider.getBoundingClientRect();
+      let pos = ((x - rect.left) / rect.width) * 100;
+      pos = Math.max(0, Math.min(pos, 100));
+      
+      beforeImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+      line.style.left = `${pos}%`;
+      drag.style.left = `${pos}%`;
     }
-  });
-  
-  // Touch support
-  drag.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    dragging = true;
-    drag.style.animation = 'none';
-  });
-  
-  slider.addEventListener('touchstart', (e) => {
-    dragging = true;
-    moveSlider(e.touches[0].clientX);
-    drag.style.animation = 'none';
-  });
-  
-  document.addEventListener('touchmove', (e) => {
-    if (dragging) moveSlider(e.touches[0].clientX);
-  });
-  
-  document.addEventListener('touchend', () => {
-    if (dragging) {
-      dragging = false;
-      drag.style.animation = 'pulse 3s infinite';
-    }
-  });
-  
-  // Keyboard support
-  document.addEventListener('keydown', (e) => {
-    const rect = slider.getBoundingClientRect();
-    const currentPos = parseFloat(line.style.left) || 50;
     
-    if (e.key === 'ArrowLeft') {
-      moveSlider(rect.left + (rect.width * (currentPos - 5) / 100));
-    } else if (e.key === 'ArrowRight') {
-      moveSlider(rect.left + (rect.width * (currentPos + 5) / 100));
-    }
+    drag.addEventListener('mousedown', () => {
+      dragging = true;
+      drag.style.animation = 'none';
+    });
+    
+    slider.addEventListener('mousedown', (e) => {
+      dragging = true;
+      moveSlider(e.clientX);
+      drag.style.animation = 'none';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (dragging) moveSlider(e.clientX);
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (dragging) {
+        dragging = false;
+        drag.style.animation = 'pulse 3s infinite';
+      }
+    });
+    
+    // Touch support
+    drag.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      dragging = true;
+      drag.style.animation = 'none';
+    });
+    
+    slider.addEventListener('touchstart', (e) => {
+      dragging = true;
+      moveSlider(e.touches[0].clientX);
+      drag.style.animation = 'none';
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+      if (dragging) moveSlider(e.touches[0].clientX);
+    });
+    
+    document.addEventListener('touchend', () => {
+      if (dragging) {
+        dragging = false;
+        drag.style.animation = 'pulse 3s infinite';
+      }
+    });
+    
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      const rect = slider.getBoundingClientRect();
+      const currentPos = parseFloat(line.style.left) || 50;
+      
+      if (e.key === 'ArrowLeft') {
+        moveSlider(rect.left + (rect.width * (currentPos - 5) / 100));
+      } else if (e.key === 'ArrowRight') {
+        moveSlider(rect.left + (rect.width * (currentPos + 5) / 100));
+      }
+    });
   });
-});
 </script>
