@@ -1,5 +1,5 @@
 {% comment %}
-  Compact Layout: Before/After Slider + All LED Info in One Card
+  Fixed Height Layout: Before/After Slider + LED Info Card - Matching Heights
 {% endcomment %}
 
 <style>
@@ -7,15 +7,17 @@
     display: flex;
     gap: 2rem;
     width: 100%;
-    align-items: stretch; /* Make both sides same height */
+    align-items: stretch;
   }
   
-  .slider-section {
+  .slider-wrapper {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
   }
   
-  .info-section {
+  .info-wrapper {
     flex: 1;
     min-width: 0;
     display: flex;
@@ -29,7 +31,7 @@
     overflow: hidden;
     background: #f8fafc;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    height: 100%; /* Take full height of container */
+    flex: 1; /* This makes slider fill available space */
   }
   
   .slider-images {
@@ -92,21 +94,27 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.2);
   }
   
-  .slider-labels {
+  /* Labels now inside the slider container */
+  .slider-labels-container {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-    padding: 0 0.5rem;
+    padding: 0;
+    height: auto;
   }
   
   .label-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #f8fafc;
+    padding: 0.75rem 1.25rem;
+    background: white;
     border-radius: 8px;
     font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    flex: 1;
+    max-width: 48%;
   }
   
   .label-before {
@@ -131,14 +139,14 @@
     background: #059669;
   }
   
-  /* Compact LED Info Card */
+  /* LED Info Card - Same height as slider */
   .led-info-card {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid #e5e7eb;
-    height: 100%; /* Match slider height */
+    height: 100%; /* This makes it match the slider wrapper height */
     display: flex;
     flex-direction: column;
   }
@@ -282,6 +290,10 @@
       gap: 2rem;
     }
     
+    .slider-wrapper, .info-wrapper {
+      width: 100%;
+    }
+    
     .led-grid {
       grid-template-columns: 1fr;
     }
@@ -297,9 +309,17 @@
     .led-info-card {
       height: auto;
     }
+    
+    .label-item {
+      padding: 0.5rem 1rem;
+    }
   }
   
   @media (min-width: 769px) and (max-width: 1024px) {
+    .split-slider-container {
+      gap: 1.5rem;
+    }
+    
     .led-grid {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -310,10 +330,11 @@
   }
 </style>
 
-<div class="split-slider-container mb-8 bg-white p-6 rounded-2xl shadow-lg">
-  <!-- Left Section: Before/After Slider -->
-  <div class="slider-section">
-    <div class="simple-slider h-[450px] md:h-[500px]" id="simpleSlider">
+<div class="split-slider-container mb-8 bg-gray-50 p-6 rounded-2xl shadow-lg">
+  <!-- Left Section: Before/After Slider with Labels -->
+  <div class="slider-wrapper">
+    <!-- Slider Box -->
+    <div class="simple-slider" id="simpleSlider">
       <div class="slider-images">
         <img class="slider-after" 
              src="{{ 'after.png' | asset_url }}" 
@@ -335,7 +356,8 @@
       </div>
     </div>
     
-    <div class="slider-labels">
+    <!-- Labels - Now part of the slider wrapper -->
+    <div class="slider-labels-container">
       <div class="label-item label-before">
         <div class="label-dot"></div>
         <span>Before Treatment</span>
@@ -347,8 +369,8 @@
     </div>
   </div>
   
-  <!-- Right Section: Compact LED Info Card -->
-  <div class="info-section">
+  <!-- Right Section: LED Info Card -->
+  <div class="info-wrapper">
     <div class="led-info-card">
       <h3 class="text-lg font-bold text-gray-900 mb-4">Advanced LED Technology</h3>
       
@@ -500,5 +522,34 @@
         moveSlider(rect.left + (rect.width * (currentPos + 5) / 100));
       }
     });
+    
+    // Match heights function
+    function matchHeights() {
+      const leftWrapper = document.querySelector('.slider-wrapper');
+      const rightWrapper = document.querySelector('.info-wrapper');
+      
+      if (leftWrapper && rightWrapper) {
+        const leftHeight = leftWrapper.offsetHeight;
+        const rightHeight = rightWrapper.offsetHeight;
+        
+        // Set both to the taller height
+        const maxHeight = Math.max(leftHeight, rightHeight);
+        
+        if (window.innerWidth > 768) { // Desktop only
+          leftWrapper.style.height = maxHeight + 'px';
+          rightWrapper.style.height = maxHeight + 'px';
+        } else {
+          // Reset on mobile
+          leftWrapper.style.height = '';
+          rightWrapper.style.height = '';
+        }
+      }
+    }
+    
+    // Initial height match
+    setTimeout(matchHeights, 100);
+    
+    // Update on window resize
+    window.addEventListener('resize', matchHeights);
   });
 </script>
