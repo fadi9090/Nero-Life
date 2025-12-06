@@ -41,7 +41,8 @@
                 <div class="flex items-baseline justify-center lg:justify-start space-x-2 sm:space-x-3 mb-4 sm:mb-6">
                     <span class="text-2xl sm:text-3xl lg:text-6xl font-black text-rose-200 drop-shadow-md">
                         {% if featured_product.price != blank %}
-                            {{ featured_product.price | money_without_trailing_zeros }}
+                            {% assign discounted_price = featured_product.price | times: 0.65 %}
+                            {{ discounted_price | money_without_trailing_zeros }}
                         {% else %}
                             $64.99
                         {% endif %}

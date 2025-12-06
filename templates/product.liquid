@@ -74,7 +74,7 @@
             <!-- Price Display - 30% DISCOUNT -->
             <div class="mt-2 mb-6">
                 {% comment %} Calculate 30% OFF price (70% of original) {% endcomment %}
-                {% assign discounted_price = product.price | times: 0.7 %}
+                {% assign discounted_price = product.price | times: 0.65 %}
                 
                 <span class="text-xl font-bold text-gray-900">
                     {{ discounted_price | money }}
