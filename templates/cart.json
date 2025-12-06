@@ -1,8 +1,11 @@
 {
-    "sections": {
-        "template": {
-            "type": "cart-drawer"
-        }
+  "sections": {
+    "cart-drawer": {
+      "type": "cart-drawer"
     },
-    "order": ["template"]
+    "template": {
+      "type": "template-cart"
+    }
+  },
+  "order": ["cart-drawer", "template"]
 }
