@@ -1,6 +1,6 @@
 {% comment %}
   LED Mask Before-After Slider Component
-  Replace YOUR_BEFORE_IMAGE_URL and YOUR_AFTER_IMAGE_URL with actual image URLs
+  Make sure you have uploaded 'before.jpg' and 'after.png' to your Shopify assets
 {% endcomment %}
 
 <style>
@@ -140,14 +140,14 @@
   <div class="comparison-slider-container h-[500px] md:h-[600px] cursor-ew-resize" 
        id="ledComparisonContainer">
     
-    <!-- Before Image -->
+    <!-- Before Image - CORRECTED LIQUID SYNTAX -->
     <div class="before-image-overlay rounded-2xl" 
-         style="background-image: url('{{ before.jpg | asset_url }}');"
+         style="background-image: url('{{ 'before.jpg' | asset_url }}');"
          id="ledBeforeImage"></div>
     
-    <!-- After Image -->
+    <!-- After Image - CORRECTED LIQUID SYNTAX -->
     <div class="after-image-overlay rounded-2xl"
-         style="background-image: url('{{ after.png | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
+         style="background-image: url('{{ 'after.png' | asset_url }}'); filter: brightness(1.05) saturate(1.1) contrast(1.05);"
          id="ledAfterImage"></div>
     
     <!-- Slider Divider Line -->
@@ -206,6 +206,14 @@
     
     let isDragging = false;
     let currentPosition = 50;
+    
+    // Debug: Check if images are loading
+    console.log('Before image URL:', beforeImage.style.backgroundImage);
+    console.log('After image URL:', document.getElementById('ledAfterImage').style.backgroundImage);
+    
+    // Set fallback background colors in case images fail to load
+    beforeImage.style.backgroundColor = '#f0f0f0';
+    document.getElementById('ledAfterImage').style.backgroundColor = '#f5f5f5';
     
     // Update slider position
     function updateSliderPosition(clientX) {
