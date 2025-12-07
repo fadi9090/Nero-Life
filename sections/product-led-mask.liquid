@@ -231,11 +231,15 @@
         }
     }
 
-    // 🌟 THIS IS THE CRITICAL AJAX FUNCTION THAT WAS MISSING 🌟
+    // 🌟 THIS IS THE CRITICAL AJAX FUNCTION THAT WAS MISSING 
     function addToCart(variantId, quantity) {
         const button = document.getElementById('addToCartButton');
         const originalButtonText = button.innerHTML;
         
+        // 1. Get the Package Title from the selected element
+        const packageTitleElement = selectedPackageElement.querySelector('h4');
+        const packageTitle = packageTitleElement ? packageTitleElement.textContent : 'Single Mask';
+
         // Disable button and show loading state
         button.disabled = true;
         button.innerHTML = 'Adding...';
@@ -244,12 +248,17 @@
             items: [
                 {
                     id: variantId,
-                    quantity: quantity
+                    quantity: quantity, // This sends 1 or 2 as the quantity
+                    // 2. Add Line Item Property to capture the customer's selection
+                    properties: {
+                        'Package': packageTitle // Stores the selection (e.g., "Single Mask")
+                    }
                 }
             ]
         };
 
         fetch(`${window.Shopify.routes.root}cart/add.js`, {
+            // ... (rest of the fetch call remains the same) ...
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -264,6 +273,9 @@
                 bubbles: true, 
                 detail: { item_count: data.item_count }
             }));
+            
+            // 3. Trigger the "Fly to Cart" animation here (see below)
+            flyToCartAnimation(button);
 
             // Re-enable button after a short delay
             button.innerHTML = 'Added! 🎉';
@@ -271,11 +283,10 @@
                 button.innerHTML = originalButtonText;
                 button.disabled = false;
             }, 1500);
-
-            // Optional: If you have a cart drawer, you'd open it here.
             
         })
         .catch(error => {
+            // ... (error handling remains the same) ...
             console.error('Error adding to cart:', error);
             button.innerHTML = 'Error!';
             setTimeout(() => {
