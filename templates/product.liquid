@@ -446,415 +446,190 @@
 </div> 
 
 <script>
-    // Mask selection functionality
-    let selectedQuantity = 1;
-    let selectedPackageElement = null;
+    // Set up global elements
+    const addToCartButton = document.getElementById('addToCartButton');
+    const mediaDisplay = document.getElementById('media-display');
+    const priceDisplay = document.getElementById('price-display');
+    const comparePriceDisplay = document.getElementById('compare-price-display');
+    const cartIconElement = document.querySelector('.cart-icon-btn'); // Assuming this is in your header snippet
 
-    function selectMaskOption(element, quantity) {
-        // Remove selection from all options
-        document.querySelectorAll('.mask-option').forEach(option => {
-            option.classList.remove('border-[#FA8072]', 'bg-rose-50');
-            option.classList.add('border-gray-200', 'bg-white');
-            const checkmark = option.querySelector('.absolute');
-            if (checkmark) checkmark.style.display = 'none';
+    // --- Price Formatting Utility ---
+    // Function to format price (as Shopify uses cents, this converts the integer to a visible string)
+    // IMPORTANT: This is a basic formatter. For full currency support, use Shopify's built-in formatting Liquid filters.
+    function formatPrice(cents) {
+        if (typeof Shopify.formatMoney === 'function') {
+             // Use Shopify's global function if available
+            return Shopify.formatMoney(cents, "{{ shop.money_format }}");
+        }
+        // Fallback simple formatter
+        return '$' + (cents / 100).toFixed(2);
+    }
+
+    // --- 1. Package Selection Logic ---
+    window.selectMaskOption = function(element, quantity) {
+        // 1. Update selection visual state
+        document.querySelectorAll('.mask-option').forEach(opt => {
+            opt.classList.remove('border-[#FA8072]', 'bg-rose-50');
+            opt.classList.add('border-gray-200');
+            opt.querySelector('.selection-indicator').classList.add('hidden');
         });
 
-        // Add selection to clicked option
         element.classList.add('border-[#FA8072]', 'bg-rose-50');
-        element.classList.remove('border-gray-200', 'bg-white');
-        const checkmark = element.querySelector('.absolute');
-        if (checkmark) checkmark.style.display = 'flex';
+        element.classList.remove('border-gray-200');
+        element.querySelector('.selection-indicator').classList.remove('hidden');
 
-        // Update selected quantity and store selected element
-        selectedQuantity = quantity;
-        selectedPackageElement = element;
-
-        // Update button text
-        const button = document.getElementById('addToCartButton');
-        const quantityText = button.querySelector('.quantity-text');
-        
-        if (quantity === 1) {
-            quantityText.textContent = '1 Mask';
-        } else {
-            quantityText.textContent = '2 Masks';
-        }
-
-        // Get the discounted price from the data attribute
+        // 2. Update Add to Cart button attributes
+        const packageName = element.getAttribute('data-package-name');
         const discountedPrice = element.getAttribute('data-discounted-price');
-        
-        // Update the main price display (if it exists)
-        const priceDisplay = document.querySelector('.mt-2.mb-6');
-        if (priceDisplay) {
-            const originalPrice = element.getAttribute('data-original-price');
-            
-            // Create the updated price display
-            let priceHTML = `
-                <span class="text-xl font-bold text-gray-900">
-                    ${discountedPrice}
-                </span>
-                <span class="text-base line-through text-gray-500 ml-2">
-                    ${originalPrice}
-                </span>
-            `;
-            
-            // Add save percentage for single mask
-            if (quantity === 1) {
-                priceHTML += '<div class="text-sm text-green-600 font-medium mt-1">Save 30%</div>';
-            }
-            // Add save amount for double pack (if available in data attribute)
-            else if (element.getAttribute('data-save-amount')) {
-                const saveAmount = element.getAttribute('data-save-amount');
-                priceHTML += `<div class="text-xs text-green-600 font-medium mt-1">${saveAmount}</div>`;
-            }
-            
-            priceDisplay.innerHTML = priceHTML;
-        }
+        const originalPrice = element.getAttribute('data-original-price');
+
+        addToCartButton.setAttribute('data-quantity', quantity);
+        addToCartButton.setAttribute('data-package-name', packageName);
+        addToCartButton.querySelector('.quantity-text').textContent = quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
+
+        // 3. Update main price display (convert attributes from Liquid cents to display format)
+        priceDisplay.textContent = formatPrice(discountedPrice);
+        comparePriceDisplay.textContent = formatPrice(originalPrice);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
-        if (singleMaskOption) {
-            selectMaskOption(singleMaskOption, 1);
-            selectedPackageElement = singleMaskOption;
-        }
-    });
-
-    // Your existing media swap function
-    function swapMedia(thumbnail, fullImageUrl) {
-        const mediaDisplay = document.getElementById('media-display');
-        const thumbnails = document.querySelectorAll('.media-thumbnail');
-        
-        // Update main image
-        mediaDisplay.style.opacity = '0';
-        setTimeout(() => {
-            mediaDisplay.src = fullImageUrl;
-            mediaDisplay.style.opacity = '1';
-        }, 150);
-        
-        // Update thumbnail states
-        thumbnails.forEach(thumb => {
-            thumb.classList.remove('border-blue-600', 'ring-2', 'ring-blue-600/50', 'shadow-md');
-            thumb.classList.add('border-gray-300', 'opacity-75');
-        });
-        
-        // Activate clicked thumbnail
-        thumbnail.classList.add('border-blue-600', 'ring-2', 'ring-blue-600/50', 'shadow-md');
-        thumbnail.classList.remove('border-gray-300', 'opacity-75');
-    }
-
-    // Enhanced Fly-to-Cart Animation - Flies to cart icon in header
-    function flyPackageToCart() {
-        if (!selectedPackageElement) {
-            console.log('No package selected for animation');
+    // --- 2. Fly to Cart Animation Logic ---
+    window.flyToCartAnimation = function(imageElement, cartElement) {
+        if (!imageElement || !cartElement) {
+            console.warn('Animation elements missing.');
             return;
         }
         
-        const packageImage = selectedPackageElement.querySelector('.package-image');
+        // 1. Get positions
+        const startRect = imageElement.getBoundingClientRect();
+        const endRect = cartElement.getBoundingClientRect();
         
-        if (!packageImage) {
-            console.error('Animation failed: Missing package image element.');
-            return;
-        }
+        // 2. Create the flying element
+        const flyingItem = document.createElement('img');
+        flyingItem.src = imageElement.src;
+        flyingItem.classList.add('flying-item');
+        flyingItem.style.width = startRect.width + 'px';
+        flyingItem.style.height = startRect.height + 'px';
+        flyingItem.style.left = startRect.left + 'px';
+        flyingItem.style.top = startRect.top + 'px';
 
-        // 1. FIRST try to find your specific cart button with class .cart-icon-btn
-        let cart = document.querySelector('.cart-icon-btn');
-        
-        // 2. If not found, try Alpine.js cart buttons
-        if (!cart) {
-            cart = document.querySelector('[x-ref="CartDrawer"] button, [@click*="open"], button[onclick*="cart"]');
-        }
-        
-        // 3. If still not found, try common cart selectors
-        if (!cart) {
-            const selectors = [
-                'a[href="/cart"]',
-                'a[href*="cart"]',
-                '.cart-icon',
-                '.header-cart',
-                '.site-header__cart',
-                '.cart-link',
-                '[data-cart-icon]',
-                '[data-cart-drawer-toggle]'
-            ];
-            
-            for (const selector of selectors) {
-                cart = document.querySelector(selector);
-                if (cart) break;
-            }
-        }
-        
-        // 4. If cart is still not found, create a virtual target at top-right corner
-        if (!cart) {
-            console.log('Cart icon not found by selectors. Using top right corner of viewport.');
-            
-            // Try to find header for better positioning
-            const header = document.querySelector('header, .site-header, .header');
-            if (header) {
-                const headerRect = header.getBoundingClientRect();
-                cart = {
-                    getBoundingClientRect: () => ({
-                        left: headerRect.right - 60,
-                        top: headerRect.top + 30,
-                        width: 40,
-                        height: 40
-                    })
-                };
-            } else {
-                // Fallback to viewport top-right corner
-                cart = { 
-                    getBoundingClientRect: () => ({ 
-                        left: window.innerWidth - 80, 
-                        top: 70, 
-                        width: 40, 
-                        height: 40 
-                    }) 
-                };
-            }
-        } else {
-            console.log('Cart icon found:', cart);
-        }
+        document.body.appendChild(flyingItem);
 
-        // Get positions
-        const startRect = packageImage.getBoundingClientRect();
-        const endRect = cart.getBoundingClientRect();
-        
-        console.log('Animation start position:', startRect);
-        console.log('Animation end position:', endRect);
-        
-        // Add scroll position to coordinates
-        const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
-        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        // 3. Force reflow for animation start
+        void flyingItem.offsetWidth;
 
-        // Create flying element
-        const flyingElement = packageImage.cloneNode(true);
+        // 4. Set final position and shrink/fade
+        flyingItem.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        flyingItem.style.left = (endRect.left + endRect.width / 2 - 20) + 'px'; // Center on cart icon
+        flyingItem.style.top = (endRect.top + endRect.height / 2 - 20) + 'px';
+        flyingItem.style.width = '40px';
+        flyingItem.style.height = '40px';
+        flyingItem.style.opacity = '0';
         
-        // Make sure the flying element is visible
-        flyingElement.style.position = 'fixed';
-        flyingElement.style.width = startRect.width + 'px';
-        flyingElement.style.height = startRect.height + 'px';
-        flyingElement.style.left = (startRect.left + scrollX) + 'px';
-        flyingElement.style.top = (startRect.top + scrollY) + 'px';
-        flyingElement.style.zIndex = '99999';
-        flyingElement.style.pointerEvents = 'none';
-        flyingElement.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-        flyingElement.style.borderRadius = '8px';
-        flyingElement.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
-        flyingElement.style.backgroundColor = '#FA8072'; // Use your theme color
-        flyingElement.style.border = '2px solid white';
-        flyingElement.style.overflow = 'hidden';
-        
-        // Ensure content is visible
-        const textElement = flyingElement.querySelector('.text-lg');
-        if (textElement) {
-            textElement.style.color = 'white';
-            textElement.style.fontWeight = 'bold';
-        }
-        
-        document.body.appendChild(flyingElement);
-        
-        // Force reflow
-        flyingElement.offsetHeight;
-        
-        const finalSize = 35;
-
-        // Animate to cart icon
+        // 5. Cleanup and Cart Bounce
         setTimeout(() => {
-            // Calculate end position to center on cart icon
-            const endX = endRect.left + (endRect.width / 2) - (finalSize / 2) + scrollX;
-            const endY = endRect.top + (endRect.height / 2) - (finalSize / 2) + scrollY;
+            flyingItem.remove();
             
-            console.log('Animating to:', endX, endY);
-            
-            flyingElement.style.left = endX + 'px';
-            flyingElement.style.top = endY + 'px';
-            flyingElement.style.width = finalSize + 'px';
-            flyingElement.style.height = finalSize + 'px';
-            flyingElement.style.opacity = '0.9';
-            flyingElement.style.transform = 'rotate(360deg) scale(0.9)';
-            flyingElement.style.boxShadow = '0 5px 15px rgba(250, 128, 114, 0.7)';
-        }, 50);
-
-        // Add bounce effect to cart icon if it's a real DOM element
-        if (cart.classList && typeof cart.classList.add === 'function') {
-            cart.classList.add('cart-bounce');
+            // Trigger cart icon bounce
+            cartIconElement.classList.add('cart-bounce');
             setTimeout(() => {
-                if (cart.classList && typeof cart.classList.remove === 'function') {
-                    cart.classList.remove('cart-bounce');
-                }
-            }, 1000);
-        }
+                cartIconElement.classList.remove('cart-bounce');
+            }, 600); 
 
-        // Clean up
-        setTimeout(() => {
-            if (flyingElement.parentNode) {
-                flyingElement.parentNode.removeChild(flyingElement);
-            }
-            console.log('Animation completed');
-        }, 1200);
+            // Dispatch custom event for cart count update
+            document.dispatchEvent(new CustomEvent('cart:add-success', {
+                 // Note: You must update the item_count value from the actual response in a real implementation
+                detail: { item_count: 'Updating...' } 
+            }));
+        }, 800);
     }
 
-    document.getElementById('addToCartButton').addEventListener('click', function(e) {
-        e.preventDefault();
+    // --- 3. AJAX Add to Cart Handler ---
+    const handleAddToCart = async (event) => {
+        event.preventDefault();
         
-        const button = this;
+        const button = event.currentTarget;
         const variantId = button.getAttribute('data-variant-id');
-        const originalText = button.innerHTML;
-        
-        if (!variantId || variantId === '') {
-            console.error('No variant ID found on button');
-            alert('Please select a product option first');
+        const quantity = parseInt(button.getAttribute('data-quantity'), 10);
+        const packageName = button.getAttribute('data-package-name');
+
+        if (!variantId || isNaN(quantity) || quantity <= 0) {
+            console.error('Missing Variant ID or invalid quantity.');
             return;
         }
-        
-        // Show loading state
-        button.innerHTML = 'Adding to Cart...';
+
         button.disabled = true;
-        
-        // Trigger fly-to-cart animation
-        flyPackageToCart();
-        
-        // Prepare cart data
-        const cartData = {
+        button.textContent = 'Adding...';
+
+        const formData = {
             items: [{
-                id: parseInt(variantId),
-                quantity: selectedQuantity
+                id: variantId,
+                quantity: quantity,
+                properties: {
+                    'Package': packageName 
+                }
             }]
         };
-        
-        // Add to cart via Shopify AJAX API
-        fetch('/cart/add.js', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(cartData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Success
-            console.log('Product added to cart:', data);
-            
-            // Update cart count
-            updateCartCount(data.item_count || (parseInt(document.querySelector('.cart-count')?.textContent || 0) + selectedQuantity));
-            
-            // TRIGGER CART DRAWER TO OPEN
-            openCartDrawer();
-            
-            // Show success message on button
-            setTimeout(() => {
-                button.innerHTML = '✓ Added to Cart!';
-                button.style.backgroundColor = '#10B981';
-            }, 800);
-            
-            // Reset button after 2 seconds
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.backgroundColor = '';
-                button.disabled = false;
-            }, 2800);
-            
-        })
-        .catch(error => {
-            // Error handling
-            console.error('Error adding to cart:', error);
-            button.innerHTML = 'Error - Try Again';
-            button.style.backgroundColor = '#EF4444';
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.style.backgroundColor = '';
-                button.disabled = false;
-            }, 2000);
-        });
+
+        try {
+            const response = await fetch('/cart/add.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // Success: Start animation and trigger UI updates
+                flyToCartAnimation(mediaDisplay, cartIconElement);
+                console.log('Product added successfully. Animation started.');
+
+                // For a real-time count update, you should fetch the cart state here:
+                // const cart = await (await fetch('/cart.js')).json();
+                // document.dispatchEvent(new CustomEvent('cart:add-success', { detail: { item_count: cart.item_count } }));
+
+            } else {
+                // Error handling
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message} - ${errorData.description}`);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('An unexpected error occurred. Please try again.');
+        } finally {
+            // Reset button state
+            button.disabled = false;
+            const currentQuantityText = button.getAttribute('data-quantity') + ' ' + (button.getAttribute('data-quantity') > 1 ? 'Masks' : 'Mask');
+            button.querySelector('.quantity-text').textContent = currentQuantityText;
+            button.textContent = 'Add to Cart - ' + currentQuantityText; // Update button text after alert
+        }
+    };
+
+    // Attach event listener
+    addToCartButton.addEventListener('click', handleAddToCart);
+
+    // Initial load setup for the selected option
+    document.addEventListener('DOMContentLoaded', () => {
+        const defaultOption = document.getElementById('singleMaskOption');
+        if (defaultOption) {
+            selectMaskOption(defaultOption, 1);
+        }
     });
 
-    // NEW FUNCTION: Open Cart Drawer
-    function openCartDrawer() {
-        console.log('Attempting to open cart drawer...');
+    // Thumbnail swap logic (from your original code)
+    window.swapMedia = function(thumbnail, fullUrl) {
+        document.querySelectorAll('.media-thumbnail').forEach(t => {
+            t.classList.remove('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+            t.classList.add('border-gray-300', 'border', 'opacity-75');
+        });
         
-        // Method 1: If using Alpine.js with x-ref
-        const cartDrawer = document.querySelector('[x-ref="CartDrawer"]');
-        if (cartDrawer && cartDrawer.__x) {
-            // Access Alpine.js component
-            cartDrawer.__x.$data.open = true;
-            console.log('Cart drawer opened via Alpine.js x-ref');
-            return;
-        }
+        thumbnail.classList.add('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+        thumbnail.classList.remove('border-gray-300', 'border', 'opacity-75');
         
-        // Method 2: If using Alpine.js without x-ref
-        const alpineCart = document.querySelector('[x-data*="open"]');
-        if (alpineCart && alpineCart.__x) {
-            alpineCart.__x.$data.open = true;
-            console.log('Cart drawer opened via Alpine.js x-data');
-            return;
-        }
-        
-        // Method 3: Trigger click event on cart button
-        const cartButton = document.querySelector('.cart-icon-btn, [@click*="open"], button[onclick*="cart"]');
-        if (cartButton) {
-            cartButton.click();
-            console.log('Cart drawer opened via button click');
-            return;
-        }
-        
-        // Method 4: Dispatch custom event
-        const cartEvent = new CustomEvent('open-cart-drawer');
-        document.dispatchEvent(cartEvent);
-        console.log('Cart drawer open event dispatched');
-        
-        // Method 5: Direct DOM manipulation as last resort
+        mediaDisplay.style.opacity = '0.5';
         setTimeout(() => {
-            const drawer = document.getElementById('CartDrawer');
-            if (drawer) {
-                // Try to set open state
-                drawer.setAttribute('x-data', '{ open: true }');
-                drawer.style.display = 'block';
-                console.log('Cart drawer opened via direct DOM');
-            }
-        }, 500);
-    }
-
-    // Also add this event listener at the bottom of your script
-    document.addEventListener('open-cart-drawer', function() {
-        console.log('Received open-cart-drawer event');
-        // Try to open cart drawer again
-        openCartDrawer();
-    });
-
-    // Update cart count in header
-    function updateCartCount(count) {
-        const cartCountElements = document.querySelectorAll('.cart-count, .cart-bubble, .cart-item-count');
-        cartCountElements.forEach(element => {
-            element.textContent = count;
-        });
-        
-        // Also try to update any badge elements
-        const badgeElements = document.querySelectorAll('[data-cart-count], .cart-badge');
-        badgeElements.forEach(element => {
-            element.textContent = count;
-        });
-    }
-
-    // Scrollbar hiding styles
-    let scrollbarStyle = document.getElementById('scrollbar-style-fix');
-    if (!scrollbarStyle) {
-        const style = document.createElement('style');
-        style.id = 'scrollbar-style-fix';
-        style.innerHTML = `
-            .no-scrollbar::-webkit-scrollbar { display: none; }
-            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-            
-            /* Cart bounce animation */
-            .cart-bounce {
-                animation: cartBounce 0.6s ease-in-out;
-            }
-            
-            @keyframes cartBounce {
-                0%, 20%, 60%, 100% { transform: scale(1); }
-                40% { transform: scale(1.3); }
-                80% { transform: scale(1.1); }
-            }
-        `;
-        document.head.appendChild(style);
+            mediaDisplay.src = fullUrl;
+            mediaDisplay.style.opacity = '1';
+        }, 200);
     }
 </script>
