@@ -1,72 +1,201 @@
-<div class="max-w-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white shadow-lg rounded-lg">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">{{ page.title }}</h1>
-
-  {% form 'contact' %}
-
-    {% if form.posted_successfully? %}
-      <div class="p-3 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-        <span class="font-medium">Success!</span> Thank you for your contact.
+<div class="container mx-auto px-4 py-8">
+  <!-- Header Card -->
+  <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-100 mb-8">
+    <div class="text-center max-w-4xl mx-auto">
+      <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+        <span class="text-blue-500 text-2xl">💡</span>
       </div>
-    {% endif %}
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works: Advanced LED Skin Therapy</h1>
+      <p class="text-xl text-gray-600">
+        Discover the science behind professional-grade LED therapy that delivers visible results from the comfort of your home.
+      </p>
+    </div>
+  </div>
 
-    {% if form.errors %}
-      <div class="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
-        <span class="font-medium">Error:</span> {{ form.errors | default_errors }}
+  <!-- Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    
+    <!-- Card 1: Skin Therapy Simplified -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-blue-500 text-xl">💡</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Skin Therapy Simplified</h2>
       </div>
-    {% endif %}
-
-    <div class="mb-5">
-      <label for="ContactFormName" class="block mb-2 text-sm font-medium text-gray-700">Name</label>
-      <input 
-        type="text" 
-        id="ContactFormName" 
-        name="contact[name]" 
-        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-        placeholder="Your name"
-      >
+      <div>
+        <h3 class="text-lg font-medium text-gray-800 mb-3">The Science of LED Phototherapy</h3>
+        <p class="text-gray-600">
+          Our Advanced LED Skin Therapy utilizes specific wavelengths of light to penetrate skin at different depths, stimulating natural cellular processes for rejuvenation and repair.
+        </p>
+      </div>
     </div>
 
-    {# Email Field #}
-    <div class="mb-5">
-      <label for="ContactFormEmail" class="block mb-2 text-sm font-medium text-gray-700">Email</label>
-      <input 
-        type="email" 
-        id="ContactFormEmail" 
-        name="contact[email]" 
-        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-        placeholder="you@example.com"
-        required
-      >
+    <!-- Card 2: 7 Targeted Wavelengths -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-purple-500 text-xl">🌊</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">7 Targeted Wavelengths</h2>
+      </div>
+      <div>
+        <p class="text-gray-600 mb-4">Each wavelength addresses specific skin concerns, from acne to aging.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-4 py-2 bg-red-50 text-red-700 rounded-full text-sm font-medium">Red Light</span>
+          <span class="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">Blue Light</span>
+          <span class="px-4 py-2 bg-amber-50 text-amber-700 rounded-full text-sm font-medium">Amber Light</span>
+        </div>
+      </div>
     </div>
 
-    <div class="mb-5">
-      <label for="ContactFormPhone" class="block mb-2 text-sm font-medium text-gray-700">Phone</label>
-      <input 
-        type="tel" 
-        id="ContactFormPhone" 
-        name="contact[phone]" 
-        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-        placeholder="(123) 456-7890"
-      >
+    <!-- Card 3: 309 High-Intensity LEDs -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-green-500 text-xl">🔬</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">309 High-Intensity LEDs</h2>
+      </div>
+      <div>
+        <p class="text-gray-600 mb-4">Complete coverage for face and neck ensures comprehensive treatment.</p>
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-green-500">
+          <strong class="text-gray-900">Full Coverage</strong>
+        </div>
+      </div>
     </div>
 
-    <div class="mb-6">
-      <label for="ContactFormMessage" class="block mb-2 text-sm font-medium text-gray-700">Message</label>
-      <textarea 
-        rows="6" 
-        id="ContactFormMessage" 
-        name="contact[body]" 
-        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out resize-none"
-        placeholder="Write your message here..."
-        required
-      ></textarea>
+    <!-- Card 4: Professional-Grade Technology -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-red-500 text-xl">🛡️</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Professional-Grade Technology</h2>
+      </div>
+      <div>
+        <p class="text-gray-600 mb-4">Delivers safe powerful light treatment to reduce acne, smooth wrinkles, and boost hydration.</p>
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-red-500">
+          <strong class="text-gray-900">Safe for Daily Home Use</strong>
+        </div>
+      </div>
     </div>
 
-    <input 
-      type="submit" 
-      value="Send" 
-      class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out cursor-pointer"
-    >
+    <!-- Card 5: Targets & Results -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-yellow-500 text-xl">🎯</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Targets & Results</h2>
+      </div>
+      <div>
+        <ul class="list-disc pl-5 space-y-2 text-gray-600">
+          <li>Targets acne, signs of aging, and dehydration.</li>
+          <li><strong class="text-gray-900">Boosts Collagen</strong> & <strong class="text-gray-900">Skin Elasticity</strong>.</li>
+          <li>Improves Texture & Glow.</li>
+        </ul>
+      </div>
+    </div>
 
-  {% endform %}
+    <!-- Card 6: 4-Step Treatment Process -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-indigo-500 text-xl">📋</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Simple 4-Step Treatment Process</h2>
+      </div>
+      <div>
+        <p class="text-gray-600 mb-6">Experience professional-level skin therapy in just four simple steps that fit into your daily routine.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-center">
+            <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">1</div>
+            <h4 class="font-medium text-gray-900 mb-1">Cleanse & Prep</h4>
+            <p class="text-sm text-gray-600">Start with clean, dry skin. Apply serum if desired for enhanced results.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">2</div>
+            <h4 class="font-medium text-gray-900 mb-1">Wear the Mask</h4>
+            <p class="text-sm text-gray-600">Position comfortably, adjust straps, and secure eye pads for complete protection.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">3</div>
+            <h4 class="font-medium text-gray-900 mb-1">Select & Activate</h4>
+            <p class="text-sm text-gray-600">Choose treatment mode and power on. Sessions last 10-20 minutes.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">4</div>
+            <h4 class="font-medium text-gray-900 mb-1">Relax & Rejuvenate</h4>
+            <p class="text-sm text-gray-600">Sit back while LED therapy works. Use daily for optimal results.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7: Engineered for Comfort -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-3">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-pink-50 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-pink-500 text-xl">🛋️</span>
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Engineered for Ultimate Comfort</h2>
+      </div>
+      <div>
+        <p class="text-gray-600 mb-8">We've designed every element to ensure a comfortable, personalized experience that makes daily skin care a pleasure.</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-blue-500 text-2xl">□</span>
+            </div>
+            <h4 class="font-medium text-gray-900 mb-1">Soft Silicone Film</h4>
+            <p class="text-sm text-gray-600">Enhances comfort and fits facial contours perfectly</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-green-500 text-2xl">⚙️</span>
+            </div>
+            <h4 class="font-medium text-gray-900 mb-1">Adjustable Strap</h4>
+            <p class="text-sm text-gray-600">Customizable for a secure, comfortable fit</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-purple-500 text-2xl">👁️</span>
+            </div>
+            <h4 class="font-medium text-gray-900 mb-1">Soft Eye Pad</h4>
+            <p class="text-sm text-gray-600">Blocks light completely for eye protection</p>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-amber-500 text-2xl">🔋</span>
+            </div>
+            <h4 class="font-medium text-gray-900 mb-1">Portable Power</h4>
+            <p class="text-sm text-gray-600">Wireless power for treatment anywhere</p>
+          </div>
+        </div>
+        
+        <div class="bg-gray-50 p-5 rounded-lg border-l-4 border-pink-500">
+          <p class="text-gray-800"><strong class="text-gray-900">Designed for Daily Use:</strong> The mask's design prioritizes both effectiveness and user comfort, making daily, at-home therapy simple and enjoyable.</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg mt-4">
+          <strong class="text-gray-900">10-20 Minute Sessions</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="bg-gradient-to-r from-blue-600 to-gray-900 text-white rounded-2xl p-8 md:p-12 text-center">
+    <h2 class="text-3xl font-bold mb-4">Ready to Transform Your Skin?</h2>
+    <p class="text-xl mb-8 max-w-2xl mx-auto">Join thousands of satisfied customers who have discovered the power of professional LED skin therapy at home.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button class="bg-white text-blue-600 font-semibold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors">
+        Start Your Journey
+      </button>
+      <button class="bg-transparent border-2 border-white text-white font-semibold py-3 px-8 rounded-full hover:bg-white/10 transition-colors">
+        Learn More
+      </button>
+    </div>
+  </div>
 </div>
