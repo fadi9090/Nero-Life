@@ -1,0 +1,72 @@
+<div class="max-w-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white shadow-lg rounded-lg">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">{{ page.title }}</h1>
+
+  {% form 'contact' %}
+
+    {% if form.posted_successfully? %}
+      <div class="p-3 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+        <span class="font-medium">Success!</span> Thank you for your contact.
+      </div>
+    {% endif %}
+
+    {% if form.errors %}
+      <div class="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
+        <span class="font-medium">Error:</span> {{ form.errors | default_errors }}
+      </div>
+    {% endif %}
+
+    <div class="mb-5">
+      <label for="ContactFormName" class="block mb-2 text-sm font-medium text-gray-700">Name</label>
+      <input 
+        type="text" 
+        id="ContactFormName" 
+        name="contact[name]" 
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+        placeholder="Your name"
+      >
+    </div>
+
+    {# Email Field #}
+    <div class="mb-5">
+      <label for="ContactFormEmail" class="block mb-2 text-sm font-medium text-gray-700">Email</label>
+      <input 
+        type="email" 
+        id="ContactFormEmail" 
+        name="contact[email]" 
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+        placeholder="you@example.com"
+        required
+      >
+    </div>
+
+    <div class="mb-5">
+      <label for="ContactFormPhone" class="block mb-2 text-sm font-medium text-gray-700">Phone</label>
+      <input 
+        type="tel" 
+        id="ContactFormPhone" 
+        name="contact[phone]" 
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+        placeholder="(123) 456-7890"
+      >
+    </div>
+
+    <div class="mb-6">
+      <label for="ContactFormMessage" class="block mb-2 text-sm font-medium text-gray-700">Message</label>
+      <textarea 
+        rows="6" 
+        id="ContactFormMessage" 
+        name="contact[body]" 
+        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out resize-none"
+        placeholder="Write your message here..."
+        required
+      ></textarea>
+    </div>
+
+    <input 
+      type="submit" 
+      value="Send" 
+      class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out cursor-pointer"
+    >
+
+  {% endform %}
+</div>
