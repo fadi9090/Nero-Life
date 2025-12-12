@@ -1,0 +1,235 @@
+{% comment %}
+  Main product template wrapper
+  This brings all sections together
+{% endcomment %}
+
+<style>
+/* Enhanced Flying Item Animation */
+.flying-item {
+    position: fixed;
+    z-index: 10000;
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    pointer-events: none;
+    will-change: transform, opacity, width, height, left, top;
+}
+
+/* Add a subtle bounce effect to the cart icon when item arrives */
+@keyframes cartBounce {
+    0%, 20%, 60%, 100% { transform: scale(1); }
+    40% { transform: scale(1.1); }
+    80% { transform: scale(1.05); }
+}
+
+.cart-bounce {
+    animation: cartBounce 0.6s ease;
+}
+</style>
+
+<div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
+    {% render 'product-media-gallery' %}
+    {% render 'product-info' %}
+    {% render 'product-description' %}
+    {% render 'product-comparison' %}
+    {% render 'product-features' %}
+    {% render 'product-benefits' %}
+    {% render 'product-testimonials' %}
+</div>
+
+<script>
+// Set up global elements
+const addToCartButton = document.getElementById('addToCartButton');
+const mediaDisplay = document.getElementById('media-display');
+const cartIconElement = document.querySelector('.cart-icon-btn');
+
+// --- Price Formatting Utility ---
+function formatPrice(cents) {
+    if (typeof Shopify.formatMoney === 'function') {
+        return Shopify.formatMoney(cents, "{{ shop.money_format }}");
+    }
+    return '$' + (cents / 100).toFixed(2);
+}
+
+// --- 1. Package Selection Logic ---
+window.selectMaskOption = function(element, quantity) {
+    // 1. Update selection visual state
+    document.querySelectorAll('.mask-option').forEach(opt => {
+        opt.classList.remove('border-[#FA8072]', 'bg-rose-50');
+        opt.classList.add('border-gray-200');
+        const indicator = opt.querySelector('.selection-indicator');
+        if (indicator) indicator.classList.add('hidden');
+    });
+
+    element.classList.add('border-[#FA8072]', 'bg-rose-50');
+    element.classList.remove('border-gray-200');
+    const indicator = element.querySelector('.selection-indicator');
+    if (indicator) indicator.classList.remove('hidden');
+
+    // 2. Update Add to Cart button attributes
+    const packageName = element.getAttribute('data-package-name') || `${quantity} Mask${quantity > 1 ? 's' : ''}`;
+    const discountedPrice = element.getAttribute('data-discounted-price');
+    const originalPrice = element.getAttribute('data-original-price');
+
+    addToCartButton.setAttribute('data-quantity', quantity);
+    addToCartButton.setAttribute('data-package-name', packageName);
+    
+    const quantityText = addToCartButton.querySelector('.quantity-text');
+    if (quantityText) {
+        quantityText.textContent = quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
+    }
+
+    // 3. Update main price display
+    const priceDisplay = document.getElementById('price-display');
+    const comparePriceDisplay = document.getElementById('compare-price-display');
+    
+    if (priceDisplay) priceDisplay.textContent = discountedPrice;
+    if (comparePriceDisplay) comparePriceDisplay.textContent = originalPrice;
+}
+
+// --- 2. Fly to Cart Animation Logic ---
+window.flyToCartAnimation = function(imageElement, cartElement) {
+    if (!imageElement || !cartElement) {
+        console.warn('Animation elements missing.');
+        return;
+    }
+    
+    // 1. Get positions
+    const startRect = imageElement.getBoundingClientRect();
+    const endRect = cartElement.getBoundingClientRect();
+    
+    // 2. Create the flying element
+    const flyingItem = document.createElement('img');
+    flyingItem.src = imageElement.src;
+    flyingItem.classList.add('flying-item');
+    flyingItem.style.width = startRect.width + 'px';
+    flyingItem.style.height = startRect.height + 'px';
+    flyingItem.style.left = startRect.left + 'px';
+    flyingItem.style.top = startRect.top + 'px';
+
+    document.body.appendChild(flyingItem);
+
+    // 3. Force reflow for animation start
+    void flyingItem.offsetWidth;
+
+    // 4. Set final position and shrink/fade
+    flyingItem.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+    flyingItem.style.left = (endRect.left + endRect.width / 2 - 20) + 'px';
+    flyingItem.style.top = (endRect.top + endRect.height / 2 - 20) + 'px';
+    flyingItem.style.width = '40px';
+    flyingItem.style.height = '40px';
+    flyingItem.style.opacity = '0';
+    
+    // 5. Cleanup and Cart Bounce
+    setTimeout(() => {
+        flyingItem.remove();
+        
+        // Trigger cart icon bounce
+        if (cartIconElement) {
+            cartIconElement.classList.add('cart-bounce');
+            setTimeout(() => {
+                cartIconElement.classList.remove('cart-bounce');
+            }, 600);
+        }
+
+        // Dispatch custom event for cart count update
+        document.dispatchEvent(new CustomEvent('cart:add-success', {
+            detail: { item_count: 'Updating...' }
+        }));
+    }, 800);
+}
+
+// --- 3. AJAX Add to Cart Handler ---
+const handleAddToCart = async (event) => {
+    event.preventDefault();
+    
+    const button = event.currentTarget;
+    const variantId = button.getAttribute('data-variant-id');
+    const quantity = parseInt(button.getAttribute('data-quantity'), 10);
+    const packageName = button.getAttribute('data-package-name');
+
+    if (!variantId || isNaN(quantity) || quantity <= 0) {
+        console.error('Missing Variant ID or invalid quantity.');
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Adding...';
+
+    const formData = {
+        items: [{
+            id: variantId,
+            quantity: quantity,
+            properties: {
+                'Package': packageName 
+            }
+        }]
+    };
+
+    try {
+        const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            // Success: Start animation and trigger UI updates
+            if (mediaDisplay) {
+                flyToCartAnimation(mediaDisplay, cartIconElement);
+            }
+            console.log('Product added successfully. Animation started.');
+        } else {
+            // Error handling
+            const errorData = await response.json();
+            alert(`Error: ${errorData.message} - ${errorData.description}`);
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        alert('An unexpected error occurred. Please try again.');
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        const currentQuantityText = button.getAttribute('data-quantity') + ' ' + (button.getAttribute('data-quantity') > 1 ? 'Masks' : 'Mask');
+        const quantityText = button.querySelector('.quantity-text');
+        if (quantityText) quantityText.textContent = currentQuantityText;
+        button.textContent = 'Add to Cart - ' + currentQuantityText;
+    }
+};
+
+// Attach event listener
+if (addToCartButton) {
+    addToCartButton.addEventListener('click', handleAddToCart);
+}
+
+// Initial load setup for the selected option
+document.addEventListener('DOMContentLoaded', () => {
+    const defaultOption = document.getElementById('singleMaskOption');
+    if (defaultOption) {
+        selectMaskOption(defaultOption, 1);
+    }
+});
+
+// Thumbnail swap logic
+window.swapMedia = function(thumbnail, fullUrl) {
+    document.querySelectorAll('.media-thumbnail').forEach(t => {
+        t.classList.remove('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+        t.classList.add('border-gray-300', 'border', 'opacity-75');
+    });
+    
+    thumbnail.classList.add('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
+    thumbnail.classList.remove('border-gray-300', 'border', 'opacity-75');
+    
+    if (mediaDisplay) {
+        mediaDisplay.style.opacity = '0.5';
+        setTimeout(() => {
+            mediaDisplay.src = fullUrl;
+            mediaDisplay.style.opacity = '1';
+        }, 200);
+    }
+}
+</script>
