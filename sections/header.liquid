@@ -66,12 +66,14 @@
 
         <!-- Cart -->
         <div class="flex items-center -mr-2 -my-2 ml-3">
-          <a href="/cart" class="cart-icon-btn relative">
-              {% render 'icon-shopping-bag' %}
-              <span class="cart-count absolute -top-2 -right-2 bg-[#FA8072] text-black text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {{ cart.item_count }}
-              </span>
-          </a>
+            <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative" aria-label="Cart link">
+                {% render 'icon-shopping-bag' %}
+                <span id="CartCountWrapper">
+                    {% if cart.item_count > 0 %}
+                        <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
+                    {% endif %}
+                </span>
+            </a>
         </div>
       </div>
     </div>
