@@ -91,11 +91,23 @@ function showAddToCartSuccess() {
 
 // --- 4. Trigger Cart Icon Bounce ---
 function triggerCartBounce() {
-    if (cartIconElement) {
-        cartIconElement.classList.add('cart-bounce');
-        setTimeout(() => {
-            cartIconElement.classList.remove('cart-bounce');
-        }, 600);
+    // Try multiple selectors to find the cart icon
+    const selectors = [
+        '.cart-trigger',
+        '.cart-icon-btn',
+        'a[href*="/cart"]',
+        'a[href*="cart"]'
+    ];
+    
+    for (const selector of selectors) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.classList.add('cart-bounce');
+            setTimeout(() => {
+                element.classList.remove('cart-bounce');
+            }, 600);
+            break;
+        }
     }
 }
 
@@ -176,17 +188,34 @@ async function updateCartCount() {
         if (cartResponse.ok) {
             const cartData = await cartResponse.json();
             
-            // Dispatch event for any components listening to cart updates
+            // Dispatch event for cart updates
             document.dispatchEvent(new CustomEvent('cart:updated', {
                 detail: { item_count: cartData.item_count }
             }));
             
-            // If you have a cart count element in your header
-            const cartCountElements = document.querySelectorAll('.cart-count, .cart-item-count, [data-cart-count]');
-            cartCountElements.forEach(element => {
-                element.textContent = cartData.item_count;
-                element.classList.remove('hidden');
-            });
+            // Update cart count in header - matching your HTML structure
+            const cartCountElement = document.getElementById('CartCount');
+            const cartCountWrapper = document.getElementById('CartCountWrapper');
+            
+            if (cartData.item_count > 0) {
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartData.item_count;
+                } else {
+                    // Create cart count element if it doesn't exist
+                    if (cartCountWrapper) {
+                        cartCountWrapper.innerHTML = `
+                            <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">
+                                ${cartData.item_count}
+                            </span>
+                        `;
+                    }
+                }
+            } else {
+                // Remove cart count if cart is empty
+                if (cartCountElement) {
+                    cartCountElement.remove();
+                }
+            }
         }
     } catch (error) {
         console.error('Error fetching cart data:', error);
@@ -217,7 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize global elements
     addToCartButton = document.getElementById('addToCartButton');
     mediaDisplay = document.getElementById('media-display');
-    cartIconElement = document.querySelector('.cart-icon-btn');
+    
+    // IMPORTANT: Update this selector to match your cart link structure
+    cartIconElement = document.querySelector('a[href*="/cart"], a[href*="cart"], .cart-icon-btn');
     
     // Set default option
     const defaultOption = document.getElementById('singleMaskOption');
