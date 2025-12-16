@@ -1,5 +1,5 @@
 <style>
-/* Remove flying animation styles, keep only cart bounce */
+/* Cart bounce animation */
 @keyframes cartBounce {
     0%, 20%, 60%, 100% { transform: scale(1); }
     40% { transform: scale(1.1); }
@@ -15,7 +15,12 @@
     background-color: #10B981 !important;
 }
 
-.bg-green-600 {
+.bg-green-500:hover {
     background-color: #059669 !important;
+}
+
+/* Ensure no flying item styles exist */
+.flying-item {
+    display: none !important;
 }
 </style>

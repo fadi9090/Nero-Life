@@ -2,6 +2,7 @@
 
 // Set up global elements
 let addToCartButton, mediaDisplay, cartIconElement;
+let isAddingToCart = false; // Prevent double clicks
 
 // --- 1. Package Selection Logic ---
 function selectMaskOption(element, quantity) {
@@ -102,6 +103,10 @@ function triggerCartBounce() {
 async function handleAddToCart(event) {
     event.preventDefault();
     
+    // Prevent double clicks
+    if (isAddingToCart) return;
+    isAddingToCart = true;
+    
     const button = event.currentTarget;
     const variantId = button.getAttribute('data-variant-id');
     const quantity = parseInt(button.getAttribute('data-quantity'), 10);
@@ -109,13 +114,14 @@ async function handleAddToCart(event) {
 
     if (!variantId || isNaN(quantity) || quantity <= 0) {
         console.error('Missing Variant ID or invalid quantity.');
+        isAddingToCart = false;
         return;
     }
 
     // Show loading state
-    const originalButtonText = button.textContent;
     button.disabled = true;
-    button.textContent = 'Adding...';
+    const originalHTML = button.innerHTML;
+    button.innerHTML = 'Adding...';
 
     const formData = {
         items: [{
@@ -143,23 +149,27 @@ async function handleAddToCart(event) {
             // Trigger cart icon bounce
             triggerCartBounce();
             
-            // Update cart count (optional)
-            updateCartCount();
+            // Update cart count
+            await updateCartCount();
             
             console.log('Product added successfully.');
         } else {
             const errorData = await response.json();
             alert(`Error: ${errorData.message} - ${errorData.description}`);
-            resetAddToCartButton();
+            button.disabled = false;
+            button.innerHTML = originalHTML;
         }
     } catch (error) {
         console.error('Fetch error:', error);
         alert('An unexpected error occurred. Please try again.');
-        resetAddToCartButton();
+        button.disabled = false;
+        button.innerHTML = originalHTML;
+    } finally {
+        isAddingToCart = false;
     }
 }
 
-// --- 6. Update Cart Count (Optional) ---
+// --- 6. Update Cart Count ---
 async function updateCartCount() {
     try {
         const cartResponse = await fetch('/cart.js');
@@ -172,11 +182,11 @@ async function updateCartCount() {
             }));
             
             // If you have a cart count element in your header
-            const cartCountElement = document.querySelector('.cart-count, .cart-item-count');
-            if (cartCountElement) {
-                cartCountElement.textContent = cartData.item_count;
-                cartCountElement.classList.remove('hidden');
-            }
+            const cartCountElements = document.querySelectorAll('.cart-count, .cart-item-count, [data-cart-count]');
+            cartCountElements.forEach(element => {
+                element.textContent = cartData.item_count;
+                element.classList.remove('hidden');
+            });
         }
     } catch (error) {
         console.error('Error fetching cart data:', error);
@@ -217,6 +227,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Attach event listeners
     if (addToCartButton) {
+        // Remove any existing event listeners first
+        addToCartButton.replaceWith(addToCartButton.cloneNode(true));
+        addToCartButton = document.getElementById('addToCartButton');
+        
+        // Attach fresh event listener
         addToCartButton.addEventListener('click', handleAddToCart);
         
         // Also reset button if user clicks elsewhere on the page
