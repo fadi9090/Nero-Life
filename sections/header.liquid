@@ -32,17 +32,17 @@
 <div class="header-wrapper">
   <div x-data="{mobileMenu: false}" class="section-header bg-white shadow-md">
     <div class="mx-auto px-4 sm:px-6">
-      <div class="flex justify-between items-center h-16 md:justify-between md:space-x-4">
+      <div class="flex justify-between items-center h-16">
 
-        <!-- Mobile menu button -->
-        <div class="-ml-2 -my-2 mr-3 md:hidden">
+        <!-- Mobile menu button (visible only on mobile, left side) -->
+        <div class="md:hidden">
           <button @click="mobileMenu = !mobileMenu" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
             {% render 'icon-menu' %}
           </button>
         </div>
 
-        <!-- Logo (left aligned on desktop, clickable to homepage) -->
-        <div class="header-logo-container flex flex-1 justify-start truncate md:flex-none">
+        <!-- Logo (centered on mobile, left on desktop) -->
+        <div class="header-logo-container flex-1 flex justify-center md:flex-none md:justify-start truncate">
           <a href="{{ routes.root_url }}" class="flex items-center">
             {% if logo_image != blank %}
               <div class="header-logo-container">
@@ -57,7 +57,7 @@
           </a>
         </div>
         
-        <!-- Desktop Navigation - Centered -->
+        <!-- Desktop Navigation - Centered (hidden on mobile) -->
         <nav class="hidden md:flex md:flex-1 md:justify-center md:space-x-10">
           {% for link in main_menu_linklist %}
             <div class="relative">
@@ -66,16 +66,16 @@
           {% endfor %}
         </nav>
 
-        <!-- Cart (right aligned) -->
-        <div class="flex items-center -mr-2 -my-2 ml-3 md:flex-none">
-            <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative" aria-label="Cart link">
-                {% render 'icon-shopping-bag' %}
-                <span id="CartCountWrapper">
-                    {% if cart.item_count > 0 %}
-                        <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
-                    {% endif %}
-                </span>
-            </a>
+        <!-- Cart (right side on both mobile and desktop) -->
+        <div class="flex items-center">
+          <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative" aria-label="Cart link">
+            {% render 'icon-shopping-bag' %}
+            <span id="CartCountWrapper">
+              {% if cart.item_count > 0 %}
+                <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
+              {% endif %}
+            </span>
+          </a>
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@
             </div>
             <div class="-mr-2">
               <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
-                  {% render 'icon-close' %}
+                {% render 'icon-close' %}
               </button>
             </div>
           </div>
