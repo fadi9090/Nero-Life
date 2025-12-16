@@ -41,22 +41,24 @@
           </button>
         </div>
 
-        <!-- Logo -->
-        <div class="header-logo-container flex flex-1 justify-center md:flex-1 md:justify-start truncate">
-          {% if logo_image != blank %}
-            <div class="header-logo-container">
-              {{ logo_image | image_url: height: 60 | image_tag: 
-                alt: shop.name, 
-                class: "header-logo" 
-              }}
-            </div>
-          {% else %}
-            <h1 class="text-lg font-bold">{{ shop.name }}</h1>
-          {% endif %}
+        <!-- Logo (left aligned on desktop, clickable to homepage) -->
+        <div class="header-logo-container flex flex-1 justify-start truncate md:flex-none">
+          <a href="{{ routes.root_url }}" class="flex items-center">
+            {% if logo_image != blank %}
+              <div class="header-logo-container">
+                {{ logo_image | image_url: height: 60 | image_tag: 
+                  alt: shop.name, 
+                  class: "header-logo" 
+                }}
+              </div>
+            {% else %}
+              <h1 class="text-lg font-bold">{{ shop.name }}</h1>
+            {% endif %}
+          </a>
         </div>
         
-        <!-- Desktop Navigation -->
-        <nav class="hidden md:flex md:flex-initial md:justify-center md:space-x-10">
+        <!-- Desktop Navigation - Centered -->
+        <nav class="hidden md:flex md:flex-1 md:justify-center md:space-x-10">
           {% for link in main_menu_linklist %}
             <div class="relative">
               <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150 font-medium">{{ link.title }}</a>
@@ -64,8 +66,8 @@
           {% endfor %}
         </nav>
 
-        <!-- Cart -->
-        <div class="flex items-center -mr-2 -my-2 ml-3">
+        <!-- Cart (right aligned) -->
+        <div class="flex items-center -mr-2 -my-2 ml-3 md:flex-none">
             <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative" aria-label="Cart link">
                 {% render 'icon-shopping-bag' %}
                 <span id="CartCountWrapper">
