@@ -29,8 +29,43 @@
         "type": "footer",
         "settings": {}
       },
-      "cart-drawer": {
-        "type": "cart-drawer",
+      "product-media": {
+        "type": "product-media",
+        "settings": {}
+      },
+      "product-info": {
+        "type": "product-info",
+        "settings": {}
+      },
+      "product-description": {
+        "type": "product-description",
+        "settings": {}
+      },
+      "product-benefits": {
+        "type": "product-benefits",
+        "settings": {}
+      },
+      "visible-result": {
+        "type": "visible-result",
+        "settings": {
+          "title": "See The Transformation",
+          "subtitle": "Real results from real customers. Watch as skin transforms with regular use of our mask over 4 weeks.",
+          "week1_image": "shopify://shop_images/vita-1.jpg",
+          "week2_image": "shopify://shop_images/vita-2.jpg",
+          "week4_image": "shopify://shop_images/vita-3.jpg",
+          "cta_text": "Start Your Transformation"
+        }
+      },
+      "product-comparison": {
+        "type": "product-comparison",
+        "settings": {}
+      },
+      "product-features": {
+        "type": "product-features",
+        "settings": {}
+      },
+      "product-reviews": {
+        "type": "product-reviews",
         "settings": {}
       }
     },
