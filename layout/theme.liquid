@@ -65,4 +65,34 @@
     
     {% section 'footer' %}
   </body>
+
+  <script>
+    // Simple cart count updater
+    document.addEventListener('DOMContentLoaded', function() {
+        // Listen for cart updates
+        document.addEventListener('cart:updated', function() {
+            // Reload cart count from Shopify
+            fetch('/cart.js')
+                .then(response => response.json())
+                .then(cart => {
+                    const cartCount = document.getElementById('CartCount');
+                    const cartCountWrapper = document.getElementById('CartCountWrapper');
+                    
+                    if (cart.item_count > 0) {
+                        if (cartCount) {
+                            cartCount.textContent = cart.item_count;
+                        } else if (cartCountWrapper) {
+                            cartCountWrapper.innerHTML = `
+                                <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">
+                                    ${cart.item_count}
+                                </span>
+                            `;
+                        }
+                    } else {
+                        if (cartCount) cartCount.remove();
+                    }
+                });
+        });
+    });
+  </script>
 </html>
