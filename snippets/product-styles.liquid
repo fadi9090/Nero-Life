@@ -1,5 +1,5 @@
 <style>
-/* Cart bounce animation */
+/* Cart bounce animation ONLY */
 @keyframes cartBounce {
     0%, 20%, 60%, 100% { transform: scale(1); }
     40% { transform: scale(1.1); }
@@ -8,9 +8,10 @@
 
 .cart-bounce {
     animation: cartBounce 0.6s ease;
+    display: inline-block;
 }
 
-/* Button success state - Green */
+/* Button success state */
 .bg-green-500 {
     background-color: #10B981 !important;
 }
@@ -19,7 +20,7 @@
     background-color: #059669 !important;
 }
 
-/* Remove flying animation styles */
+/* Remove ALL flying animation styles if they exist */
 .flying-item {
     display: none !important;
 }
