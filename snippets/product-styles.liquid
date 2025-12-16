@@ -1,17 +1,5 @@
 <style>
-/* Enhanced Flying Item Animation */
-.flying-item {
-    position: fixed;
-    z-index: 10000;
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    opacity: 1;
-    pointer-events: none;
-    will-change: transform, opacity, width, height, left, top;
-}
-
+/* Remove flying animation styles, keep only cart bounce */
 @keyframes cartBounce {
     0%, 20%, 60%, 100% { transform: scale(1); }
     40% { transform: scale(1.1); }
@@ -21,21 +9,13 @@
 .cart-bounce {
     animation: cartBounce 0.6s ease;
 }
-/* Equal height columns */
-.equal-height-columns {
-    display: flex;
-    flex-direction: column;
+
+/* Button success state */
+.bg-green-500 {
+    background-color: #10B981 !important;
 }
 
-@media (min-width: 1024px) {
-    .equal-height-columns {
-        flex-direction: row;
-        align-items: stretch;
-    }
-    
-    .equal-height-columns > div {
-        display: flex;
-        flex-direction: column;
-    }
+.bg-green-600 {
+    background-color: #059669 !important;
 }
 </style>

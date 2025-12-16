@@ -28,7 +28,9 @@ function selectMaskOption(element, quantity) {
         if (quantityText) {
             quantityText.textContent = quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
         }
-        addToCartButton.textContent = 'Add to Cart - ' + quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
+        
+        // Reset button state when changing quantity
+        resetAddToCartButton();
     }
 
     // Update price displays if they exist
@@ -38,51 +40,65 @@ function selectMaskOption(element, quantity) {
     if (comparePriceDisplay) comparePriceDisplay.textContent = originalPrice;
 }
 
-// --- 2. Fly to Cart Animation Logic ---
-function flyToCartAnimation(imageElement, cartElement) {
-    if (!imageElement || !cartElement) {
-        console.warn('Animation elements missing.');
-        return;
+// --- 2. Reset Add to Cart Button to Original State ---
+function resetAddToCartButton() {
+    if (!addToCartButton) return;
+    
+    const quantity = addToCartButton.getAttribute('data-quantity');
+    addToCartButton.classList.remove('bg-green-500', 'bg-green-600');
+    addToCartButton.classList.add('bg-[#FA8072]', 'hover:bg-[#E57365]');
+    addToCartButton.disabled = false;
+    
+    const buttonText = document.getElementById('buttonText');
+    const successIcon = document.getElementById('successIcon');
+    
+    if (buttonText) {
+        buttonText.innerHTML = 'Add to Cart - <span class="quantity-text">' + quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask') + '</span>';
     }
     
-    const startRect = imageElement.getBoundingClientRect();
-    const endRect = cartElement.getBoundingClientRect();
-    
-    const flyingItem = document.createElement('img');
-    flyingItem.src = imageElement.src;
-    flyingItem.classList.add('flying-item');
-    flyingItem.style.width = startRect.width + 'px';
-    flyingItem.style.height = startRect.height + 'px';
-    flyingItem.style.left = startRect.left + 'px';
-    flyingItem.style.top = startRect.top + 'px';
-
-    document.body.appendChild(flyingItem);
-    void flyingItem.offsetWidth;
-
-    flyingItem.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    flyingItem.style.left = (endRect.left + endRect.width / 2 - 20) + 'px';
-    flyingItem.style.top = (endRect.top + endRect.height / 2 - 20) + 'px';
-    flyingItem.style.width = '40px';
-    flyingItem.style.height = '40px';
-    flyingItem.style.opacity = '0';
-    
-    setTimeout(() => {
-        flyingItem.remove();
-        
-        if (cartIconElement) {
-            cartIconElement.classList.add('cart-bounce');
-            setTimeout(() => {
-                cartIconElement.classList.remove('cart-bounce');
-            }, 600);
-        }
-
-        document.dispatchEvent(new CustomEvent('cart:add-success', {
-            detail: { item_count: 'Updating...' }
-        }));
-    }, 800);
+    if (successIcon) {
+        successIcon.classList.add('hidden');
+    }
 }
 
-// --- 3. AJAX Add to Cart Handler ---
+// --- 3. Show Success State on Button ---
+function showAddToCartSuccess() {
+    if (!addToCartButton) return;
+    
+    // Change button to success state
+    addToCartButton.classList.remove('bg-[#FA8072]', 'hover:bg-[#E57365]');
+    addToCartButton.classList.add('bg-green-500', 'hover:bg-green-600');
+    addToCartButton.disabled = true;
+    
+    // Update button text and show checkmark
+    const buttonText = document.getElementById('buttonText');
+    const successIcon = document.getElementById('successIcon');
+    
+    if (buttonText) {
+        buttonText.textContent = 'Added to Cart';
+    }
+    
+    if (successIcon) {
+        successIcon.classList.remove('hidden');
+    }
+    
+    // Reset button after 3 seconds
+    setTimeout(() => {
+        resetAddToCartButton();
+    }, 3000);
+}
+
+// --- 4. Trigger Cart Icon Bounce ---
+function triggerCartBounce() {
+    if (cartIconElement) {
+        cartIconElement.classList.add('cart-bounce');
+        setTimeout(() => {
+            cartIconElement.classList.remove('cart-bounce');
+        }, 600);
+    }
+}
+
+// --- 5. AJAX Add to Cart Handler ---
 async function handleAddToCart(event) {
     event.preventDefault();
     
@@ -96,6 +112,7 @@ async function handleAddToCart(event) {
         return;
     }
 
+    // Show loading state
     const originalButtonText = button.textContent;
     button.disabled = true;
     button.textContent = 'Adding...';
@@ -120,22 +137,53 @@ async function handleAddToCart(event) {
         });
 
         if (response.ok) {
-            flyToCartAnimation(mediaDisplay, cartIconElement);
+            // Show success state on button
+            showAddToCartSuccess();
+            
+            // Trigger cart icon bounce
+            triggerCartBounce();
+            
+            // Update cart count (optional)
+            updateCartCount();
+            
             console.log('Product added successfully.');
         } else {
             const errorData = await response.json();
             alert(`Error: ${errorData.message} - ${errorData.description}`);
+            resetAddToCartButton();
         }
     } catch (error) {
         console.error('Fetch error:', error);
         alert('An unexpected error occurred. Please try again.');
-    } finally {
-        button.disabled = false;
-        button.textContent = originalButtonText;
+        resetAddToCartButton();
     }
 }
 
-// --- 4. Thumbnail swap logic ---
+// --- 6. Update Cart Count (Optional) ---
+async function updateCartCount() {
+    try {
+        const cartResponse = await fetch('/cart.js');
+        if (cartResponse.ok) {
+            const cartData = await cartResponse.json();
+            
+            // Dispatch event for any components listening to cart updates
+            document.dispatchEvent(new CustomEvent('cart:updated', {
+                detail: { item_count: cartData.item_count }
+            }));
+            
+            // If you have a cart count element in your header
+            const cartCountElement = document.querySelector('.cart-count, .cart-item-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartData.item_count;
+                cartCountElement.classList.remove('hidden');
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching cart data:', error);
+    }
+}
+
+// --- 7. Thumbnail swap logic ---
 function swapMedia(thumbnail, fullUrl) {
     document.querySelectorAll('.media-thumbnail').forEach(t => {
         t.classList.remove('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
@@ -170,10 +218,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Attach event listeners
     if (addToCartButton) {
         addToCartButton.addEventListener('click', handleAddToCart);
+        
+        // Also reset button if user clicks elsewhere on the page
+        document.addEventListener('click', function(event) {
+            if (!addToCartButton.contains(event.target) && 
+                !event.target.closest('.mask-option')) {
+                // Reset button if clicked outside of button or mask options
+                resetAddToCartButton();
+            }
+        });
     }
     
     // Make functions available globally (for inline onclick handlers)
     window.selectMaskOption = selectMaskOption;
-    window.flyToCartAnimation = flyToCartAnimation;
     window.swapMedia = swapMedia;
 });
