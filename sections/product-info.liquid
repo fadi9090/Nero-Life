@@ -106,14 +106,11 @@
     <!-- Add to Cart Button -->
     <div class="mt-auto pt-6">
         <button id="addToCartButton" 
-                class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200 flex items-center justify-center"
+                class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
                 data-variant-id="{{ product.selected_or_first_available_variant.id }}">
-            <span id="buttonText">
+            <span class="button-content">
                 Add to Cart - <span class="quantity-text">1 Mask</span>
             </span>
-            <svg id="successIcon" class="hidden w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
         </button>
     </div>
 </div>
