@@ -1,61 +1,10 @@
-{% comment %}
-  Main product template wrapper
-  This brings all sections together
-{% endcomment %}
+// Product Page JavaScript - product-page.js
 
-<style>
-/* Enhanced Flying Item Animation */
-.flying-item {
-    position: fixed;
-    z-index: 10000;
-    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    opacity: 1;
-    pointer-events: none;
-    will-change: transform, opacity, width, height, left, top;
-}
-
-/* Add a subtle bounce effect to the cart icon when item arrives */
-@keyframes cartBounce {
-    0%, 20%, 60%, 100% { transform: scale(1); }
-    40% { transform: scale(1.1); }
-    80% { transform: scale(1.05); }
-}
-
-.cart-bounce {
-    animation: cartBounce 0.6s ease;
-}
-</style>
-
-<div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
-    {% render 'product-media-gallery' %}
-    {% render 'product-info' %}
-    {% render 'product-description' %}
-    {% render 'product-comparison' %}
-    {% render 'product-features' %}
-    {% render 'product-benefits' %}
-    {% render 'product-testimonials' %}
-</div>
-
-<script>
 // Set up global elements
-const addToCartButton = document.getElementById('addToCartButton');
-const mediaDisplay = document.getElementById('media-display');
-const cartIconElement = document.querySelector('.cart-icon-btn');
-
-// --- Price Formatting Utility ---
-function formatPrice(cents) {
-    if (typeof Shopify.formatMoney === 'function') {
-        return Shopify.formatMoney(cents, "{{ shop.money_format }}");
-    }
-    return '$' + (cents / 100).toFixed(2);
-}
+let addToCartButton, mediaDisplay, cartIconElement;
 
 // --- 1. Package Selection Logic ---
-window.selectMaskOption = function(element, quantity) {
-    // 1. Update selection visual state
+function selectMaskOption(element, quantity) {
     document.querySelectorAll('.mask-option').forEach(opt => {
         opt.classList.remove('border-[#FA8072]', 'bg-rose-50');
         opt.classList.add('border-gray-200');
@@ -68,39 +17,37 @@ window.selectMaskOption = function(element, quantity) {
     const indicator = element.querySelector('.selection-indicator');
     if (indicator) indicator.classList.remove('hidden');
 
-    // 2. Update Add to Cart button attributes
-    const packageName = element.getAttribute('data-package-name') || `${quantity} Mask${quantity > 1 ? 's' : ''}`;
+    const packageName = element.getAttribute('data-package-name');
     const discountedPrice = element.getAttribute('data-discounted-price');
     const originalPrice = element.getAttribute('data-original-price');
 
-    addToCartButton.setAttribute('data-quantity', quantity);
-    addToCartButton.setAttribute('data-package-name', packageName);
-    
-    const quantityText = addToCartButton.querySelector('.quantity-text');
-    if (quantityText) {
-        quantityText.textContent = quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
+    if (addToCartButton) {
+        addToCartButton.setAttribute('data-quantity', quantity);
+        addToCartButton.setAttribute('data-package-name', packageName);
+        const quantityText = addToCartButton.querySelector('.quantity-text');
+        if (quantityText) {
+            quantityText.textContent = quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
+        }
+        addToCartButton.textContent = 'Add to Cart - ' + quantity + ' ' + (quantity > 1 ? 'Masks' : 'Mask');
     }
 
-    // 3. Update main price display
+    // Update price displays if they exist
     const priceDisplay = document.getElementById('price-display');
     const comparePriceDisplay = document.getElementById('compare-price-display');
-    
     if (priceDisplay) priceDisplay.textContent = discountedPrice;
     if (comparePriceDisplay) comparePriceDisplay.textContent = originalPrice;
 }
 
 // --- 2. Fly to Cart Animation Logic ---
-window.flyToCartAnimation = function(imageElement, cartElement) {
+function flyToCartAnimation(imageElement, cartElement) {
     if (!imageElement || !cartElement) {
         console.warn('Animation elements missing.');
         return;
     }
     
-    // 1. Get positions
     const startRect = imageElement.getBoundingClientRect();
     const endRect = cartElement.getBoundingClientRect();
     
-    // 2. Create the flying element
     const flyingItem = document.createElement('img');
     flyingItem.src = imageElement.src;
     flyingItem.classList.add('flying-item');
@@ -110,11 +57,8 @@ window.flyToCartAnimation = function(imageElement, cartElement) {
     flyingItem.style.top = startRect.top + 'px';
 
     document.body.appendChild(flyingItem);
-
-    // 3. Force reflow for animation start
     void flyingItem.offsetWidth;
 
-    // 4. Set final position and shrink/fade
     flyingItem.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
     flyingItem.style.left = (endRect.left + endRect.width / 2 - 20) + 'px';
     flyingItem.style.top = (endRect.top + endRect.height / 2 - 20) + 'px';
@@ -122,11 +66,9 @@ window.flyToCartAnimation = function(imageElement, cartElement) {
     flyingItem.style.height = '40px';
     flyingItem.style.opacity = '0';
     
-    // 5. Cleanup and Cart Bounce
     setTimeout(() => {
         flyingItem.remove();
         
-        // Trigger cart icon bounce
         if (cartIconElement) {
             cartIconElement.classList.add('cart-bounce');
             setTimeout(() => {
@@ -134,7 +76,6 @@ window.flyToCartAnimation = function(imageElement, cartElement) {
             }, 600);
         }
 
-        // Dispatch custom event for cart count update
         document.dispatchEvent(new CustomEvent('cart:add-success', {
             detail: { item_count: 'Updating...' }
         }));
@@ -142,7 +83,7 @@ window.flyToCartAnimation = function(imageElement, cartElement) {
 }
 
 // --- 3. AJAX Add to Cart Handler ---
-const handleAddToCart = async (event) => {
+async function handleAddToCart(event) {
     event.preventDefault();
     
     const button = event.currentTarget;
@@ -155,6 +96,7 @@ const handleAddToCart = async (event) => {
         return;
     }
 
+    const originalButtonText = button.textContent;
     button.disabled = true;
     button.textContent = 'Adding...';
 
@@ -178,13 +120,9 @@ const handleAddToCart = async (event) => {
         });
 
         if (response.ok) {
-            // Success: Start animation and trigger UI updates
-            if (mediaDisplay) {
-                flyToCartAnimation(mediaDisplay, cartIconElement);
-            }
-            console.log('Product added successfully. Animation started.');
+            flyToCartAnimation(mediaDisplay, cartIconElement);
+            console.log('Product added successfully.');
         } else {
-            // Error handling
             const errorData = await response.json();
             alert(`Error: ${errorData.message} - ${errorData.description}`);
         }
@@ -192,30 +130,13 @@ const handleAddToCart = async (event) => {
         console.error('Fetch error:', error);
         alert('An unexpected error occurred. Please try again.');
     } finally {
-        // Reset button state
         button.disabled = false;
-        const currentQuantityText = button.getAttribute('data-quantity') + ' ' + (button.getAttribute('data-quantity') > 1 ? 'Masks' : 'Mask');
-        const quantityText = button.querySelector('.quantity-text');
-        if (quantityText) quantityText.textContent = currentQuantityText;
-        button.textContent = 'Add to Cart - ' + currentQuantityText;
+        button.textContent = originalButtonText;
     }
-};
-
-// Attach event listener
-if (addToCartButton) {
-    addToCartButton.addEventListener('click', handleAddToCart);
 }
 
-// Initial load setup for the selected option
-document.addEventListener('DOMContentLoaded', () => {
-    const defaultOption = document.getElementById('singleMaskOption');
-    if (defaultOption) {
-        selectMaskOption(defaultOption, 1);
-    }
-});
-
-// Thumbnail swap logic
-window.swapMedia = function(thumbnail, fullUrl) {
+// --- 4. Thumbnail swap logic ---
+function swapMedia(thumbnail, fullUrl) {
     document.querySelectorAll('.media-thumbnail').forEach(t => {
         t.classList.remove('border-blue-600', 'border-2', 'ring-2', 'ring-blue-600/50', 'shadow-md');
         t.classList.add('border-gray-300', 'border', 'opacity-75');
@@ -232,4 +153,27 @@ window.swapMedia = function(thumbnail, fullUrl) {
         }, 200);
     }
 }
-</script>
+
+// --- Initialize on DOM Load ---
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize global elements
+    addToCartButton = document.getElementById('addToCartButton');
+    mediaDisplay = document.getElementById('media-display');
+    cartIconElement = document.querySelector('.cart-icon-btn');
+    
+    // Set default option
+    const defaultOption = document.getElementById('singleMaskOption');
+    if (defaultOption) {
+        selectMaskOption(defaultOption, 1);
+    }
+    
+    // Attach event listeners
+    if (addToCartButton) {
+        addToCartButton.addEventListener('click', handleAddToCart);
+    }
+    
+    // Make functions available globally (for inline onclick handlers)
+    window.selectMaskOption = selectMaskOption;
+    window.flyToCartAnimation = flyToCartAnimation;
+    window.swapMedia = swapMedia;
+});
