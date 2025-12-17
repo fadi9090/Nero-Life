@@ -62,13 +62,11 @@
     <main role="main" class="flex-grow">
       {{ content_for_layout }}
     </main>
-    
-    {% section 'footer' %}
-
     {% if request.page_type == 'product' or request.page_type == 'index' %}
       {% render 'floating-buttons' %}
     {% endif %}
     {{ 'floating-buttons.js' | asset_url | script_tag }}
+    {% section 'footer' %}
   </body>
 
   <script>
