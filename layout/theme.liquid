@@ -63,7 +63,7 @@
       {{ content_for_layout }}
     </main>
     {% if request.page_type == 'product' or request.page_type == 'index' %}
-      {% render 'floating-buttons' %}
+      {% section 'floating-buttons' %}
     {% endif %}
     {{ 'floating-buttons.js' | asset_url | script_tag }}
     {% section 'footer' %}
