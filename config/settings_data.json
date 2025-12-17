@@ -13,8 +13,8 @@
       "announcement-bar": {
         "type": "announcement-bar",
         "settings": {
-          "message_1": "30% OFF! Use Code GLOW30.",
-          "message_2": "Free Shipping on Orders."
+          "message_1": "35% OFF in All Orders!!",
+          "message_2": "Free Shipping for All Orders."
         }
       },
       "header": {
@@ -66,6 +66,30 @@
       },
       "product-reviews": {
         "type": "product-reviews",
+        "settings": {}
+      },
+      "hero-led-mask": {
+        "type": "hero-led-mask",
+        "settings": {}
+      },
+      "product-led-mask": {
+        "type": "product-led-mask",
+        "settings": {}
+      },
+      "benefits-led-mask": {
+        "type": "benefits-led-mask",
+        "settings": {}
+      },
+      "features-showcase": {
+        "type": "features-showcase",
+        "settings": {}
+      },
+      "compare-result": {
+        "type": "compare-result",
+        "settings": {}
+      },
+      "comparison-section": {
+        "type": "comparison-section",
         "settings": {}
       }
     },
