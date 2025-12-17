@@ -1,0 +1,117 @@
+{% comment %}
+  Floating Buttons Component
+  Uses Tailwind CSS classes
+{% endcomment %}
+
+<section id="floating-buttons-{{ section.id }}" class="floating-buttons-container" 
+         data-scroll-threshold="{{ section.settings.scroll_threshold | default: 300 }}"
+         data-show-on-mobile="{{ section.settings.show_on_mobile }}"
+         data-show-on-desktop="{{ section.settings.show_on_desktop }}">
+  
+  <!-- Back to Top Button -->
+  <button id="backToTop-{{ section.id }}" 
+          class="{% unless section.settings.show_on_mobile %}hidden sm:flex{% endunless %} {% unless section.settings.show_on_desktop %}sm:hidden{% endunless %} fixed bottom-24 right-4 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 invisible scale-95 flex items-center justify-center group"
+          aria-label="{{ 'general.back_to_top' | t }}">
+    <svg class="w-6 h-6 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    </svg>
+  </button>
+  
+  <!-- Floating Add to Cart Button -->
+  <div id="floatingAddToCart-{{ section.id }}" 
+       class="{% unless section.settings.show_on_mobile %}hidden sm:flex{% endunless %} {% unless section.settings.show_on_desktop %}sm:hidden{% endunless %} fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 max-w-md mx-auto sm:mx-0 transition-all duration-300 opacity-0 invisible translate-y-4">
+    <div class="bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex items-center justify-between gap-4">
+      <div class="flex-1 min-w-0">
+        <p class="text-lg font-bold text-gray-900 truncate">
+          {%- if product -%}
+            {{ product.price | money }}
+          {%- else -%}
+            {{ section.settings.default_price | default: '$49.90' }}
+          {%- endif -%}
+        </p>
+        <p class="text-sm text-gray-600 truncate">
+          {%- if product -%}
+            {{ product.title }}
+          {%- else -%}
+            {{ section.settings.default_title | default: 'LED Skin Therapy Mask' }}
+          {%- endif -%}
+        </p>
+      </div>
+      <button class="floating-add-to-cart-btn whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center"
+              data-product-id="{% if product %}{{ product.selected_or_first_available_variant.id }}{% endif %}">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        {{ 'products.product.add_to_cart' | t }}
+      </button>
+    </div>
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "Floating Buttons",
+  "tag": "section",
+  "class": "floating-buttons-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable floating buttons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Show on mobile",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Show on desktop",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "scroll_threshold",
+      "label": "Scroll to show (px)",
+      "min": 100,
+      "max": 1000,
+      "step": 50,
+      "default": 300
+    },
+    {
+      "type": "text",
+      "id": "default_price",
+      "label": "Default price",
+      "default": "$49.90"
+    },
+    {
+      "type": "text",
+      "id": "default_title",
+      "label": "Default product title",
+      "default": "LED Skin Therapy Mask"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#2563eb"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Floating Buttons",
+      "category": "Advanced"
+    }
+  ]
+}
+{% endschema %}
