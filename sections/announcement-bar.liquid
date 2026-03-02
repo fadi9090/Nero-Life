@@ -1,57 +1,61 @@
 <style>
-    @keyframes scroll-left {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-15%); }
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0);
     }
+    100% {
+      transform: translateX(-15%);
+    }
+  }
 
-    .scrolling-banner {
-        animation: scroll-left 20s linear infinite;
-        white-space: nowrap;
-        display: inline-block;
-    }
+  .scrolling-banner {
+    animation: scroll-left 20s linear infinite;
+    white-space: nowrap;
+    display: inline-block;
+  }
 
-    .banner-container {
-        overflow: hidden;
-    }
+  .banner-container {
+    overflow: hidden;
+  }
 
-    /* Pause animation on hover */
-    .scrolling-banner:hover {
-        animation-play-state: paused;
-    }
+  .scrolling-banner:hover {
+    animation-play-state: paused;
+  }
 </style>
 
+{% render 'discount-config' %}
 
-<div class="bg-[#FA8072] text-[#F5F5DC] overflow-hidden font-sans sticky top-0 z-50">
+{% if has_discounts %}
+  {% comment %} Create the banner content once {% endcomment %}
+  {% capture banner_content %}
+    <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
+      ✨ {% if section.settings.message_1 != blank %}
+        {{ section.settings.message_1 | replace: '[discount]', regular_discount }}
+      {% else %}
+        {{ regular_discount }}% OFF! On all Orders.
+      {% endif %}
+    </span>
+    
+    <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
+      🚚 {% if section.settings.message_2 != blank %}
+        {{ section.settings.message_2 }}
+      {% else %}
+        Free Shipping on Orders.
+      {% endif %}
+    </span>
+  {% endcapture %}
+
+  <div class="bg-[#FA8072] text-[#F5F5DC] overflow-hidden font-sans sticky top-0 z-50">
     <div class="banner-container">
-        <div class="scrolling-banner">
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-            
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-            <span class="inline-block py-2 text-sm md:text-base font-bold mr-12">
-                ✨ {{ section.settings.message_1 | default: "30% OFF! In all Orders." }}
-            </span>
-            <span class="inline-block py-1 text-xs md:text-sm font-bold mr-12">
-                🚚 {{ section.settings.message_2 | default: "Free Shipping on Orders." }}
-            </span>
-        </div>
+      <div class="scrolling-banner">
+        {{ banner_content }}
+        {{ banner_content }}
+        {{ banner_content }}
+        {{ banner_content }}
+      </div>
     </div>
-</div>
+  </div>
+{% endif %}
 
 {% schema %}
 {
@@ -61,13 +65,15 @@
       "type": "text",
       "id": "message_1",
       "label": "First Banner Message",
-      "default": "30% OFF! On all Orders."
+      "default": "[discount]% OFF! On all Orders.",
+      "info": "Use [discount] to show the current discount percentage"
     },
     {
       "type": "text",
       "id": "message_2",
       "label": "Second Banner Message",
-      "default": "Free Shipping on Orders."
+      "default": "Free Shipping on Orders.",
+      "info": "Second message that alternates in the banner"
     }
   ],
   "presets": [

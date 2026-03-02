@@ -3,40 +3,43 @@
 
 <style>
   .header-logo {
-      max-height: 60px; 
-      width: auto;     
-      vertical-align: middle; 
+    max-height: 60px;
+    width: auto;
+    vertical-align: middle;
   }
 
   .header-logo-container {
-      display: flex;
-      align-items: center;
+    display: flex;
+    align-items: center;
   }
 
   /* Fix header positioning */
   .section-header {
-      position: relative;
-      z-index: 100;
-      background: white;
-      width: 100%;
+    position: relative;
+    z-index: 100;
+    background: white;
+    width: 100%;
   }
 
   /* Ensure header stays on top of hero section */
   .header-wrapper {
-      position: relative;
-      z-index: 100;
+    position: relative;
+    z-index: 100;
   }
 </style>
 
 <!-- Header Wrapper - This ensures header stays above hero -->
-<div class="header-wrapper">
+<div class="header-wrapper sticky">
   <div x-data="{mobileMenu: false}" class="section-header bg-white shadow-md">
     <div class="mx-auto px-4 sm:px-6">
       <div class="flex justify-between items-center h-16">
-
         <!-- Mobile menu button (visible only on mobile, left side) -->
         <div class="md:hidden">
-          <button @click="mobileMenu = !mobileMenu" type="button" class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600">
+          <button
+            @click="mobileMenu = !mobileMenu"
+            type="button"
+            class="p-2 rounded-md text-black hover:text-[#0077B6] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600"
+          >
             {% render 'icon-menu' %}
           </button>
         </div>
@@ -46,56 +49,68 @@
           <a href="{{ routes.root_url }}" class="flex items-center">
             {% if logo_image != blank %}
               <div class="header-logo-container">
-                {{ logo_image | image_url: height: 60 | image_tag: 
-                  alt: shop.name, 
-                  class: "header-logo" 
-                }}
+                {{ logo_image | image_url: height: 60 | image_tag: alt: shop.name, class: 'header-logo' }}
               </div>
             {% else %}
               <h1 class="text-lg font-bold">{{ shop.name }}</h1>
             {% endif %}
           </a>
         </div>
-        
+
         <!-- Desktop Navigation - Centered (hidden on mobile) -->
         <nav class="hidden md:flex md:flex-1 md:justify-center md:space-x-10">
           {% for link in main_menu_linklist %}
             <div class="relative">
-              <a href="{{link.url}}" class="text-base text-black hover:text-[#0077B6] transition duration-150 font-medium">{{ link.title }}</a>
+              <a
+                href="{{link.url}}"
+                class="text-base text-black hover:text-[#0077B6] transition duration-150 font-medium"
+              >
+                {{- link.title -}}
+              </a>
             </div>
           {% endfor %}
         </nav>
 
         <!-- Cart (right side on both mobile and desktop) -->
         <div class="flex items-center">
-          <a href="{{ routes.cart_url }}" class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative" aria-label="Cart link">
+          <a
+            href="{{ routes.cart_url }}"
+            class="p-2 rounded-md whitespace-nowrap text-black hover:text-[#0077B6] cart-icon-btn relative"
+            aria-label="Cart link"
+          >
             {% render 'icon-shopping-bag' %}
             <span id="CartCountWrapper">
               {% if cart.item_count > 0 %}
-                <span id="CartCount" class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">{{ cart.item_count }}</span>
+                <span
+                  id="CartCount"
+                  class="cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2"
+                >
+                  {{- cart.item_count -}}
+                </span>
               {% endif %}
             </span>
           </a>
         </div>
       </div>
     </div>
-    
+
     <!-- Mobile Menu -->
-    <div x-show="mobileMenu" 
-          @click.away="mobileMenu = false" 
-          x-transition:enter="duration-200 ease-out"
-          x-transition:enter-start="opacity-0 scale-95"
-          x-transition:enter-end="opacity-100 scale-100"
-          x-transition:leave="duration-100 ease-in"
-          x-transition:leave-start="opacity-100 scale-100"
-          x-transition:leave-end="opacity-0 scale-95"
-          class="absolute z-50 top-16 inset-x-0 p-2 transform origin-top-left md:hidden">
-      
+    <div
+      x-show="mobileMenu"
+      @click.away="mobileMenu = false"
+      x-transition:enter="duration-200 ease-out"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+      x-transition:leave="duration-100 ease-in"
+      x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-95"
+      class="absolute z-50 top-16 inset-x-0 p-2 transform origin-top-left md:hidden"
+    >
       <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-white w-full">
-        <div class="p-5 divide-y-2 divide-gray-100"> 
+        <div class="p-5 divide-y-2 divide-gray-100">
           <div class="flex items-center justify-between pb-3">
             <div>
-              <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title | default: "Menu" }}</h1>
+              <h1 class="text-lg text-black font-bold">{{ section.settings.mobile_menu_title | default: 'Menu' }}</h1>
             </div>
             <div class="-mr-2">
               <button @click="mobileMenu = false" type="button" class="text-black rounded-md p-2 hover:text-[#0077B6]">
@@ -107,7 +122,10 @@
           <div class="pt-3">
             <nav class="grid gap-y-2">
               {% for link in main_menu_linklist %}
-                <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6] font-medium">
+                <a
+                  href="{{link.url}}"
+                  class="-m-3 p-3 flex items-center rounded-md text-base text-black hover:text-[#0077B6] font-medium"
+                >
                   {{ link.title }}
                 </a>
               {% endfor %}
@@ -120,60 +138,57 @@
 </div>
 
 <script>
-    // --- AJAX Cart Update Functions for Header ---
-    function updateHeaderCartCount(newCount) {
-        const countElement = document.getElementById('CartCount');
-        const wrapper = document.getElementById('CartCountWrapper');
+  // --- AJAX Cart Update Functions for Header ---
+  function updateHeaderCartCount(newCount) {
+    const countElement = document.getElementById('CartCount');
+    const wrapper = document.getElementById('CartCountWrapper');
 
-        if (newCount > 0) {
-            // Create or update the count element
-            if (!countElement) {
-                const newCountSpan = document.createElement('span');
-                newCountSpan.id = 'CartCount';
-                newCountSpan.className = 'cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2';
-                newCountSpan.textContent = newCount;
-                if (wrapper) wrapper.innerHTML = ''; // Clear wrapper before appending
-                if (wrapper) wrapper.appendChild(newCountSpan);
-            } else {
-                countElement.textContent = newCount;
-            }
-            
-            // Optional: Add a subtle flash animation to indicate update
-            if (countElement) {
-                countElement.animate([
-                  { transform: 'scale(1.2)' },
-                  { transform: 'scale(1)' }
-                ], {
-                  duration: 300,
-                  easing: 'ease-out'
-                });
-            }
-        } else {
-            // Remove the count wrapper if the cart is empty
-            if (wrapper) {
-                wrapper.innerHTML = '';
-            }
-        }
+    if (newCount > 0) {
+      // Create or update the count element
+      if (!countElement) {
+        const newCountSpan = document.createElement('span');
+        newCountSpan.id = 'CartCount';
+        newCountSpan.className =
+          'cart-count text-xs font-bold text-white bg-red-600 rounded-full w-5 h-5 flex items-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2';
+        newCountSpan.textContent = newCount;
+        if (wrapper) wrapper.innerHTML = ''; // Clear wrapper before appending
+        if (wrapper) wrapper.appendChild(newCountSpan);
+      } else {
+        countElement.textContent = newCount;
+      }
+
+      // Optional: Add a subtle flash animation to indicate update
+      if (countElement) {
+        countElement.animate([{ transform: 'scale(1.2)' }, { transform: 'scale(1)' }], {
+          duration: 300,
+          easing: 'ease-out',
+        });
+      }
+    } else {
+      // Remove the count wrapper if the cart is empty
+      if (wrapper) {
+        wrapper.innerHTML = '';
+      }
     }
+  }
 
-    // Function to fetch the current cart status
-    function getCartDataAndRefresh() {
-        fetch(`${window.Shopify.routes.root}cart.js`)
-            .then(response => response.json())
-            .then(cart => {
-                updateHeaderCartCount(cart.item_count);
-            })
-            .catch(error => {
-                console.error('Error fetching cart data:', error);
-            });
-    }
+  // Function to fetch the current cart status
+  function getCartDataAndRefresh() {
+    fetch(`${window.Shopify.routes.root}cart.js`)
+      .then((response) => response.json())
+      .then((cart) => {
+        updateHeaderCartCount(cart.item_count);
+      })
+      .catch((error) => {
+        console.error('Error fetching cart data:', error);
+      });
+  }
 
-    // Listen for the custom event sent from the Add To Cart function
-    document.addEventListener('cart:add-success', function(event) {
-        // When the custom event is fired (after successful AJAX add), update the cart
-        getCartDataAndRefresh(); 
-    });
-
+  // Listen for the custom event sent from the Add To Cart function
+  document.addEventListener('cart:add-success', function (event) {
+    // When the custom event is fired (after successful AJAX add), update the cart
+    getCartDataAndRefresh();
+  });
 </script>
 
 {% schema %}
