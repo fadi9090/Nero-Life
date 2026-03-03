@@ -12,13 +12,15 @@
 
 {% comment %} Calculate discounted prices based on discount type {% endcomment %}
 {% if regular_discount > 0 %}
-  {% assign single_discounted_price = featured_product.price | times: (100.0 | minus: regular_discount) | divided_by: 100 %}
+  {% assign discount_multiplier = 100.0 | minus: regular_discount %}
+  {% assign single_discounted_price = featured_product.price | times: discount_multiplier | divided_by: 100 %}
 {% else %}
   {% assign single_discounted_price = featured_product.price %}
 {% endif %}
 
 {% if bulk_discount > 0 %}
-  {% assign bulk_discounted_price = featured_product.price | times: (100.0 | minus: bulk_discount) | divided_by: 100 %}
+  {% assign discount_multiplier = 100.0 | minus: regular_discount %}
+  {% assign discounted_price = featured_product.price | times: discount_multiplier | divided_by: 100 %}
 {% else %}
   {% assign bulk_discounted_price = single_discounted_price %}
   {% comment %} Fallback to regular discount or full price {% endcomment %}

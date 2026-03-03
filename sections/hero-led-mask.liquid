@@ -12,7 +12,8 @@
 
 {% comment %} Calculate discounted price only if discount is active {% endcomment %}
 {% if regular_discount > 0 %}
-  {% assign discounted_price = featured_product.price | times: (100.0 | minus: regular_discount) | divided_by: 100 %}
+  {% assign discount_multiplier = 100.0 | minus: regular_discount %}
+  {% assign discounted_price = featured_product.price | times: discount_multiplier | divided_by: 100 %}
   {% assign compare_price = featured_product.compare_at_price | default: featured_product.price %}
 {% endif %}
 

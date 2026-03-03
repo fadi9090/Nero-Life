@@ -11,8 +11,10 @@
     {% if has_discounts %}
       <div class="mt-2 mb-6">
         {% comment %} Calculate prices with different discounts {% endcomment %}
-        {% assign single_discounted_price = product.price | times: (100.0 | minus: regular_discount) | divided_by: 100 %}
-        {% assign bulk_discounted_price = product.price | times: (100.0 | minus: bulk_discount) | divided_by: 100 %}
+        {% assign discount_multiplier = 100.0 | minus: regular_discount %}
+        {% assign single_discounted_price = product.price | times: discount_multiplier | divided_by: 100 %}
+        {% assign discount_multiplier = 100.0 | minus: bulk_discount %}
+        {% assign bulk_discounted_price = product.price | times: discount_multiplier | divided_by: 100 %}
 
         <span class="text-xl font-bold text-gray-900">
           {{ single_discounted_price | money }}
