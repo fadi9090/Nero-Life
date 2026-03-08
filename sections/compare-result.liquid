@@ -31,7 +31,8 @@
     overflow: hidden;
     background: #f8fafc;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    flex: 1; /* This makes slider fill available space */
+    flex: 1;
+    aspect-ratio: 1/1;
   }
   
   .slider-images {
@@ -94,7 +95,6 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.2);
   }
   
-  /* Labels now inside the slider container */
   .slider-labels-container {
     display: flex;
     justify-content: space-between;
@@ -139,14 +139,13 @@
     background: #059669;
   }
   
-  /* LED Info Card - Same height as slider */
   .led-info-card {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid #e5e7eb;
-    height: 100%; /* This makes it match the slider wrapper height */
+    height: 100%;
     display: flex;
     flex-direction: column;
   }
@@ -269,7 +268,6 @@
     align-self: flex-start;
   }
   
-  /* Animation for slider handle */
   @keyframes pulse {
     0%, 100% {
       transform: translate(-50%, -50%) scale(1);
@@ -283,7 +281,6 @@
     animation: pulse 3s infinite;
   }
   
-  /* Responsive Design */
   @media (max-width: 768px) {
     .split-slider-container {
       flex-direction: column;
@@ -303,7 +300,7 @@
     }
     
     .simple-slider {
-      height: 400px;
+      aspect-ratio: 4/3;
     }
     
     .led-info-card {
@@ -336,15 +333,31 @@
     <!-- Slider Box -->
     <div class="simple-slider" id="simpleSlider">
       <div class="slider-images">
-        <img class="slider-after" 
-             src="{{ 'after.jpeg' | asset_url }}" 
-             alt="After 8 weeks of LED mask treatment"
-             onerror="this.style.display='none'">
+        {% if section.settings.after_image != blank %}
+          <img class="slider-after" 
+               src="{{ section.settings.after_image | image_url: width: 800 }}"
+               width="800"
+               height="800"
+               alt="{{ section.settings.after_image_alt | default: 'After 8 weeks of LED mask treatment' }}"
+               loading="lazy">
+        {% else %}
+          <div class="slider-after bg-gray-200 flex items-center justify-center text-gray-400">
+            After Image Placeholder
+          </div>
+        {% endif %}
         
-        <img class="slider-before" 
-             src="{{ 'before.jpeg' | asset_url }}" 
-             alt="Before using GlowPro LED mask"
-             onerror="this.style.display='none'">
+        {% if section.settings.before_image != blank %}
+          <img class="slider-before" 
+               src="{{ section.settings.before_image | image_url: width: 800 }}"
+               width="800"
+               height="800"
+               alt="{{ section.settings.before_image_alt | default: 'Before using LED mask' }}"
+               loading="lazy">
+        {% else %}
+          <div class="slider-before bg-gray-300 flex items-center justify-center text-gray-500">
+            Before Image Placeholder
+          </div>
+        {% endif %}
         
         <div class="slider-line" id="sliderLine"></div>
         
@@ -356,15 +369,15 @@
       </div>
     </div>
     
-    <!-- Labels - Now part of the slider wrapper -->
+    <!-- Labels -->
     <div class="slider-labels-container">
       <div class="label-item label-before">
         <div class="label-dot"></div>
-        <span>Before Treatment</span>
+        <span>{{ section.settings.before_label | default: 'Before Treatment' }}</span>
       </div>
       <div class="label-item label-after">
         <div class="label-dot"></div>
-        <span>After 8 Weeks</span>
+        <span>{{ section.settings.after_label | default: 'After 8 Weeks' }}</span>
       </div>
     </div>
   </div>
@@ -372,7 +385,7 @@
   <!-- Right Section: LED Info Card -->
   <div class="info-wrapper">
     <div class="led-info-card">
-      <h3 class="text-lg font-bold text-gray-900 mb-4">Advanced LED Technology</h3>
+      <h3 class="text-lg font-bold text-gray-900 mb-4">{{ section.settings.info_card_title | default: 'Advanced LED Technology' }}</h3>
       
       <div class="led-grid">
         <!-- Red Light -->
@@ -380,9 +393,9 @@
           <div class="led-icon bg-red-100">
             <div class="w-4 h-4 rounded-full bg-red-500"></div>
           </div>
-          <div class="led-title text-red-700">Red Light</div>
-          <div class="led-subtitle text-red-600">Anti-Aging</div>
-          <p class="led-desc">Stimulates collagen production, reduces fine lines and wrinkles</p>
+          <div class="led-title text-red-700">{{ section.settings.red_title | default: 'Red Light' }}</div>
+          <div class="led-subtitle text-red-600">{{ section.settings.red_subtitle | default: 'Anti-Aging' }}</div>
+          <p class="led-desc">{{ section.settings.red_desc | default: 'Stimulates collagen production, reduces fine lines and wrinkles' }}</p>
         </div>
         
         <!-- Blue Light -->
@@ -390,9 +403,9 @@
           <div class="led-icon bg-blue-100">
             <div class="w-4 h-4 rounded-full bg-blue-500"></div>
           </div>
-          <div class="led-title text-blue-700">Blue Light</div>
-          <div class="led-subtitle text-blue-600">Acne Treatment</div>
-          <p class="led-desc">Eliminates acne-causing bacteria, reduces inflammation</p>
+          <div class="led-title text-blue-700">{{ section.settings.blue_title | default: 'Blue Light' }}</div>
+          <div class="led-subtitle text-blue-600">{{ section.settings.blue_subtitle | default: 'Acne Treatment' }}</div>
+          <p class="led-desc">{{ section.settings.blue_desc | default: 'Eliminates acne-causing bacteria, reduces inflammation' }}</p>
         </div>
         
         <!-- Green Light -->
@@ -400,9 +413,9 @@
           <div class="led-icon bg-green-100">
             <div class="w-4 h-4 rounded-full bg-green-500"></div>
           </div>
-          <div class="led-title text-green-700">Green Light</div>
-          <div class="led-subtitle text-green-600">Brightening</div>
-          <p class="led-desc">Reduces pigmentation, evens skin tone, enhances brightness</p>
+          <div class="led-title text-green-700">{{ section.settings.green_title | default: 'Green Light' }}</div>
+          <div class="led-subtitle text-green-600">{{ section.settings.green_subtitle | default: 'Brightening' }}</div>
+          <p class="led-desc">{{ section.settings.green_desc | default: 'Reduces pigmentation, evens skin tone, enhances brightness' }}</p>
         </div>
         
         <!-- Yellow Light -->
@@ -410,39 +423,41 @@
           <div class="led-icon bg-yellow-100">
             <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
           </div>
-          <div class="led-title text-yellow-700">Yellow Light</div>
-          <div class="led-subtitle text-yellow-600">Calming</div>
-          <p class="led-desc">Reduces redness, soothes irritation, improves skin healing</p>
+          <div class="led-title text-yellow-700">{{ section.settings.yellow_title | default: 'Yellow Light' }}</div>
+          <div class="led-subtitle text-yellow-600">{{ section.settings.yellow_subtitle | default: 'Calming' }}</div>
+          <p class="led-desc">{{ section.settings.yellow_desc | default: 'Reduces redness, soothes irritation, improves skin healing' }}</p>
         </div>
       </div>
       
       <!-- Treatment Stats -->
       <div class="treatment-stats">
         <div class="stat-box">
-          <span class="stat-value">10 min/day</span>
-          <span class="stat-label">Treatment Time</span>
+          <span class="stat-value">{{ section.settings.stat_1_value | default: '10 min/day' }}</span>
+          <span class="stat-label">{{ section.settings.stat_1_label | default: 'Treatment Time' }}</span>
         </div>
         
         <div class="stat-box">
-          <span class="stat-value">4-6 weeks</span>
-          <span class="stat-label">Visible Results</span>
+          <span class="stat-value">{{ section.settings.stat_2_value | default: '4-6 weeks' }}</span>
+          <span class="stat-label">{{ section.settings.stat_2_label | default: 'Visible Results' }}</span>
         </div>
         
         <div class="stat-box">
-          <span class="stat-value">150+ LEDs</span>
-          <span class="stat-label">LED Count</span>
+          <span class="stat-value">{{ section.settings.stat_3_value | default: '150+ LEDs' }}</span>
+          <span class="stat-label">{{ section.settings.stat_3_label | default: 'LED Count' }}</span>
         </div>
       </div>
       
       <!-- FDA Badge -->
-      <div class="fda-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 6L9 17l-5-5"/>
-        </svg>
-        <span>FDA Cleared</span>
-      </div>
+      {% if section.settings.show_fda_badge %}
+        <div class="fda-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+          <span>{{ section.settings.fda_badge_text | default: 'FDA Cleared' }}</span>
+        </div>
+      {% endif %}
       
-      <p class="text-sm text-gray-600 mt-4">Medical-grade LED technology used by dermatologists worldwide</p>
+      <p class="text-sm text-gray-600 mt-4">{{ section.settings.info_footer | default: 'Medical-grade LED technology used by dermatologists worldwide' }}</p>
     </div>
   </div>
 </div>
@@ -450,10 +465,14 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const beforeImg = document.querySelector('.slider-before');
+    const afterImg = document.querySelector('.slider-after');
     const line = document.getElementById('sliderLine');
     const drag = document.getElementById('sliderDrag');
     const slider = document.getElementById('simpleSlider');
     let dragging = false;
+    
+    // Check if elements exist
+    if (!beforeImg || !afterImg || !line || !drag || !slider) return;
     
     function moveSlider(x) {
       const rect = slider.getBoundingClientRect();
@@ -465,7 +484,8 @@
       drag.style.left = `${pos}%`;
     }
     
-    drag.addEventListener('mousedown', () => {
+    drag.addEventListener('mousedown', (e) => {
+      e.preventDefault();
       dragging = true;
       drag.style.animation = 'none';
     });
@@ -523,33 +543,223 @@
       }
     });
     
-    // Match heights function
-    function matchHeights() {
-      const leftWrapper = document.querySelector('.slider-wrapper');
-      const rightWrapper = document.querySelector('.info-wrapper');
-      
-      if (leftWrapper && rightWrapper) {
-        const leftHeight = leftWrapper.offsetHeight;
-        const rightHeight = rightWrapper.offsetHeight;
-        
-        // Set both to the taller height
-        const maxHeight = Math.max(leftHeight, rightHeight);
-        
-        if (window.innerWidth > 768) { // Desktop only
-          leftWrapper.style.height = maxHeight + 'px';
-          rightWrapper.style.height = maxHeight + 'px';
-        } else {
-          // Reset on mobile
-          leftWrapper.style.height = '';
-          rightWrapper.style.height = '';
-        }
-      }
-    }
-    
-    // Initial height match
-    setTimeout(matchHeights, 100);
-    
-    // Update on window resize
-    window.addEventListener('resize', matchHeights);
+    // Set initial position
+    moveSlider(slider.getBoundingClientRect().left + (slider.offsetWidth / 2));
   });
 </script>
+
+{% schema %}
+{
+  "name": "Before/After Slider",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "Before Image"
+    },
+    {
+      "type": "text",
+      "id": "before_image_alt",
+      "label": "Before Image Alt Text",
+      "default": "Before using LED mask"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "After Image"
+    },
+    {
+      "type": "text",
+      "id": "after_image_alt",
+      "label": "After Image Alt Text",
+      "default": "After 8 weeks of LED mask treatment"
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "Before Label",
+      "default": "Before Treatment"
+    },
+    {
+      "type": "text",
+      "id": "after_label",
+      "label": "After Label",
+      "default": "After 8 Weeks"
+    },
+    {
+      "type": "header",
+      "content": "Info Card"
+    },
+    {
+      "type": "text",
+      "id": "info_card_title",
+      "label": "Info Card Title",
+      "default": "Advanced LED Technology"
+    },
+    {
+      "type": "header",
+      "content": "Red Light Settings"
+    },
+    {
+      "type": "text",
+      "id": "red_title",
+      "label": "Red Light Title",
+      "default": "Red Light"
+    },
+    {
+      "type": "text",
+      "id": "red_subtitle",
+      "label": "Red Light Subtitle",
+      "default": "Anti-Aging"
+    },
+    {
+      "type": "textarea",
+      "id": "red_desc",
+      "label": "Red Light Description",
+      "default": "Stimulates collagen production, reduces fine lines and wrinkles"
+    },
+    {
+      "type": "header",
+      "content": "Blue Light Settings"
+    },
+    {
+      "type": "text",
+      "id": "blue_title",
+      "label": "Blue Light Title",
+      "default": "Blue Light"
+    },
+    {
+      "type": "text",
+      "id": "blue_subtitle",
+      "label": "Blue Light Subtitle",
+      "default": "Acne Treatment"
+    },
+    {
+      "type": "textarea",
+      "id": "blue_desc",
+      "label": "Blue Light Description",
+      "default": "Eliminates acne-causing bacteria, reduces inflammation"
+    },
+    {
+      "type": "header",
+      "content": "Green Light Settings"
+    },
+    {
+      "type": "text",
+      "id": "green_title",
+      "label": "Green Light Title",
+      "default": "Green Light"
+    },
+    {
+      "type": "text",
+      "id": "green_subtitle",
+      "label": "Green Light Subtitle",
+      "default": "Brightening"
+    },
+    {
+      "type": "textarea",
+      "id": "green_desc",
+      "label": "Green Light Description",
+      "default": "Reduces pigmentation, evens skin tone, enhances brightness"
+    },
+    {
+      "type": "header",
+      "content": "Yellow Light Settings"
+    },
+    {
+      "type": "text",
+      "id": "yellow_title",
+      "label": "Yellow Light Title",
+      "default": "Yellow Light"
+    },
+    {
+      "type": "text",
+      "id": "yellow_subtitle",
+      "label": "Yellow Light Subtitle",
+      "default": "Calming"
+    },
+    {
+      "type": "textarea",
+      "id": "yellow_desc",
+      "label": "Yellow Light Description",
+      "default": "Reduces redness, soothes irritation, improves skin healing"
+    },
+    {
+      "type": "header",
+      "content": "Statistics"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_value",
+      "label": "Stat 1 Value",
+      "default": "10 min/day"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Stat 1 Label",
+      "default": "Treatment Time"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_value",
+      "label": "Stat 2 Value",
+      "default": "4-6 weeks"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Stat 2 Label",
+      "default": "Visible Results"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_value",
+      "label": "Stat 3 Value",
+      "default": "150+ LEDs"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Stat 3 Label",
+      "default": "LED Count"
+    },
+    {
+      "type": "header",
+      "content": "Footer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_fda_badge",
+      "label": "Show FDA Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "fda_badge_text",
+      "label": "FDA Badge Text",
+      "default": "FDA Cleared"
+    },
+    {
+      "type": "textarea",
+      "id": "info_footer",
+      "label": "Info Footer Text",
+      "default": "Medical-grade LED technology used by dermatologists worldwide"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Before/After Slider",
+      "category": "Comparison"
+    }
+  ]
+}
+{% endschema %}

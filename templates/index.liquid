@@ -1,8 +1,34 @@
-<div class="w-full max-w-7xl mx-auto space-y-8">
-    {% section 'hero-led-mask' %}
-    {% section 'product-led-mask' %}
-    {% section 'benefits-led-mask' %}
-    {% section 'features-showcase' %}
-    {% section 'compare-result' %}
-    {% section 'comparison-section' %}
+{% comment %} Load discount configuration for Alpine.js data {% endcomment %}
+{% render 'discount' %}
+
+<div 
+  x-data="{
+    selectedPackage: 1,
+    discountData: {
+      regular: {{ regular_discount | default: 35 }},
+      bulk: {{ bulk_discount | default: 40 }}
+    }
+  }"
+  class="w-full max-w-7xl mx-auto space-y-8"
+>
+  {% section 'hero-led-mask' %}
+  {% section 'product-led-mask' %}
+  {% section 'benefits-led-mask' %}
+  {% section 'features-showcase' %}
+  {% section 'compare-result' %}
+  {% section 'comparison-section' %}
 </div>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('productGallery', () => ({
+      currentImage: null,
+      init() {
+        this.currentImage = document.querySelector('#media-display')?.src;
+      },
+      swapImage(src) {
+        this.currentImage = src;
+      }
+    }));
+  });
+</script>

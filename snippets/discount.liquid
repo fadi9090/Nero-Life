@@ -1,0 +1,16 @@
+{% comment %}
+  Discount Configuration Snippet
+  Usage: {% render 'discount' %}
+  This centralizes all discount settings for the entire theme
+{% endcomment %}
+
+{% assign regular_discount = 35 %}
+{% comment %} Discount for single items (hero section) {% endcomment %}
+{% assign bulk_discount = 40 %}
+{% comment %} Discount for bulk/multiple items {% endcomment %}
+
+{% comment %} Flag to check if any discounts are active {% endcomment %}
+{% assign has_discounts = false %}
+{% if regular_discount > 0 or bulk_discount > 0 %}
+  {% assign has_discounts = true %}
+{% endif %}
