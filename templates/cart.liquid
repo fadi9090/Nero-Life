@@ -1,142 +1,101 @@
 {% comment %}
-  Modern Proficient Cart Template - Optimized for Tailwind CSS
+  Simple Cart Template - No AJAX, just form submits
 {% endcomment %}
 
-{% assign free_shipping_threshold = 10000 %} 
-{% assign cart_total = cart.total_price %}
-{% assign threshold_reached = cart_total >= free_shipping_threshold %}
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-800">
-
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  
   {% if cart.item_count > 0 %}
     
-    <div class="text-center mb-10">
-      <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Your Shopping Cart</h1>
-      
-      <div class="max-w-xl mx-auto mt-4">
-        {% if threshold_reached %}
-          <p class="text-green-600 font-semibold">You've unlocked FREE Shipping! 🎉</p>
-          {% assign percent = 100 %}
-        {% else %}
-          {% assign amount_left = free_shipping_threshold | minus: cart_total %}
-          {% assign percent = cart_total | times: 100 | divided_by: free_shipping_threshold %}
-          <p class="text-gray-600">You are <span class="font-bold">{{ amount_left | money }}</span> away from <span class="font-bold">Free Shipping</span></p>
-        {% endif %}
-        
-        <div class="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden">
-          <div class="h-2 rounded-full transition-all duration-500 ease-in-out" 
-               style="width: {{ percent | floor }}%; background-color: {{ settings.colors_accent_1 | default: '#3b82f6' }};">
-          </div>
-        </div>
-      </div>
-    </div>
-
     <form action="{{ routes.cart_url }}" method="post" id="cart-form">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
+        <!-- Cart Items -->
         <div class="lg:col-span-2 space-y-6">
-          
           {% for item in cart.items %}
             <div class="border-b pb-6 flex items-start gap-4">
-              
+              <!-- Product Image -->
               <div class="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                 <a href="{{ item.url }}">
                   <img src="{{ item.image | image_url: width: 200 }}" 
                        loading="lazy" 
                        alt="{{ item.image.alt | escape }}"
-                       class="w-full h-full object-cover object-center">
+                       width="200"
+                       height="200"
+                       class="w-full h-full object-cover">
                 </a>
               </div>
 
+              <!-- Product Details -->
               <div class="flex-grow">
-                <div class="flex justify-between items-start">
+                <div class="flex justify-between">
                   <div>
-                    <h3 class="text-lg font-medium text-gray-900 leading-tight">
-                      <a href="{{ item.url }}" class="hover:text-blue-600">{{ item.product.title }}</a>
+                    <h3 class="text-lg font-medium">
+                      <a href="{{ item.url }}">{{ item.product.title }}</a>
                     </h3>
                     {% unless item.product.has_only_default_variant %}
-                      <p class="text-sm text-gray-500 mt-0.5">{{ item.variant.title }}</p>
+                      <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
                     {% endunless %}
                   </div>
-                  <div class="text-lg font-medium text-gray-900 ml-4 whitespace-nowrap">
-                    {% if item.original_line_price != item.final_line_price %}
-                        <span class="line-through text-sm text-gray-400 block">{{ item.original_line_price | money }}</span>
-                        <span>{{ item.final_line_price | money }}</span>
-                    {% else %}
-                        {{ item.original_line_price | money }}
-                    {% endif %}
+                  <div class="text-lg font-medium">
+                    {{ item.final_line_price | money }}
                   </div>
                 </div>
 
+                <!-- Quantity Controls - Simple links that reload the page -->
                 <div class="flex items-center mt-3">
                   <div class="inline-flex border border-gray-300 rounded-md">
-                    <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" class="p-2 text-gray-600 hover:text-gray-900">-</a>
-                    <input class="w-10 text-center border-l border-r border-gray-300 focus:outline-none bg-white text-sm" 
-                           type="number" 
-                           name="updates[]" 
-                           value="{{ item.quantity }}" 
-                           min="0" 
-                           id="updates_{{ item.key }}">
-                    <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" class="p-2 text-gray-600 hover:text-gray-900">+</a>
+                    <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" 
+                       class="p-2 text-gray-600 hover:text-gray-900 px-3">−</a>
+                    
+                    <span class="w-12 text-center py-2 border-l border-r border-gray-300">
+                      {{ item.quantity }}
+                    </span>
+                    
+                    <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" 
+                       class="p-2 text-gray-600 hover:text-gray-900 px-3">+</a>
                   </div>
-                  <a href="/cart/change?line={{ forloop.index }}&quantity=0" class="ml-4 text-sm text-red-600 hover:text-red-800">Remove</a>
+                  
+                  <a href="/cart/change?line={{ forloop.index }}&quantity=0" 
+                     class="ml-4 text-sm text-red-600 hover:text-red-800">
+                    Remove
+                  </a>
                 </div>
               </div>
-
             </div>
           {% endfor %}
-
-          <div class="text-right">
-            <button type="submit" class="text-sm text-gray-500 underline hover:text-gray-800">
-              Update Cart Quantities
-            </button>
-          </div>
         </div>
 
-
-        <div class="lg:col-span-1 bg-gray-50 p-6 rounded-xl shadow-lg h-fit sticky top-6">
+        <!-- Order Summary -->
+        <div class="lg:col-span-1 bg-gray-50 p-6 rounded-xl h-fit">
           <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-
-          <div class="space-y-3 border-b border-gray-200 pb-4">
-            <div class="flex justify-between text-gray-600">
+          
+          <div class="space-y-3 border-b pb-4">
+            <div class="flex justify-between">
               <span>Subtotal</span>
               <span>{{ cart.total_price | money }}</span>
             </div>
-            
-            {% if cart.total_discounts > 0 %}
-            <div class="flex justify-between text-green-600 font-medium">
-              <span>Discounts</span>
-              <span>-{{ cart.total_discounts | money }}</span>
-            </div>
-            {% endif %}
           </div>
           
           <div class="flex justify-between text-xl font-bold pt-4">
-            <span>Order Total</span>
+            <span>Total</span>
             <span>{{ cart.total_price | money }}</span>
           </div>
 
-          <p class="text-xs text-gray-500 mt-4">Shipping and taxes calculated at checkout.</p>
-
-          <button type="submit" name="checkout" class="w-full mt-6 py-3 px-6 rounded-md text-base font-medium text-white shadow-md hover:opacity-90 transition duration-150"
-                  style="background-color: {{ settings.colors_solid_button_background | default: '#000000' }};">
-            Proceed to Checkout
+          <button type="submit" name="checkout" 
+                  class="w-full mt-6 py-3 px-6 bg-black text-white rounded-md hover:bg-gray-800">
+            Checkout
           </button>
         </div>
-
       </div>
     </form>
 
   {% else %}
-  
-    <div class="text-center py-20 bg-gray-50 rounded-lg shadow-inner">
-      <h2 class="text-2xl font-bold mb-4 text-gray-900">Your Cart is Empty 🛒</h2>
-      <p class="text-gray-600 mb-6">Explore our products and fill up your cart!</p>
-      <a href="https://nerolifesciences.com/products/14-silicone-face-neck-photon-mask" class="inline-flex py-3 px-8 rounded-md text-base font-medium text-white shadow-md hover:opacity-90 transition duration-150"
-         style="background-color: {{ settings.colors_solid_button_background | default: '#000000' }};">
+    <!-- Empty Cart -->
+    <div class="text-center py-20">
+      <h2 class="text-2xl font-bold mb-4">Your Cart is Empty</h2>
+      <a href="/collections/all" class="inline-block bg-black text-white px-8 py-3 rounded-md">
         Continue Shopping
       </a>
     </div>
-
   {% endif %}
 </div>
