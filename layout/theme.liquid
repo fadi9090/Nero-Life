@@ -12,7 +12,7 @@
     {{ 'application.css' | asset_url | stylesheet_tag }}
     <script defer src="{{ 'led-mask.js' | asset_url }}"></script>
     <!-- Keep only one Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="{{ 'alpinejs@3.x.x' | global_asset_url }}"></script>
   </head>
   <body class="bg-[#F5F5DC] font-sans font-bold text-white flex flex-col min-h-screen">
     {% section 'announcement-bar' %}
