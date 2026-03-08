@@ -10,18 +10,44 @@
     
     {{ content_for_header }}
     
-    <!-- Check if CSS file exists before loading -->
-    <style>
-      /* Base styles - always load these */
-      body { margin: 0; padding: 0; }
-    </style>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Your custom CSS (if exists) -->
     {%- if settings.use_application_css -%}
       {{ 'application.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
     
+    <!-- Custom styles for your theme -->
+    <style>
+      /* Custom styles that extend Tailwind */
+      .bg-custom-beige {
+        background-color: #F5F5DC;
+      }
+      .text-custom-salmon {
+        color: #FA8072;
+      }
+      
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+    </style>
+    
     <!-- JavaScript files -->
     <script defer src="{{ 'led-mask.js' | asset_url }}"></script>
+    
     <!-- Alpine.js from CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
