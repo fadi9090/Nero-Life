@@ -170,51 +170,6 @@
 
         <!-- Right Icons -->
         <div class="flex items-center space-x-{{ section.settings.icon_spacing | default: '2' }}">
-          <!-- Search Icon -->
-          {% if section.settings.show_search %}
-            <a
-              href="/search"
-              class="p-2 rounded-md text-{{ section.settings.icon_color | default: 'currentColor' }} hover:text-[var(--header-hover)]"
-              aria-label="Search"
-            >
-              {% render 'icon-search', 
-                size: section.settings.icon_size | default: 6,
-                color: section.settings.icon_color | default: 'currentColor',
-                stroke_width: section.settings.icon_stroke | default: 1.5
-              %}
-            </a>
-          {% endif %}
-
-          <!-- Account Icon -->
-          {% if section.settings.show_account %}
-            <a
-              href="{{ routes.account_url }}"
-              class="p-2 rounded-md text-{{ section.settings.icon_color | default: 'currentColor' }} hover:text-[var(--header-hover)]"
-              aria-label="Account"
-            >
-              {% render 'icon-user', 
-                size: section.settings.icon_size | default: 6,
-                color: section.settings.icon_color | default: 'currentColor',
-                stroke_width: section.settings.icon_stroke | default: 1.5
-              %}
-            </a>
-          {% endif %}
-
-          <!-- Wishlist Icon -->
-          {% if section.settings.show_wishlist %}
-            <a
-              href="{{ routes.wishlist_url | default: '#' }}"
-              class="p-2 rounded-md text-{{ section.settings.icon_color | default: 'currentColor' }} hover:text-[var(--header-hover)]"
-              aria-label="Wishlist"
-            >
-              {% render 'icon-heart', 
-                size: section.settings.icon_size | default: 6,
-                color: section.settings.icon_color | default: 'currentColor',
-                filled: section.settings.wishlist_filled | default: false,
-                stroke_width: section.settings.icon_stroke | default: 1.5
-              %}
-            </a>
-          {% endif %}
 
           <!-- Cart Icon -->
           {% if section.settings.show_cart %}
