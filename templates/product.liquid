@@ -1,41 +1,161 @@
 {% comment %}
-  Main Product Template - References all sections
+  Main Product Template - Fully customizable
 {% endcomment %}
 
-<script src="{{ 'product-page.js' | asset_url }}" defer></script>
+{% render 'discount' %}
 
-{% comment %} Include CSS styles {% endcomment %}
-{% render 'product-styles' %}
+<style>
+  #product-page-{{ section.id }} {
+    --page-bg: {{ section.settings.page_bg | default: '#F5F5DC' }};
+    --page-padding-y: {{ section.settings.padding_y | default: '40' }}px;
+    --page-padding-x: {{ section.settings.padding_x | default: '16' }}px;
+    --section-gap: {{ section.settings.section_gap | default: '24' }}px;
+  }
 
-<div class="bg-[#F5F5DC] py-10 px-4 sm:px-8 lg:px-12">
-  <!-- Main Product Layout - Equal Height Container -->
-  <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10 mb-8 lg:items-stretch">
-    <!-- Include Media Section -->
+  @media (min-width: 640px) {
+    #product-page-{{ section.id }} {
+      --page-padding-x: {{ section.settings.padding_x_sm | default: '32' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #product-page-{{ section.id }} {
+      --page-padding-x: {{ section.settings.padding_x_lg | default: '48' }}px;
+    }
+  }
+
+  .product-page-{{ section.id }} {
+    background-color: var(--page-bg);
+    padding-top: var(--page-padding-y);
+    padding-bottom: var(--page-padding-y);
+    padding-left: var(--page-padding-x);
+    padding-right: var(--page-padding-x);
+  }
+
+  .product-page-{{ section.id }} .section-spacing {
+    margin-bottom: var(--section-gap);
+  }
+</style>
+
+<div id="product-page-{{ section.id }}" class="product-page-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Main Product Layout -->
+  <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-{{ section.settings.main_gap | default: '10' }} mb-8 lg:items-stretch">
+    <!-- Media Section -->
     <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
       {% section 'product-media' %}
     </div>
 
-    <!-- Include Product Info Section -->
+    <!-- Info Section -->
     <div class="w-full lg:w-1/2">
       {% section 'product-info' %}
     </div>
   </div>
 
-  <!-- Include Product Description -->
-  {% section 'product-description' %}
+  <!-- Product Description -->
+  <div class="section-spacing">
+    {% section 'product-description' %}
+  </div>
 
-  <!-- Include Benefits Section -->
-  {% section 'product-benefits' %}
+  <!-- Benefits Section -->
+  <div class="section-spacing">
+    {% section 'product-benefits' %}
+  </div>
 
-  <!-- Include Benefits Section -->
-  {% section 'visible-result' %}
+  <!-- Results Section -->
+  <div class="section-spacing">
+    {% section 'visible-result' %}
+  </div>
 
-  <!-- Include Comparison Table -->
-  {% section 'product-comparison' %}
+  <!-- Comparison Table -->
+  <div class="section-spacing">
+    {% section 'product-comparison' %}
+  </div>
 
-  <!-- Include Features Section -->
-  {% section 'product-features' %}
+  <!-- Features Section -->
+  <div class="section-spacing">
+    {% section 'product-features' %}
+  </div>
 
-  <!-- Include Reviews Section -->
-  {% section 'product-reviews' %}
+  <!-- Reviews Section -->
+  <div class="section-spacing">
+    {% section 'product-reviews' %}
+  </div>
 </div>
+
+{% schema %}
+{
+  "name": "Product Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "page_bg",
+      "label": "Page background color",
+      "default": "#F5F5DC"
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_sm",
+      "label": "Horizontal padding (tablet)",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_lg",
+      "label": "Horizontal padding (desktop)",
+      "min": 24,
+      "max": 64,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_gap",
+      "label": "Gap between sections",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "main_gap",
+      "label": "Gap between media and info",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 10,
+      "unit": "space"
+    }
+  ]
+}
+{% endschema %}

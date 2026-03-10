@@ -1,195 +1,368 @@
-<div class="flex flex-col lg:flex-row items-center justify-center py-6 gap-8 lg:gap-12 p-8 lg:p-12 bg-gray-50 rounded-xl shadow-sm mx-auto max-w-7xl mt-6">
-  <div class="max-w-7xl mx-auto">
-    
-    <!-- Section Header -->
-    <div class="text-center mb-16">
-      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-        See The Transformation
-      </h2>
-      <p class="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-        Real results from real customers. Watch as skin transforms with regular use of our mask over 4 weeks.
-      </p>
+{% comment %}
+  Visible Results Timeline - Fully customizable with images
+{% endcomment %}
+
+<style>
+  #results-{{ section.id }} {
+    --results-bg: {{ section.settings.results_bg | default: '#F9FAFB' }};
+    --results-radius: {{ section.settings.results_radius | default: '12' }}px;
+    --results-padding: {{ section.settings.results_padding | default: '48' }}px;
+    --title-color: {{ section.settings.title_color | default: '#111827' }};
+    --title-size: {{ section.settings.title_size | default: '30' }}px;
+    --subtitle-color: {{ section.settings.subtitle_color | default: '#4B5563' }};
+    --subtitle-size: {{ section.settings.subtitle_size | default: '20' }}px;
+    --card-bg: {{ section.settings.card_bg | default: '#FFFFFF' }};
+    --card-border: {{ section.settings.card_border | default: '#F3F4F6' }};
+    --card-shadow: {{ section.settings.card_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --card-radius: {{ section.settings.card_radius | default: '16' }}px;
+    --week-badge-bg: {{ section.settings.week_badge_bg | default: '#FDF2F8' }};
+    --week-badge-color: {{ section.settings.week_badge_color | default: '#BE185D' }};
+    --progress-1: {{ section.settings.progress_1_color | default: '#EC4899' }};
+    --progress-2: {{ section.settings.progress_2_color | default: '#8B5CF6' }};
+    --progress-3: {{ section.settings.progress_3_color | default: '#3B82F6' }};
+    --connector-1: {{ section.settings.connector_1 | default: '#FBCFE8' }};
+    --connector-2: {{ section.settings.connector_2 | default: '#DDD6FE' }};
+  }
+
+  .results-section-{{ section.id }} {
+    background-color: var(--results-bg);
+    border-radius: var(--results-radius);
+    padding: var(--results-padding);
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  .results-header-{{ section.id }} {
+    text-align: center;
+    margin-bottom: {{ section.settings.header_margin | default: '64' }}px;
+  }
+
+  .results-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '800' }};
+    margin-bottom: {{ section.settings.title_margin | default: '16' }}px;
+  }
+
+  .results-subtitle-{{ section.id }} {
+    color: var(--subtitle-color);
+    font-size: var(--subtitle-size);
+    max-width: {{ section.settings.subtitle_width | default: '768' }}px;
+    margin: 0 auto;
+    line-height: {{ section.settings.subtitle_line_height | default: '1.5' }};
+  }
+
+  .results-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.grid_gap | default: '32' }}px;
+    position: relative;
+  }
+
+  @media (min-width: 768px) {
+    .results-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.columns | default: '3' }}, 1fr);
+    }
+  }
+
+  .result-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+    transition: all {{ section.settings.card_transition | default: '300' }}ms ease;
+    position: relative;
+  }
+
+  .result-card-{{ section.id }}:hover {
+    transform: translateY(-{{ section.settings.hover_offset | default: '8' }}px);
+    box-shadow: {{ section.settings.hover_shadow | default: '0 20px 25px -5px rgb(0 0 0 / 0.15)' }};
+  }
+
+  {% if section.settings.show_connectors %}
+    @media (min-width: 768px) {
+      .result-card-{{ section.id }}:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 25%;
+        right: -{{ section.settings.connector_offset | default: '16' }}px;
+        width: {{ section.settings.connector_width | default: '32' }}px;
+        height: {{ section.settings.connector_height | default: '2' }}px;
+        background: linear-gradient(to right, var(--connector-1), var(--connector-2));
+        z-index: 1;
+      }
+    }
+  {% endif %}
+
+  .week-badge-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    padding: {{ section.settings.badge_padding_y | default: '8' }}px {{ section.settings.badge_padding_x | default: '16' }}px;
+    background-color: var(--week-badge-bg);
+    color: var(--week-badge-color);
+    border-radius: {{ section.settings.badge_radius | default: '9999' }}px;
+    font-size: {{ section.settings.badge_size | default: '14' }}px;
+    font-weight: {{ section.settings.badge_weight | default: '600' }};
+    border: 1px solid {{ section.settings.badge_border | default: '#FBCFE8' }};
+  }
+
+  .image-container-{{ section.id }} {
+    position: relative;
+    margin: {{ section.settings.image_margin | default: '16' }}px 0;
+    aspect-ratio: {{ section.settings.image_aspect | default: '1 / 1' }};
+    overflow: hidden;
+    border-radius: {{ section.settings.image_radius | default: '12' }}px;
+  }
+
+  .result-image-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform {{ section.settings.image_transition | default: '500' }}ms ease;
+  }
+
+  .result-card-{{ section.id }}:hover .result-image-{{ section.id }} {
+    transform: scale({{ section.settings.image_hover_scale | default: '1.05' }});
+  }
+
+  .image-caption-{{ section.id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    padding: {{ section.settings.caption_padding | default: '16' }}px;
+    color: white;
+    font-size: {{ section.settings.caption_size | default: '14' }}px;
+    font-weight: {{ section.settings.caption_weight | default: '500' }};
+  }
+
+  .card-content-{{ section.id }} {
+    padding: {{ section.settings.content_padding | default: '24' }}px;
+  }
+
+  .card-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: {{ section.settings.card_title_size | default: '20' }}px;
+    font-weight: {{ section.settings.card_title_weight | default: '700' }};
+    margin-bottom: {{ section.settings.card_title_margin | default: '12' }}px;
+  }
+
+  .card-text-{{ section.id }} {
+    color: var(--subtitle-color);
+    font-size: {{ section.settings.card_text_size | default: '16' }}px;
+    line-height: {{ section.settings.card_text_line_height | default: '1.6' }};
+    margin-bottom: {{ section.settings.card_text_margin | default: '24' }}px;
+  }
+
+  .progress-container-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.progress_gap | default: '16' }}px;
+  }
+
+  .progress-circle-{{ section.id }} {
+    width: {{ section.settings.progress_size | default: '64' }}px;
+    height: {{ section.settings.progress_size | default: '64' }}px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: {{ section.settings.progress_weight | default: '700' }};
+    color: white;
+  }
+
+  .progress-circle-1-{{ section.id }} {
+    background: linear-gradient(to bottom right, var(--progress-1), {{ section.settings.progress_1_light | default: '#F9A8D4' }});
+  }
+
+  .progress-circle-2-{{ section.id }} {
+    background: linear-gradient(to bottom right, var(--progress-2), {{ section.settings.progress_2_light | default: '#C4B5FD' }});
+  }
+
+  .progress-circle-3-{{ section.id }} {
+    background: linear-gradient(to bottom right, var(--progress-3), {{ section.settings.progress_3_light | default: '#93C5FD' }});
+  }
+
+  .progress-text-{{ section.id }} {
+    flex: 1;
+  }
+
+  .progress-label-{{ section.id }} {
+    color: var(--title-color);
+    font-weight: {{ section.settings.progress_label_weight | default: '600' }};
+    font-size: {{ section.settings.progress_label_size | default: '16' }}px;
+    margin-bottom: {{ section.settings.progress_label_margin | default: '4' }}px;
+  }
+
+  .progress-desc-{{ section.id }} {
+    color: var(--subtitle-color);
+    font-size: {{ section.settings.progress_desc_size | default: '14' }}px;
+  }
+
+  .placeholder-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom right, {{ section.settings.placeholder_start | default: '#FCE7F3' }}, {{ section.settings.placeholder_end | default: '#FBCFE8' }});
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: {{ section.settings.placeholder_text | default: '#9D174D' }};
+  }
+</style>
+
+<div id="results-{{ section.id }}" class="results-section-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Header -->
+  <div class="results-header-{{ section.id }}">
+    <h2 class="results-title-{{ section.id }}">
+      {{ section.settings.title | default: 'See The Transformation' }}
+    </h2>
+    <p class="results-subtitle-{{ section.id }}">
+      {{ section.settings.subtitle | default: 'Real results from real customers. Watch as skin transforms with regular use of our mask over 4 weeks.' }}
+    </p>
+  </div>
+
+  <!-- Timeline Grid -->
+  <div class="results-grid-{{ section.id }}">
+    <!-- Week 1 -->
+    <div class="result-card-{{ section.id }}">
+      <div class="px-6 pt-6">
+        <span class="week-badge-{{ section.id }}">
+          {{ section.settings.week_1_badge | default: 'Week 1' }}
+        </span>
+      </div>
+      
+      <div class="image-container-{{ section.id }} px-6">
+        {% if section.settings.week1_image != blank %}
+          <img src="{{ section.settings.week1_image | image_url: width: 600 }}"
+               alt="{{ section.settings.week1_alt | default: 'Results after 1 week' }}"
+               class="result-image-{{ section.id }}"
+               width="600"
+               height="600"
+               loading="lazy">
+        {% else %}
+          <div class="placeholder-{{ section.id }}">
+            <span class="text-5xl">📸</span>
+            <p>{{ section.settings.week1_placeholder | default: 'Week 1 Results' }}</p>
+          </div>
+        {% endif %}
+        <div class="image-caption-{{ section.id }}">
+          {{ section.settings.week1_caption | default: 'First Signs of Improvement' }}
+        </div>
+      </div>
+      
+      <div class="card-content-{{ section.id }}">
+        <h3 class="card-title-{{ section.id }}">
+          {{ section.settings.week1_title | default: 'Initial Brightening' }}
+        </h3>
+        <p class="card-text-{{ section.id }}">
+          {{ section.settings.week1_text | default: 'Skin appears fresher and more hydrated with initial reduction in dullness. Texture begins to improve.' }}
+        </p>
+        
+        <div class="progress-container-{{ section.id }}">
+          <div class="progress-circle-{{ section.id }} progress-circle-1-{{ section.id }}">
+            {{ section.settings.week1_progress | default: '25%' }}
+          </div>
+          <div class="progress-text-{{ section.id }}">
+            <div class="progress-label-{{ section.id }}">{{ section.settings.week1_progress_label | default: 'Progress Achieved' }}</div>
+            <div class="progress-desc-{{ section.id }}">{{ section.settings.week1_progress_desc | default: 'Visible hydration & brightness' }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Timeline Results Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+    <!-- Week 2 -->
+    <div class="result-card-{{ section.id }}">
+      <div class="px-6 pt-6">
+        <span class="week-badge-{{ section.id }}">
+          {{ section.settings.week_2_badge | default: 'Week 2' }}
+        </span>
+      </div>
       
-      <!-- Week 1 Card -->
-      <div class="relative group">
-        <!-- Timeline connector (desktop only) -->
-        <div class="hidden md:block absolute top-1/4 -right-4 w-8 h-0.5 bg-gradient-to-r from-pink-200 to-purple-200 group-last:hidden"></div>
+      <div class="image-container-{{ section.id }} px-6">
+        {% if section.settings.week2_image != blank %}
+          <img src="{{ section.settings.week2_image | image_url: width: 600 }}"
+               alt="{{ section.settings.week2_alt | default: 'Results after 2 weeks' }}"
+               class="result-image-{{ section.id }}"
+               width="600"
+               height="600"
+               loading="lazy">
+        {% else %}
+          <div class="placeholder-{{ section.id }}" style="background: linear-gradient(to bottom right, #EDE9FE, #DDD6FE);">
+            <span class="text-5xl">✨</span>
+            <p>{{ section.settings.week2_placeholder | default: 'Week 2 Results' }}</p>
+          </div>
+        {% endif %}
+        <div class="image-caption-{{ section.id }}">
+          {{ section.settings.week2_caption | default: 'Texture Refinement' }}
+        </div>
+      </div>
+      
+      <div class="card-content-{{ section.id }}">
+        <h3 class="card-title-{{ section.id }}">
+          {{ section.settings.week2_title | default: 'Smoother Skin' }}
+        </h3>
+        <p class="card-text-{{ section.id }}">
+          {{ section.settings.week2_text | default: 'Pores appear minimized, texture becomes visibly smoother, and complexion looks more even.' }}
+        </p>
         
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-          <!-- Week label -->
-          <div class="px-6 pt-6">
-            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-pink-50 text-pink-700 border border-pink-100">
-              Week 1
-            </span>
+        <div class="progress-container-{{ section.id }}">
+          <div class="progress-circle-{{ section.id }} progress-circle-2-{{ section.id }}">
+            {{ section.settings.week2_progress | default: '60%' }}
           </div>
-          
-          <!-- Image container -->
-          <div class="relative mt-4 px-6">
-            <div class="aspect-square overflow-hidden rounded-xl">
-              {% if section.settings.week1_image %}
-                <img 
-                  src="{{ section.settings.week1_image | img_url: '600x600' }}" 
-                  alt="Results after 1 week of using {{ product.title }}" 
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                >
-              {% else %}
-                <!-- Fallback placeholder -->
-                <div class="w-full h-full bg-gradient-to-br from-pink-100 to-pink-50 flex items-center justify-center">
-                  <div class="text-center p-8">
-                    <div class="text-pink-300 text-5xl mb-4">📸</div>
-                    <p class="text-pink-400 font-medium">Week 1 Results</p>
-                  </div>
-                </div>
-              {% endif %}
-            </div>
-            <div class="absolute bottom-0 left-6 right-6 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <p class="text-white text-sm font-medium">First Signs of Improvement</p>
-            </div>
-          </div>
-          
-          <!-- Content -->
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Initial Brightening</h3>
-            <p class="text-gray-600 mb-6">
-              Skin appears fresher and more hydrated with initial reduction in dullness. Texture begins to improve.
-            </p>
-            
-            <!-- Progress indicator -->
-            <div class="flex items-center space-x-4">
-              <div class="flex-shrink-0">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-pink-300 flex items-center justify-center">
-                  <span class="text-white font-bold text-lg">25%</span>
-                </div>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900">Progress Achieved</p>
-                <p class="text-sm text-gray-500">Visible hydration & brightness</p>
-              </div>
-            </div>
+          <div class="progress-text-{{ section.id }}">
+            <div class="progress-label-{{ section.id }}">{{ section.settings.week2_progress_label | default: 'Progress Achieved' }}</div>
+            <div class="progress-desc-{{ section.id }}">{{ section.settings.week2_progress_desc | default: 'Texture & pore improvement' }}</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Week 2 Card -->
-      <div class="relative group">
-        <!-- Timeline connector (desktop only) -->
-        <div class="hidden md:block absolute top-1/4 -right-4 w-8 h-0.5 bg-gradient-to-r from-purple-200 to-blue-200 group-last:hidden"></div>
-        
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-          <!-- Week label -->
-          <div class="px-6 pt-6">
-            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-purple-50 text-purple-700 border border-purple-100">
-              Week 2
-            </span>
+    <!-- Week 4 -->
+    <div class="result-card-{{ section.id }}">
+      <div class="px-6 pt-6">
+        <span class="week-badge-{{ section.id }}">
+          {{ section.settings.week_4_badge | default: 'Week 4' }}
+        </span>
+      </div>
+      
+      <div class="image-container-{{ section.id }} px-6">
+        {% if section.settings.week4_image != blank %}
+          <img src="{{ section.settings.week4_image | image_url: width: 600 }}"
+               alt="{{ section.settings.week4_alt | default: 'Results after 4 weeks' }}"
+               class="result-image-{{ section.id }}"
+               width="600"
+               height="600"
+               loading="lazy">
+        {% else %}
+          <div class="placeholder-{{ section.id }}" style="background: linear-gradient(to bottom right, #DBEAFE, #BFDBFE);">
+            <span class="text-5xl">🌟</span>
+            <p>{{ section.settings.week4_placeholder | default: 'Week 4 Results' }}</p>
           </div>
-          
-          <!-- Image container -->
-          <div class="relative mt-4 px-6">
-            <div class="aspect-square overflow-hidden rounded-xl">
-              {% if section.settings.week2_image %}
-                <img 
-                  src="{{ section.settings.week2_image | img_url: '600x600' }}" 
-                  alt="Results after 2 weeks of using {{ product.title }}" 
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                >
-              {% else %}
-                <!-- Fallback placeholder -->
-                <div class="w-full h-full bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center">
-                  <div class="text-center p-8">
-                    <div class="text-purple-300 text-5xl mb-4">✨</div>
-                    <p class="text-purple-400 font-medium">Week 2 Results</p>
-                  </div>
-                </div>
-              {% endif %}
-            </div>
-            <div class="absolute bottom-0 left-6 right-6 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <p class="text-white text-sm font-medium">Texture Refinement</p>
-            </div>
-          </div>
-          
-          <!-- Content -->
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Smoother Skin</h3>
-            <p class="text-gray-600 mb-6">
-              Pores appear minimized, texture becomes visibly smoother, and complexion looks more even.
-            </p>
-            
-            <!-- Progress indicator -->
-            <div class="flex items-center space-x-4">
-              <div class="flex-shrink-0">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-purple-300 flex items-center justify-center">
-                  <span class="text-white font-bold text-lg">60%</span>
-                </div>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900">Progress Achieved</p>
-                <p class="text-sm text-gray-500">Texture & pore improvement</p>
-              </div>
-            </div>
-          </div>
+        {% endif %}
+        <div class="image-caption-{{ section.id }}">
+          {{ section.settings.week4_caption | default: 'Radiant Glow' }}
         </div>
       </div>
-
-      <!-- Week 4 Card -->
-      <div class="relative group">
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-          <!-- Week label -->
-          <div class="px-6 pt-6">
-            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-              Week 4
-            </span>
+      
+      <div class="card-content-{{ section.id }}">
+        <h3 class="card-title-{{ section.id }}">
+          {{ section.settings.week4_title | default: 'Radiant Glow' }}
+        </h3>
+        <p class="card-text-{{ section.id }}">
+          {{ section.settings.week4_text | default: 'Skin achieves a healthy, natural glow with visibly reduced imperfections and a more youthful appearance.' }}
+        </p>
+        
+        <div class="progress-container-{{ section.id }}">
+          <div class="progress-circle-{{ section.id }} progress-circle-3-{{ section.id }}">
+            {{ section.settings.week4_progress | default: '100%' }}
           </div>
-          
-          <!-- Image container -->
-          <div class="relative mt-4 px-6">
-            <div class="aspect-square overflow-hidden rounded-xl">
-              {% if section.settings.week4_image %}
-                <img 
-                  src="{{ section.settings.week4_image | img_url: '600x600' }}" 
-                  alt="Results after 4 weeks of using {{ product.title }}" 
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                >
-              {% else %}
-                <!-- Fallback placeholder -->
-                <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center">
-                  <div class="text-center p-8">
-                    <div class="text-blue-300 text-5xl mb-4">🌟</div>
-                    <p class="text-blue-400 font-medium">Week 4 Results</p>
-                  </div>
-                </div>
-              {% endif %}
-            </div>
-            <div class="absolute bottom-0 left-6 right-6 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <p class="text-white text-sm font-medium">Radiant Glow</p>
-            </div>
-          </div>
-          
-          <!-- Content -->
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Radiant Glow</h3>
-            <p class="text-gray-600 mb-6">
-              Skin achieves a healthy, natural glow with visibly reduced imperfections and a more youthful appearance.
-            </p>
-            
-            <!-- Progress indicator -->
-            <div class="flex items-center space-x-4">
-              <div class="flex-shrink-0">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-300 flex items-center justify-center">
-                  <span class="text-white font-bold text-lg">100%</span>
-                </div>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900">Full Transformation</p>
-                <p class="text-sm text-gray-500">Glowing, healthy skin</p>
-              </div>
-            </div>
+          <div class="progress-text-{{ section.id }}">
+            <div class="progress-label-{{ section.id }}">{{ section.settings.week4_progress_label | default: 'Full Transformation' }}</div>
+            <div class="progress-desc-{{ section.id }}">{{ section.settings.week4_progress_desc | default: 'Glowing, healthy skin' }}</div>
           </div>
         </div>
       </div>
@@ -200,46 +373,844 @@
 {% schema %}
 {
   "name": "Results Timeline",
-  "class": "results-timeline-section",
   "settings": [
     {
-      "type": "text",
-      "id": "title",
-      "label": "Section Title",
-      "default": "See The Transformation"
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "results_bg",
+      "label": "Background color",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "range",
+      "id": "results_padding",
+      "label": "Section padding",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "results_radius",
+      "label": "Section radius",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between cards",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Connectors"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_connectors",
+      "label": "Show timeline connectors",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "connector_offset",
+      "label": "Connector offset",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "connector_width",
+      "label": "Connector width",
+      "min": 16,
+      "max": 64,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "connector_height",
+      "label": "Connector height",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "connector_1",
+      "label": "Connector start color",
+      "default": "#FBCFE8"
+    },
+    {
+      "type": "color",
+      "id": "connector_2",
+      "label": "Connector end color",
+      "default": "#DDD6FE"
+    },
+    {
+      "type": "header",
+      "content": "Header Settings"
     },
     {
       "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "See The Transformation"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
       "id": "subtitle",
-      "label": "Section Subtitle",
+      "label": "Subtitle",
       "default": "Real results from real customers. Watch as skin transforms with regular use of our mask over 4 weeks."
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_width",
+      "label": "Subtitle max width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "default": 768,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_height",
+      "label": "Subtitle line height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "header_margin",
+      "label": "Header bottom margin",
+      "min": 24,
+      "max": 96,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card radius",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "card_transition",
+      "label": "Card transition speed",
+      "min": 200,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "hover_offset",
+      "label": "Hover lift",
+      "min": 2,
+      "max": 16,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "hover_shadow",
+      "label": "Hover shadow",
+      "options": [
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" },
+        { "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)", "label": "2XL" }
+      ],
+      "default": "0 20px 25px -5px rgb(0 0 0 / 0.15)"
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Week Badge"
+    },
+    {
+      "type": "color",
+      "id": "week_badge_bg",
+      "label": "Badge background",
+      "default": "#FDF2F8"
+    },
+    {
+      "type": "color",
+      "id": "week_badge_color",
+      "label": "Badge text color",
+      "default": "#BE185D"
+    },
+    {
+      "type": "color",
+      "id": "badge_border",
+      "label": "Badge border",
+      "default": "#FBCFE8"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_x",
+      "label": "Badge horizontal padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_y",
+      "label": "Badge vertical padding",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "badge_size",
+      "label": "Badge font size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "badge_weight",
+      "label": "Badge weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "badge_radius",
+      "label": "Badge radius",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "default": 9999,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "4 / 3", "label": "Standard (4:3)" },
+        { "value": "16 / 9", "label": "Widescreen (16:9)" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_margin",
+      "label": "Image container margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_transition",
+      "label": "Image zoom speed",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "default": 500,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "image_hover_scale",
+      "label": "Image hover scale",
+      "min": 1,
+      "max": 1.2,
+      "step": 0.1,
+      "default": 1.05
+    },
+    {
+      "type": "range",
+      "id": "caption_padding",
+      "label": "Caption padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "caption_size",
+      "label": "Caption font size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "caption_weight",
+      "label": "Caption weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Card Typography"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Card title size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_title_weight",
+      "label": "Card title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "card_title_margin",
+      "label": "Title bottom margin",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_text_size",
+      "label": "Card text size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_text_line_height",
+      "label": "Text line height",
+      "min": 1.4,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "card_text_margin",
+      "label": "Text bottom margin",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Progress Circle"
+    },
+    {
+      "type": "range",
+      "id": "progress_size",
+      "label": "Progress circle size",
+      "min": 40,
+      "max": 80,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "progress_gap",
+      "label": "Progress gap",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "progress_weight",
+      "label": "Progress text weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "progress_label_size",
+      "label": "Progress label size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "progress_label_weight",
+      "label": "Progress label weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "progress_label_margin",
+      "label": "Label bottom margin",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "progress_desc_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Week 1 Settings"
+    },
+    {
+      "type": "text",
+      "id": "week_1_badge",
+      "label": "Badge text",
+      "default": "Week 1"
     },
     {
       "type": "image_picker",
       "id": "week1_image",
-      "label": "Week 1 Image"
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "week1_alt",
+      "label": "Image alt text",
+      "default": "Results after 1 week"
+    },
+    {
+      "type": "text",
+      "id": "week1_placeholder",
+      "label": "Placeholder text",
+      "default": "Week 1 Results"
+    },
+    {
+      "type": "text",
+      "id": "week1_caption",
+      "label": "Image caption",
+      "default": "First Signs of Improvement"
+    },
+    {
+      "type": "text",
+      "id": "week1_title",
+      "label": "Title",
+      "default": "Initial Brightening"
+    },
+    {
+      "type": "textarea",
+      "id": "week1_text",
+      "label": "Description",
+      "default": "Skin appears fresher and more hydrated with initial reduction in dullness. Texture begins to improve."
+    },
+    {
+      "type": "text",
+      "id": "week1_progress",
+      "label": "Progress percentage",
+      "default": "25%"
+    },
+    {
+      "type": "text",
+      "id": "week1_progress_label",
+      "label": "Progress label",
+      "default": "Progress Achieved"
+    },
+    {
+      "type": "text",
+      "id": "week1_progress_desc",
+      "label": "Progress description",
+      "default": "Visible hydration & brightness"
+    },
+    {
+      "type": "color",
+      "id": "progress_1_color",
+      "label": "Progress color",
+      "default": "#EC4899"
+    },
+    {
+      "type": "color",
+      "id": "progress_1_light",
+      "label": "Progress light color",
+      "default": "#F9A8D4"
+    },
+    {
+      "type": "header",
+      "content": "Week 2 Settings"
+    },
+    {
+      "type": "text",
+      "id": "week_2_badge",
+      "label": "Badge text",
+      "default": "Week 2"
     },
     {
       "type": "image_picker",
       "id": "week2_image",
-      "label": "Week 2 Image"
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "week2_alt",
+      "label": "Image alt text",
+      "default": "Results after 2 weeks"
+    },
+    {
+      "type": "text",
+      "id": "week2_placeholder",
+      "label": "Placeholder text",
+      "default": "Week 2 Results"
+    },
+    {
+      "type": "text",
+      "id": "week2_caption",
+      "label": "Image caption",
+      "default": "Texture Refinement"
+    },
+    {
+      "type": "text",
+      "id": "week2_title",
+      "label": "Title",
+      "default": "Smoother Skin"
+    },
+    {
+      "type": "textarea",
+      "id": "week2_text",
+      "label": "Description",
+      "default": "Pores appear minimized, texture becomes visibly smoother, and complexion looks more even."
+    },
+    {
+      "type": "text",
+      "id": "week2_progress",
+      "label": "Progress percentage",
+      "default": "60%"
+    },
+    {
+      "type": "text",
+      "id": "week2_progress_label",
+      "label": "Progress label",
+      "default": "Progress Achieved"
+    },
+    {
+      "type": "text",
+      "id": "week2_progress_desc",
+      "label": "Progress description",
+      "default": "Texture & pore improvement"
+    },
+    {
+      "type": "color",
+      "id": "progress_2_color",
+      "label": "Progress color",
+      "default": "#8B5CF6"
+    },
+    {
+      "type": "color",
+      "id": "progress_2_light",
+      "label": "Progress light color",
+      "default": "#C4B5FD"
+    },
+    {
+      "type": "header",
+      "content": "Week 4 Settings"
+    },
+    {
+      "type": "text",
+      "id": "week_4_badge",
+      "label": "Badge text",
+      "default": "Week 4"
     },
     {
       "type": "image_picker",
       "id": "week4_image",
-      "label": "Week 4 Image"
+      "label": "Image"
     },
     {
       "type": "text",
-      "id": "cta_text",
-      "label": "Button Text",
-      "default": "Start Your Transformation"
+      "id": "week4_alt",
+      "label": "Image alt text",
+      "default": "Results after 4 weeks"
+    },
+    {
+      "type": "text",
+      "id": "week4_placeholder",
+      "label": "Placeholder text",
+      "default": "Week 4 Results"
+    },
+    {
+      "type": "text",
+      "id": "week4_caption",
+      "label": "Image caption",
+      "default": "Radiant Glow"
+    },
+    {
+      "type": "text",
+      "id": "week4_title",
+      "label": "Title",
+      "default": "Radiant Glow"
+    },
+    {
+      "type": "textarea",
+      "id": "week4_text",
+      "label": "Description",
+      "default": "Skin achieves a healthy, natural glow with visibly reduced imperfections and a more youthful appearance."
+    },
+    {
+      "type": "text",
+      "id": "week4_progress",
+      "label": "Progress percentage",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "week4_progress_label",
+      "label": "Progress label",
+      "default": "Full Transformation"
+    },
+    {
+      "type": "text",
+      "id": "week4_progress_desc",
+      "label": "Progress description",
+      "default": "Glowing, healthy skin"
+    },
+    {
+      "type": "color",
+      "id": "progress_3_color",
+      "label": "Progress color",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "color",
+      "id": "progress_3_light",
+      "label": "Progress light color",
+      "default": "#93C5FD"
+    },
+    {
+      "type": "header",
+      "content": "Placeholder Colors"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_start",
+      "label": "Placeholder start",
+      "default": "#FCE7F3"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_end",
+      "label": "Placeholder end",
+      "default": "#FBCFE8"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_text",
+      "label": "Placeholder text",
+      "default": "#9D174D"
     }
   ],
   "presets": [
     {
-      "name": "Results Timeline",
-      "category": "Product"
+      "name": "Results Timeline"
     }
   ]
 }

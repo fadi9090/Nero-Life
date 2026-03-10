@@ -1,66 +1,482 @@
 {% comment %}
   Section: Features Showcase
   Description: Premium features and technical specifications
+  Fully customizable through theme editor
 {% endcomment %}
 
-<div class="w-full max-w-7xl mx-auto bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12">
-    <div class="text-center mb-12">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{{ section.settings.title | default: 'Premium Features' }}</h1>
-        <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">{{ section.settings.subtitle | default: 'Advanced technology for optimal results' }}</p>
-    </div>
+<style>
+  #features-{{ section.id }} {
+    --features-bg-start: {{ section.settings.bg_gradient_start | default: '#FFFFFF' }};
+    --features-bg-end: {{ section.settings.bg_gradient_end | default: '#F9FAFB' }};
+    --features-title-color: {{ section.settings.title_color | default: '#1F2937' }};
+    --features-subtitle-color: {{ section.settings.subtitle_color | default: '#4B5563' }};
+    --features-card-bg: {{ section.settings.card_bg | default: '#FFFFFF' }};
+    --features-card-border: {{ section.settings.card_border | default: '#F3F4F6' }};
+    --features-icon-bg-start: {{ section.settings.icon_bg_start | default: '#F43F5E' }};
+    --features-icon-bg-end: {{ section.settings.icon_bg_end | default: '#EC4899' }};
+    --features-icon-color: {{ section.settings.icon_color | default: '#FFFFFF' }};
+    --features-title-gradient-start: {{ section.settings.title_gradient_start | default: '#4F46E5' }};
+    --features-title-gradient-end: {{ section.settings.title_gradient_end | default: '#9333EA' }};
+    --features-text-color: {{ section.settings.text_color | default: '#6B7280' }};
+    --features-icon-size: {{ section.settings.icon_size_mobile | default: '48' }}px;
+    --features-icon-size-md: {{ section.settings.icon_size_md | default: '64' }}px;
+    --features-card-padding: {{ section.settings.card_padding_mobile | default: '16' }}px;
+    --features-card-padding-md: {{ section.settings.card_padding_md | default: '24' }}px;
+  }
+
+  @media (min-width: 768px) {
+    #features-{{ section.id }} {
+      --features-icon-size: var(--features-icon-size-md);
+      --features-card-padding: var(--features-card-padding-md);
+    }
+  }
+
+  .features-section-{{ section.id }} {
+    background: linear-gradient(to bottom right, var(--features-bg-start), var(--features-bg-end));
+  }
+
+  .features-title-{{ section.id }} {
+    color: var(--features-title-color);
+    font-size: {{ section.settings.title_size_mobile | default: '3xl' }};
+    font-weight: {{ section.settings.title_weight | default: '700' }};
+  }
+
+  @media (min-width: 768px) {
+    .features-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_md | default: '4xl' }};
+    }
+  }
+
+  .features-subtitle-{{ section.id }} {
+    color: var(--features-subtitle-color);
+    font-size: {{ section.settings.subtitle_size_mobile | default: 'base' }};
+  }
+
+  @media (min-width: 768px) {
+    .features-subtitle-{{ section.id }} {
+      font-size: {{ section.settings.subtitle_size_md | default: 'lg' }};
+    }
+  }
+
+  .features-card-{{ section.id }} {
+    background-color: var(--features-card-bg);
+    border-color: var(--features-card-border);
+    padding: var(--features-card-padding);
+    transition: all {{ section.settings.card_transition | default: '300' }}ms ease;
+    box-shadow: var(--features-card-shadow);
+  }
+
+  .features-card-{{ section.id }}:hover {
+    transform: translateY(-{{ section.settings.card_hover_offset | default: '4' }}px);
+    box-shadow: var(--features-card-hover-shadow);
+  }
+
+  .features-icon-{{ section.id }} {
+    width: var(--features-icon-size);
+    height: var(--features-icon-size);
+    background: linear-gradient(to right, var(--features-icon-bg-start), var(--features-icon-bg-end));
+    color: var(--features-icon-color);
+    margin-bottom: {{ section.settings.icon_margin | default: '12' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .features-icon-{{ section.id }} {
+      margin-bottom: {{ section.settings.icon_margin_md | default: '16' }}px;
+    }
+  }
+
+  .features-icon-{{ section.id }} svg {
+    width: {{ section.settings.icon_svg_size_mobile | default: '24' }}px;
+    height: {{ section.settings.icon_svg_size_mobile | default: '24' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .features-icon-{{ section.id }} svg {
+      width: {{ section.settings.icon_svg_size_md | default: '32' }}px;
+      height: {{ section.settings.icon_svg_size_md | default: '32' }}px;
+    }
+  }
+
+  .features-card-title-{{ section.id }} {
+    background: linear-gradient(to right, var(--features-title-gradient-start), var(--features-title-gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: {{ section.settings.card_title_size_mobile | default: 'base' }};
+    font-weight: {{ section.settings.card_title_weight | default: '700' }};
+    margin-bottom: {{ section.settings.card_title_margin | default: '8' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .features-card-title-{{ section.id }} {
+      font-size: {{ section.settings.card_title_size_md | default: 'lg' }};
+    }
+  }
+
+  .features-card-text-{{ section.id }} {
+    color: var(--features-text-color);
+    font-size: {{ section.settings.card_text_size_mobile | default: 'xs' }};
+    line-height: {{ section.settings.card_text_leading | default: '1.4' }};
+  }
+
+  @media (min-width: 768px) {
+    .features-card-text-{{ section.id }} {
+      font-size: {{ section.settings.card_text_size_md | default: 'sm' }};
+    }
+  }
+
+  .features-grid-{{ section.id }} {
+    gap: {{ section.settings.grid_gap_mobile | default: '16' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .features-grid-{{ section.id }} {
+      gap: {{ section.settings.grid_gap_md | default: '24' }}px;
+    }
+  }
+</style>
+
+<div id="features-{{ section.id }}" class="w-full max-w-7xl mx-auto features-section-{{ section.id }} rounded-{{ section.settings.border_radius | default: '3xl' }} shadow-{{ section.settings.box_shadow | default: '2xl' }} p-{{ section.settings.padding_mobile | default: '6' }} sm:p-{{ section.settings.padding_sm | default: '8' }} lg:p-{{ section.settings.padding_lg | default: '12' }}" {{ section.shopify_attributes }}>
+  
+  <!-- Section Header -->
+  <div class="text-center mb-{{ section.settings.header_margin | default: '12' }}">
+    <h2 class="features-title-{{ section.id }} font-{{ section.settings.title_weight | default: '700' }} mb-{{ section.settings.title_margin | default: '4' }}">
+      {{ section.settings.title | default: 'Premium Features' }}
+    </h2>
+    {% if section.settings.show_subtitle %}
+      <p class="features-subtitle-{{ section.id }} max-w-{{ section.settings.subtitle_width | default: '2xl' }} mx-auto">
+        {{ section.settings.subtitle | default: 'Advanced technology for optimal results' }}
+      </p>
+    {% endif %}
+  </div>
+  
+  <!-- Feature Cards Grid -->
+  <div class="features-grid-{{ section.id }} grid grid-cols-{{ section.settings.columns_mobile | default: '2' }} md:grid-cols-{{ section.settings.columns_md | default: '2' }} lg:grid-cols-{{ section.settings.columns_lg | default: '2' }}">
     
-    <!-- Feature Cards - Two per row -->
-    <div class="grid grid-cols-2 gap-4 md:gap-6">
-        <!-- Card 1 -->
-        <div class="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col items-center text-center shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100">
-            <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 shadow-lg">
-                <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
-                </svg>
-            </div>
-            <h3 class="text-base md:text-lg font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ section.settings.feature_1_title | default: '420 LED Diodes' }}</h3>
-            <p class="text-gray-600 text-xs md:text-sm">{{ section.settings.feature_1_desc | default: 'High-density LED array for comprehensive coverage' }}</p>
+    <!-- Feature 1 -->
+    {% if section.settings.show_feature_1 %}
+      <div class="features-card-{{ section.id }} rounded-{{ section.settings.card_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.card_radius_md | default: '2xl' }} flex flex-col items-center text-center border">
+        
+        <!-- Icon -->
+        <div class="features-icon-{{ section.id }} rounded-{{ section.settings.icon_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.icon_radius_md | default: '2xl' }} flex items-center justify-center">
+          {% if section.settings.feature_1_icon != blank %}
+            <img src="{{ section.settings.feature_1_icon | image_url: width: 64, height: 64 }}" alt="" width="64" height="64" class="w-6 h-6 md:w-8 md:h-8" loading="lazy">
+          {% else %}
+            <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
+            </svg>
+          {% endif %}
         </div>
         
-        <!-- Card 2 -->
-        <div class="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col items-center text-center shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100">
-            <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 shadow-lg">
-                <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
-                </svg>
-            </div>
-            <h3 class="text-base md:text-lg font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ section.settings.feature_2_title | default: '7 Light Wavelengths' }}</h3>
-            <p class="text-gray-600 text-xs md:text-sm">{{ section.settings.feature_2_desc | default: 'Multiple therapeutic wavelengths for various skin concerns' }}</p>
+        <!-- Title -->
+        <h3 class="features-card-title-{{ section.id }}">
+          {{ section.settings.feature_1_title | default: '420 LED Diodes' }}
+        </h3>
+        
+        <!-- Description -->
+        <p class="features-card-text-{{ section.id }}">
+          {{ section.settings.feature_1_desc | default: 'High-density LED array for comprehensive coverage' }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Feature 2 -->
+    {% if section.settings.show_feature_2 %}
+      <div class="features-card-{{ section.id }} rounded-{{ section.settings.card_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.card_radius_md | default: '2xl' }} flex flex-col items-center text-center border">
+        
+        <div class="features-icon-{{ section.id }} rounded-{{ section.settings.icon_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.icon_radius_md | default: '2xl' }} flex items-center justify-center">
+          {% if section.settings.feature_2_icon != blank %}
+            <img src="{{ section.settings.feature_2_icon | image_url: width: 64, height: 64 }}" alt="" width="64" height="64" class="w-6 h-6 md:w-8 md:h-8" loading="lazy">
+          {% else %}
+            <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+            </svg>
+          {% endif %}
         </div>
         
-        <!-- Card 3 -->
-        <div class="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col items-center text-center shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100">
-            <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 shadow-lg">
-                <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                </svg>
-            </div>
-            <h3 class="text-base md:text-lg font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ section.settings.feature_3_title | default: '8 Intensity Levels' }}</h3>
-            <p class="text-gray-600 text-xs md:text-sm">{{ section.settings.feature_3_desc | default: 'Customizable intensity for personalized treatment' }}</p>
+        <h3 class="features-card-title-{{ section.id }}">
+          {{ section.settings.feature_2_title | default: '7 Light Wavelengths' }}
+        </h3>
+        
+        <p class="features-card-text-{{ section.id }}">
+          {{ section.settings.feature_2_desc | default: 'Multiple therapeutic wavelengths for various skin concerns' }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Feature 3 -->
+    {% if section.settings.show_feature_3 %}
+      <div class="features-card-{{ section.id }} rounded-{{ section.settings.card_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.card_radius_md | default: '2xl' }} flex flex-col items-center text-center border">
+        
+        <div class="features-icon-{{ section.id }} rounded-{{ section.settings.icon_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.icon_radius_md | default: '2xl' }} flex items-center justify-center">
+          {% if section.settings.feature_3_icon != blank %}
+            <img src="{{ section.settings.feature_3_icon | image_url: width: 64, height: 64 }}" alt="" width="64" height="64" class="w-6 h-6 md:w-8 md:h-8" loading="lazy">
+          {% else %}
+            <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+            </svg>
+          {% endif %}
         </div>
         
-        <!-- Card 4 -->
-        <div class="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 flex flex-col items-center text-center shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100">
-            <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 shadow-lg">
-                <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                </svg>
-            </div>
-            <h3 class="text-base md:text-lg font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ section.settings.feature_4_title | default: 'Face + Neck Design' }}</h3>
-            <p class="text-gray-600 text-xs md:text-sm">{{ section.settings.feature_4_desc | default: 'Ergonomic design for face and neck coverage' }}</p>
+        <h3 class="features-card-title-{{ section.id }}">
+          {{ section.settings.feature_3_title | default: '8 Intensity Levels' }}
+        </h3>
+        
+        <p class="features-card-text-{{ section.id }}">
+          {{ section.settings.feature_3_desc | default: 'Customizable intensity for personalized treatment' }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Feature 4 -->
+    {% if section.settings.show_feature_4 %}
+      <div class="features-card-{{ section.id }} rounded-{{ section.settings.card_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.card_radius_md | default: '2xl' }} flex flex-col items-center text-center border">
+        
+        <div class="features-icon-{{ section.id }} rounded-{{ section.settings.icon_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.icon_radius_md | default: '2xl' }} flex items-center justify-center">
+          {% if section.settings.feature_4_icon != blank %}
+            <img src="{{ section.settings.feature_4_icon | image_url: width: 64, height: 64 }}" alt="" width="64" height="64" class="w-6 h-6 md:w-8 md:h-8" loading="lazy">
+          {% else %}
+            <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+            </svg>
+          {% endif %}
         </div>
-    </div>
+        
+        <h3 class="features-card-title-{{ section.id }}">
+          {{ section.settings.feature_4_title | default: 'Face + Neck Design' }}
+        </h3>
+        
+        <p class="features-card-text-{{ section.id }}">
+          {{ section.settings.feature_4_desc | default: 'Ergonomic design for face and neck coverage' }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Custom Features -->
+    {% for i in (5..section.settings.max_features) %}
+      {% assign feature_show = 'show_feature_' | append: i %}
+      {% assign feature_icon = 'feature_' | append: i | append: '_icon' %}
+      {% assign feature_title = 'feature_' | append: i | append: '_title' %}
+      {% assign feature_desc = 'feature_' | append: i | append: '_desc' %}
+      
+      {% if section.settings[feature_show] and section.settings[feature_title] != blank %}
+        <div class="features-card-{{ section.id }} rounded-{{ section.settings.card_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.card_radius_md | default: '2xl' }} flex flex-col items-center text-center border">
+          
+          <div class="features-icon-{{ section.id }} rounded-{{ section.settings.icon_radius_mobile | default: 'xl' }} md:rounded-{{ section.settings.icon_radius_md | default: '2xl' }} flex items-center justify-center">
+            {% if section.settings[feature_icon] != blank %}
+              <img src="{{ section.settings[feature_icon] | image_url: width: 64, height: 64 }}" alt="" width="64" height="64" class="w-6 h-6 md:w-8 md:h-8" loading="lazy">
+            {% else %}
+              <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+            {% endif %}
+          </div>
+          
+          <h3 class="features-card-title-{{ section.id }}">
+            {{ section.settings[feature_title] }}
+          </h3>
+          
+          <p class="features-card-text-{{ section.id }}">
+            {{ section.settings[feature_desc] }}
+          </p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
 </div>
 
 {% schema %}
 {
   "name": "Features Showcase",
   "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "max_features",
+      "label": "Maximum number of features",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "columns_md",
+      "label": "Columns on tablet",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "columns_lg",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "label": "Grid gap (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_md",
+      "label": "Grid gap (desktop)",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Section padding (mobile)",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "padding_sm",
+      "label": "Section padding (tablet)",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "padding_lg",
+      "label": "Section padding (desktop)",
+      "min": 8,
+      "max": 16,
+      "step": 2,
+      "default": 12,
+      "unit": "p"
+    },
+    {
+      "type": "select",
+      "id": "border_radius",
+      "label": "Section border radius",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "box_shadow",
+      "label": "Section shadow",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_start",
+      "label": "Background gradient start",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_end",
+      "label": "Background gradient end",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_start",
+      "label": "Icon gradient start",
+      "default": "#F43F5E"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_end",
+      "label": "Icon gradient end",
+      "default": "#EC4899"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "title_gradient_start",
+      "label": "Card title gradient start",
+      "default": "#4F46E5"
+    },
+    {
+      "type": "color",
+      "id": "title_gradient_end",
+      "label": "Card title gradient end",
+      "default": "#9333EA"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Card text color",
+      "default": "#6B7280"
+    },
     {
       "type": "header",
       "content": "Section Header"
@@ -72,25 +488,382 @@
       "default": "Premium Features"
     },
     {
+      "type": "select",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_md",
+      "label": "Title size (desktop)",
+      "options": [
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" }
+      ],
+      "default": "4xl"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle",
+      "label": "Show subtitle",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "subtitle",
       "label": "Subtitle",
       "default": "Advanced technology for optimal results"
     },
     {
+      "type": "select",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle size (mobile)",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_size_md",
+      "label": "Subtitle size (desktop)",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_width",
+      "label": "Subtitle max width",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "range",
+      "id": "header_margin",
+      "label": "Header bottom margin",
+      "min": 8,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "range",
+      "id": "card_padding_mobile",
+      "label": "Card padding (mobile)",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding_md",
+      "label": "Card padding (desktop)",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_radius_mobile",
+      "label": "Card radius (mobile)",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "card_radius_md",
+      "label": "Card radius (desktop)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "range",
+      "id": "card_transition",
+      "label": "Card transition speed",
+      "min": 200,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "card_hover_offset",
+      "label": "Card hover lift",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" }
+      ],
+      "default": "0 4px 6px -1px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "select",
+      "id": "card_hover_shadow",
+      "label": "Card hover shadow",
+      "options": [
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" },
+        { "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)", "label": "2XL" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Icon container size (mobile)",
+      "min": 32,
+      "max": 64,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_md",
+      "label": "Icon container size (desktop)",
+      "min": 40,
+      "max": 80,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_svg_size_mobile",
+      "label": "Icon SVG size (mobile)",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_svg_size_md",
+      "label": "Icon SVG size (desktop)",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_margin",
+      "label": "Icon bottom margin (mobile)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_margin_md",
+      "label": "Icon bottom margin (desktop)",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "icon_radius_mobile",
+      "label": "Icon radius (mobile)",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "icon_radius_md",
+      "label": "Icon radius (desktop)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "header",
+      "content": "Card Text Settings"
+    },
+    {
+      "type": "select",
+      "id": "card_title_size_mobile",
+      "label": "Card title size (mobile)",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "card_title_size_md",
+      "label": "Card title size (desktop)",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "card_title_weight",
+      "label": "Card title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "card_title_margin",
+      "label": "Title bottom margin",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_text_size_mobile",
+      "label": "Card text size (mobile)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "select",
+      "id": "card_text_size_md",
+      "label": "Card text size (desktop)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "range",
+      "id": "card_text_leading",
+      "label": "Card text line height",
+      "min": 1.2,
+      "max": 1.8,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
       "type": "header",
       "content": "Feature 1"
     },
     {
+      "type": "checkbox",
+      "id": "show_feature_1",
+      "label": "Show feature 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_1_icon",
+      "label": "Feature 1 icon"
+    },
+    {
       "type": "text",
       "id": "feature_1_title",
-      "label": "Title",
+      "label": "Feature 1 title",
       "default": "420 LED Diodes"
     },
     {
       "type": "text",
       "id": "feature_1_desc",
-      "label": "Description",
+      "label": "Feature 1 description",
       "default": "High-density LED array for comprehensive coverage"
     },
     {
@@ -98,15 +871,26 @@
       "content": "Feature 2"
     },
     {
+      "type": "checkbox",
+      "id": "show_feature_2",
+      "label": "Show feature 2",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_2_icon",
+      "label": "Feature 2 icon"
+    },
+    {
       "type": "text",
       "id": "feature_2_title",
-      "label": "Title",
+      "label": "Feature 2 title",
       "default": "7 Light Wavelengths"
     },
     {
       "type": "text",
       "id": "feature_2_desc",
-      "label": "Description",
+      "label": "Feature 2 description",
       "default": "Multiple therapeutic wavelengths for various skin concerns"
     },
     {
@@ -114,15 +898,26 @@
       "content": "Feature 3"
     },
     {
+      "type": "checkbox",
+      "id": "show_feature_3",
+      "label": "Show feature 3",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_3_icon",
+      "label": "Feature 3 icon"
+    },
+    {
       "type": "text",
       "id": "feature_3_title",
-      "label": "Title",
+      "label": "Feature 3 title",
       "default": "8 Intensity Levels"
     },
     {
       "type": "text",
       "id": "feature_3_desc",
-      "label": "Description",
+      "label": "Feature 3 description",
       "default": "Customizable intensity for personalized treatment"
     },
     {
@@ -130,15 +925,26 @@
       "content": "Feature 4"
     },
     {
+      "type": "checkbox",
+      "id": "show_feature_4",
+      "label": "Show feature 4",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_4_icon",
+      "label": "Feature 4 icon"
+    },
+    {
       "type": "text",
       "id": "feature_4_title",
-      "label": "Title",
+      "label": "Feature 4 title",
       "default": "Face + Neck Design"
     },
     {
       "type": "text",
       "id": "feature_4_desc",
-      "label": "Description",
+      "label": "Feature 4 description",
       "default": "Ergonomic design for face and neck coverage"
     }
   ],

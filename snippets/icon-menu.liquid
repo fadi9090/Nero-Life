@@ -1,3 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+{% comment %}
+  Icon: Menu / Hamburger
+  Usage: {% render 'icon-menu', size: 6, color: '#000000', class: '' %}
+  
+  Parameters:
+  - size: Icon size (Tailwind scale: 4=16px, 5=20px, 6=24px, 8=32px)
+  - color: Icon color (default: currentColor)
+  - class: Additional CSS classes
+  - stroke_width: Stroke width (default: 1.5)
+{% endcomment %}
+
+{%- assign size = size | default: 6 -%}
+{%- assign color = color | default: 'currentColor' -%}
+{%- assign stroke = stroke_width | default: 1.5 -%}
+{%- assign custom_class = class | default: '' -%}
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     class="w-{{ size }} h-{{ size }} {{ custom_class }}" 
+     fill="none" 
+     viewBox="0 0 24 24" 
+     stroke="{{ color }}" 
+     stroke-width="{{ stroke }}">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
 </svg>

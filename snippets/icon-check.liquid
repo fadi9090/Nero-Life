@@ -1,11 +1,11 @@
 {% comment %}
-  Icon: Close / X
-  Usage: {% render 'icon-close', size: 6, color: '#000000' %}
+  Icon: Check / Success
+  Usage: {% render 'icon-check', size: 5, color: '#10B981' %}
 {% endcomment %}
 
-{%- assign size = size | default: 6 -%}
+{%- assign size = size | default: 5 -%}
 {%- assign color = color | default: 'currentColor' -%}
-{%- assign stroke = stroke_width | default: 1.5 -%}
+{%- assign stroke = stroke_width | default: 2 -%}
 {%- assign custom_class = class | default: '' -%}
 
 <svg xmlns="http://www.w3.org/2000/svg" 
@@ -14,5 +14,5 @@
      viewBox="0 0 24 24" 
      stroke="{{ color }}" 
      stroke-width="{{ stroke }}">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 </svg>

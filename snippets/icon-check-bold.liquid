@@ -1,0 +1,12 @@
+{% comment %}
+  Icon: Bold Checkmark
+  Usage: {% render 'icon-check-bold', size: 4, color: '#FFFFFF' %}
+{% endcomment %}
+
+{%- assign size = size | default: 4 -%}
+{%- assign color = color | default: 'currentColor' -%}
+{%- assign custom_class = class | default: '' -%}
+
+<span class="inline-flex items-center justify-center w-{{ size }} h-{{ size }} bg-blue-600 rounded-full text-white font-bold text-xs">
+  ✓
+</span>

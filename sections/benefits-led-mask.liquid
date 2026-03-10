@@ -1,90 +1,501 @@
 {% comment %}
   Section: Benefits LED Mask
   Description: Key benefits and features section
+  Fully customizable through theme editor
 {% endcomment %}
 
-<div class="w-full p-6 sm:p-8 md:p-12 bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl">
-    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-6 sm:mb-8 border-b-2 border-rose-100 pb-3 sm:pb-4">{{ section.settings.section_title | default: 'Why Our LED Mask Stands Out' }}</h2>
+<style>
+  #benefits-{{ section.id }} {
+    --benefits-bg-start: {{ section.settings.bg_gradient_start | default: '#FFFFFF' }};
+    --benefits-bg-end: {{ section.settings.bg_gradient_end | default: '#F9FAFB' }};
+    --benefits-title-color: {{ section.settings.title_color | default: '#111827' }};
+    --benefits-border-color: {{ section.settings.border_color | default: '#FEE2E2' }};
+    --benefits-icon-bg-start: {{ section.settings.icon_bg_start | default: '#F43F5E' }};
+    --benefits-icon-bg-end: {{ section.settings.icon_bg_end | default: '#EC4899' }};
+    --benefits-icon-color: {{ section.settings.icon_color | default: '#FFFFFF' }};
+    --benefits-text-color: {{ section.settings.text_color | default: '#1F2937' }};
+    --benefits-stat-bg: {{ section.settings.stat_bg | default: '#FFFFFF' }};
+    --benefits-stat-border: {{ section.settings.stat_border | default: '#FEE2E2' }};
+    --benefits-stat-value: {{ section.settings.stat_value_color | default: '#E11D48' }};
+    --benefits-stat-label: {{ section.settings.stat_label_color | default: '#4B5563' }};
+    --benefits-note-bg: {{ section.settings.note_bg | default: '#FFF1F2' }};
+    --benefits-note-border: {{ section.settings.note_border | default: '#FEE2E2' }};
+    --benefits-note-text: {{ section.settings.note_text_color | default: '#374151' }};
+    --benefits-note-accent: {{ section.settings.note_accent_color | default: '#E11D48' }};
+    --benefits-card-shadow: {{ section.settings.card_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --benefits-icon-size: {{ section.settings.icon_size | default: '40' }}px;
+    --benefits-stat-padding: {{ section.settings.stat_padding | default: '20' }}px;
+  }
+
+  .benefits-section-{{ section.id }} {
+    background: linear-gradient(to bottom right, var(--benefits-bg-start), var(--benefits-bg-end));
+  }
+
+  .benefits-title-{{ section.id }} {
+    color: var(--benefits-title-color);
+    font-size: {{ section.settings.title_size_mobile | default: '2xl' }};
+    border-bottom-color: var(--benefits-border-color);
+  }
+
+  @media (min-width: 640px) {
+    .benefits-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_sm | default: '3xl' }};
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .benefits-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_lg | default: '4xl' }};
+    }
+  }
+
+  .benefits-icon-{{ section.id }} {
+    width: var(--benefits-icon-size);
+    height: var(--benefits-icon-size);
+    background: linear-gradient(to right, var(--benefits-icon-bg-start), var(--benefits-icon-bg-end));
+    color: var(--benefits-icon-color);
+  }
+
+  .benefits-text-{{ section.id }} {
+    color: var(--benefits-text-color);
+    font-size: {{ section.settings.text_size_mobile | default: 'base' }};
+  }
+
+  @media (min-width: 640px) {
+    .benefits-text-{{ section.id }} {
+      font-size: {{ section.settings.text_size_sm | default: 'lg' }};
+    }
+  }
+
+  .benefits-stat-card-{{ section.id }} {
+    background-color: var(--benefits-stat-bg);
+    border-color: var(--benefits-stat-border);
+    padding: var(--benefits-stat-padding);
+    box-shadow: var(--benefits-card-shadow);
+  }
+
+  .benefits-stat-value-{{ section.id }} {
+    color: var(--benefits-stat-value);
+    font-size: {{ section.settings.stat_value_size_mobile | default: '2xl' }};
+  }
+
+  @media (min-width: 640px) {
+    .benefits-stat-value-{{ section.id }} {
+      font-size: {{ section.settings.stat_value_size_sm | default: '3xl' }};
+    }
+  }
+
+  .benefits-stat-label-{{ section.id }} {
+    color: var(--benefits-stat-label);
+    font-size: {{ section.settings.stat_label_size | default: 'sm' }};
+  }
+
+  .benefits-note-{{ section.id }} {
+    background-color: var(--benefits-note-bg);
+    border-color: var(--benefits-note-border);
+    color: var(--benefits-note-text);
+  }
+
+  .benefits-note-accent-{{ section.id }} {
+    color: var(--benefits-note-accent);
+  }
+
+  .benefits-grid-{{ section.id }} {
+    gap: {{ section.settings.grid_gap | default: '16' }}px;
+  }
+
+  @media (min-width: 640px) {
+    .benefits-grid-{{ section.id }} {
+      gap: {{ section.settings.grid_gap_sm | default: '20' }}px;
+    }
+  }
+</style>
+
+<div id="benefits-{{ section.id }}" class="w-full p-{{ section.settings.padding_mobile | default: '6' }} sm:p-{{ section.settings.padding_sm | default: '8' }} md:p-{{ section.settings.padding_lg | default: '12' }} benefits-section-{{ section.id }} rounded-{{ section.settings.border_radius | default: '3xl' }} shadow-{{ section.settings.box_shadow | default: '2xl' }}" {{ section.shopify_attributes }}>
+  
+  <!-- Section Title -->
+  <h2 class="benefits-title-{{ section.id }} font-{{ section.settings.title_weight | default: '900' }} mb-{{ section.settings.title_margin | default: '6' }} sm:mb-{{ section.settings.title_margin_sm | default: '8' }} border-b-2 pb-{{ section.settings.title_padding | default: '3' }} sm:pb-{{ section.settings.title_padding_sm | default: '4' }}">
+    {{ section.settings.section_title | default: 'Why Our LED Mask Stands Out' }}
+  </h2>
+  
+  <!-- Desktop Layout: Benefits and Stats Side by Side -->
+  <div class="lg:flex lg:space-x-{{ section.settings.columns_gap | default: '8' }}">
     
-    <!-- Desktop Layout: Benefits and Stats Side by Side -->
-    <div class="lg:flex lg:space-x-8">
-        <!-- Benefits List -->
-        <div class="lg:w-1/2">
-            <ul class="space-y-4 sm:space-y-5 mb-8 sm:mb-0">
-                <li class="flex items-start group">
-                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">{{ section.settings.benefit_1 | default: 'Dual-area treatment for face and neck simultaneously' }}</span>
-                </li>
-                <li class="flex items-start group">
-                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">{{ section.settings.benefit_2 | default: '7 specialized light wavelengths for different skin concerns' }}</span>
-                </li>
-                <li class="flex items-start group">
-                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">{{ section.settings.benefit_3 | default: 'Clinically tested technology with proven safety standards' }}</span>
-                </li>
-                <li class="flex items-start group">
-                    <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <span class="text-gray-800 text-base sm:text-lg font-medium pt-1 sm:pt-2">{{ section.settings.benefit_4 | default: 'Ergonomic design fits all face shapes and neck contours' }}</span>
-                </li>
-            </ul>
-        </div>
+    <!-- Benefits List -->
+    <div class="lg:w-1/2">
+      <ul class="space-y-{{ section.settings.benefits_spacing | default: '4' }} sm:space-y-{{ section.settings.benefits_spacing_sm | default: '5' }} mb-{{ section.settings.benefits_margin | default: '8' }} sm:mb-0">
         
-        <!-- Stats Grid -->
-        <div class="lg:w-1/2">
-            <div class="grid grid-cols-2 gap-4 sm:gap-5">
-                <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 text-center border border-rose-100 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-black text-rose-600">{{ section.settings.stat_1_value | default: '94%' }}</div>
-                    <div class="text-sm text-gray-600 mt-2 font-medium">{{ section.settings.stat_1_label | default: 'Users See Results' }}</div>
-                </div>
-                <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 text-center border border-rose-100 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-black text-rose-600">{{ section.settings.stat_2_value | default: '12min' }}</div>
-                    <div class="text-sm text-gray-600 mt-2 font-medium">{{ section.settings.stat_2_label | default: 'Daily Treatment' }}</div>
-                </div>
-                <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 text-center border border-rose-100 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-black text-rose-600">{{ section.settings.stat_3_value | default: '7-in-1' }}</div>
-                    <div class="text-sm text-gray-600 mt-2 font-medium">{{ section.settings.stat_3_label | default: 'Light Therapy' }}</div>
-                </div>
-                <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 text-center border border-rose-100 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-black text-rose-600">{{ section.settings.stat_4_value | default: '30D+' }}<span class="text-lg">*</span></div>
-                    <div class="text-sm text-gray-600 mt-2 font-medium">
-                        <div>{{ section.settings.stat_4_label | default: 'Warranty' }}</div>
-                        <div class="text-xs text-rose-500 mt-1">{{ section.settings.warranty_upsell | default: '+2Y for $10' }}</div>
-                    </div>
-                </div>
+        <!-- Benefit 1 -->
+        {% if section.settings.show_benefit_1 %}
+          <li class="flex items-start group">
+            <div class="benefits-icon-{{ section.id }} flex-shrink-0 rounded-full flex items-center justify-center mr-{{ section.settings.icon_spacing | default: '3' }} sm:mr-{{ section.settings.icon_spacing_sm | default: '4' }} group-hover:scale-{{ section.settings.icon_hover_scale | default: '110' }} transition-transform duration-{{ section.settings.icon_transition | default: '300' }}">
+              {% if section.settings.use_custom_icon_1 %}
+                <img src="{{ section.settings.custom_icon_1 | image_url: width: 40, height: 40 }}" alt="" width="40" height="40" class="w-4 h-4 sm:w-5 sm:h-5" loading="lazy">
+              {% else %}
+                {% render 'icon-star', size: 4, color: '#FFFFFF', filled: true %}
+              {% endif %}
             </div>
-            
-            <!-- Warranty Note -->
-            <div class="mt-4 sm:mt-5 p-3 sm:p-4 bg-rose-50 rounded-lg border border-rose-100">
-                <p class="text-xs sm:text-sm text-gray-700">
-                    <span class="font-semibold text-rose-600">{{ section.settings.warranty_note_label | default: 'Warranty Details:' }}</span> 
-                    {{ section.settings.warranty_note | default: '30-day warranty from Manyfatcor included. Add 2-year extended guarantee for just $10 at checkout.' }}
-                </p>
+            <span class="benefits-text-{{ section.id }} font-{{ section.settings.text_weight | default: '500' }} pt-{{ section.settings.text_padding | default: '1' }} sm:pt-{{ section.settings.text_padding_sm | default: '2' }}">
+              {{ section.settings.benefit_1 | default: 'Dual-area treatment for face and neck simultaneously' }}
+            </span>
+          </li>
+        {% endif %}
+
+        <!-- Benefit 2 -->
+        {% if section.settings.show_benefit_2 %}
+          <li class="flex items-start group">
+            <div class="benefits-icon-{{ section.id }} flex-shrink-0 rounded-full flex items-center justify-center mr-{{ section.settings.icon_spacing | default: '3' }} sm:mr-{{ section.settings.icon_spacing_sm | default: '4' }} group-hover:scale-{{ section.settings.icon_hover_scale | default: '110' }} transition-transform duration-{{ section.settings.icon_transition | default: '300' }}">
+              {% if section.settings.use_custom_icon_2 %}
+                <img src="{{ section.settings.custom_icon_2 | image_url: width: 40, height: 40 }}" alt="" width="40" height="40" class="w-4 h-4 sm:w-5 sm:h-5" loading="lazy">
+              {% else %}
+                {% render 'icon-star', size: 4, color: '#FFFFFF', filled: true %}
+              {% endif %}
             </div>
-        </div>
+            <span class="benefits-text-{{ section.id }} font-{{ section.settings.text_weight | default: '500' }} pt-{{ section.settings.text_padding | default: '1' }} sm:pt-{{ section.settings.text_padding_sm | default: '2' }}">
+              {{ section.settings.benefit_2 | default: '7 specialized light wavelengths for different skin concerns' }}
+            </span>
+          </li>
+        {% endif %}
+
+        <!-- Benefit 3 -->
+        {% if section.settings.show_benefit_3 %}
+          <li class="flex items-start group">
+            <div class="benefits-icon-{{ section.id }} flex-shrink-0 rounded-full flex items-center justify-center mr-{{ section.settings.icon_spacing | default: '3' }} sm:mr-{{ section.settings.icon_spacing_sm | default: '4' }} group-hover:scale-{{ section.settings.icon_hover_scale | default: '110' }} transition-transform duration-{{ section.settings.icon_transition | default: '300' }}">
+              {% if section.settings.use_custom_icon_3 %}
+                <img src="{{ section.settings.custom_icon_3 | image_url: width: 40, height: 40 }}" alt="" width="40" height="40" class="w-4 h-4 sm:w-5 sm:h-5" loading="lazy">
+              {% else %}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+              {% endif %}
+            </div>
+            <span class="benefits-text-{{ section.id }} font-{{ section.settings.text_weight | default: '500' }} pt-{{ section.settings.text_padding | default: '1' }} sm:pt-{{ section.settings.text_padding_sm | default: '2' }}">
+              {{ section.settings.benefit_3 | default: 'Clinically tested technology with proven safety standards' }}
+            </span>
+          </li>
+        {% endif %}
+
+        <!-- Benefit 4 -->
+        {% if section.settings.show_benefit_4 %}
+          <li class="flex items-start group">
+            <div class="benefits-icon-{{ section.id }} flex-shrink-0 rounded-full flex items-center justify-center mr-{{ section.settings.icon_spacing | default: '3' }} sm:mr-{{ section.settings.icon_spacing_sm | default: '4' }} group-hover:scale-{{ section.settings.icon_hover_scale | default: '110' }} transition-transform duration-{{ section.settings.icon_transition | default: '300' }}">
+              {% if section.settings.use_custom_icon_4 %}
+                <img src="{{ section.settings.custom_icon_4 | image_url: width: 40, height: 40 }}" alt="" width="40" height="40" class="w-4 h-4 sm:w-5 sm:h-5" loading="lazy">
+              {% else %}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                </svg>
+              {% endif %}
+            </div>
+            <span class="benefits-text-{{ section.id }} font-{{ section.settings.text_weight | default: '500' }} pt-{{ section.settings.text_padding | default: '1' }} sm:pt-{{ section.settings.text_padding_sm | default: '2' }}">
+              {{ section.settings.benefit_4 | default: 'Ergonomic design fits all face shapes and neck contours' }}
+            </span>
+          </li>
+        {% endif %}
+
+        <!-- Custom Benefits -->
+        {% for i in (5..section.settings.max_benefits) %}
+          {% assign benefit_show = 'show_benefit_' | append: i %}
+          {% assign benefit_text = 'benefit_' | append: i %}
+          {% assign benefit_icon = 'custom_icon_' | append: i %}
+          
+          {% if section.settings[benefit_show] and section.settings[benefit_text] != blank %}
+            <li class="flex items-start group">
+              <div class="benefits-icon-{{ section.id }} flex-shrink-0 rounded-full flex items-center justify-center mr-{{ section.settings.icon_spacing | default: '3' }} sm:mr-{{ section.settings.icon_spacing_sm | default: '4' }} group-hover:scale-{{ section.settings.icon_hover_scale | default: '110' }} transition-transform duration-{{ section.settings.icon_transition | default: '300' }}">
+                {% if section.settings[benefit_icon] != blank %}
+                  <img src="{{ section.settings[benefit_icon] | image_url: width: 40, height: 40 }}" alt="" width="40" height="40" class="w-4 h-4 sm:w-5 sm:h-5" loading="lazy">
+                {% else %}
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                  </svg>
+                {% endif %}
+              </div>
+              <span class="benefits-text-{{ section.id }} font-{{ section.settings.text_weight | default: '500' }} pt-{{ section.settings.text_padding | default: '1' }} sm:pt-{{ section.settings.text_padding_sm | default: '2' }}">
+                {{ section.settings[benefit_text] }}
+              </span>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
     </div>
+    
+    <!-- Stats Grid -->
+    <div class="lg:w-1/2">
+      <div class="benefits-grid-{{ section.id }} grid grid-cols-{{ section.settings.stats_per_row_mobile | default: '2' }} sm:grid-cols-{{ section.settings.stats_per_row_sm | default: '2' }} lg:grid-cols-{{ section.settings.stats_per_row | default: '2' }}">
+        
+        <!-- Stat 1 -->
+        {% if section.settings.show_stat_1 %}
+          <div class="benefits-stat-card-{{ section.id }} rounded-{{ section.settings.stat_radius | default: 'xl' }} sm:rounded-{{ section.settings.stat_radius_sm | default: '2xl' }} text-center">
+            <div class="benefits-stat-value-{{ section.id }} font-{{ section.settings.stat_value_weight | default: '900' }}">
+              {{ section.settings.stat_1_value | default: '94%' }}
+            </div>
+            <div class="benefits-stat-label-{{ section.id }} mt-{{ section.settings.stat_label_margin | default: '2' }} font-{{ section.settings.stat_label_weight | default: '500' }}">
+              {{ section.settings.stat_1_label | default: 'Users See Results' }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Stat 2 -->
+        {% if section.settings.show_stat_2 %}
+          <div class="benefits-stat-card-{{ section.id }} rounded-{{ section.settings.stat_radius | default: 'xl' }} sm:rounded-{{ section.settings.stat_radius_sm | default: '2xl' }} text-center">
+            <div class="benefits-stat-value-{{ section.id }} font-{{ section.settings.stat_value_weight | default: '900' }}">
+              {{ section.settings.stat_2_value | default: '12min' }}
+            </div>
+            <div class="benefits-stat-label-{{ section.id }} mt-{{ section.settings.stat_label_margin | default: '2' }} font-{{ section.settings.stat_label_weight | default: '500' }}">
+              {{ section.settings.stat_2_label | default: 'Daily Treatment' }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Stat 3 -->
+        {% if section.settings.show_stat_3 %}
+          <div class="benefits-stat-card-{{ section.id }} rounded-{{ section.settings.stat_radius | default: 'xl' }} sm:rounded-{{ section.settings.stat_radius_sm | default: '2xl' }} text-center">
+            <div class="benefits-stat-value-{{ section.id }} font-{{ section.settings.stat_value_weight | default: '900' }}">
+              {{ section.settings.stat_3_value | default: '7-in-1' }}
+            </div>
+            <div class="benefits-stat-label-{{ section.id }} mt-{{ section.settings.stat_label_margin | default: '2' }} font-{{ section.settings.stat_label_weight | default: '500' }}">
+              {{ section.settings.stat_3_label | default: 'Light Therapy' }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Stat 4 -->
+        {% if section.settings.show_stat_4 %}
+          <div class="benefits-stat-card-{{ section.id }} rounded-{{ section.settings.stat_radius | default: 'xl' }} sm:rounded-{{ section.settings.stat_radius_sm | default: '2xl' }} text-center">
+            <div class="benefits-stat-value-{{ section.id }} font-{{ section.settings.stat_value_weight | default: '900' }}">
+              {{ section.settings.stat_4_value | default: '30D+' }}<span class="text-{{ section.settings.stat_suffix_size | default: 'lg' }}">*</span>
+            </div>
+            <div class="benefits-stat-label-{{ section.id }} mt-{{ section.settings.stat_label_margin | default: '2' }} font-{{ section.settings.stat_label_weight | default: '500' }}">
+              {{ section.settings.stat_4_label | default: 'Warranty' }}
+              {% if section.settings.show_warranty_upsell %}
+                <div class="text-{{ section.settings.warranty_size | default: 'xs' }} benefits-note-accent-{{ section.id }} mt-{{ section.settings.warranty_margin | default: '1' }}">
+                  {{ section.settings.warranty_upsell | default: '+2Y for $10' }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Custom Stats -->
+        {% for i in (5..section.settings.max_stats) %}
+          {% assign stat_show = 'show_stat_' | append: i %}
+          {% assign stat_value = 'stat_' | append: i | append: '_value' %}
+          {% assign stat_label = 'stat_' | append: i | append: '_label' %}
+          
+          {% if section.settings[stat_show] and section.settings[stat_value] != blank %}
+            <div class="benefits-stat-card-{{ section.id }} rounded-{{ section.settings.stat_radius | default: 'xl' }} sm:rounded-{{ section.settings.stat_radius_sm | default: '2xl' }} text-center">
+              <div class="benefits-stat-value-{{ section.id }} font-{{ section.settings.stat_value_weight | default: '900' }}">
+                {{ section.settings[stat_value] }}
+              </div>
+              <div class="benefits-stat-label-{{ section.id }} mt-{{ section.settings.stat_label_margin | default: '2' }} font-{{ section.settings.stat_label_weight | default: '500' }}">
+                {{ section.settings[stat_label] }}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      
+      <!-- Warranty Note -->
+      {% if section.settings.show_warranty_note %}
+        <div class="benefits-note-{{ section.id }} mt-{{ section.settings.note_margin | default: '4' }} sm:mt-{{ section.settings.note_margin_sm | default: '5' }} p-{{ section.settings.note_padding | default: '3' }} sm:p-{{ section.settings.note_padding_sm | default: '4' }} rounded-{{ section.settings.note_radius | default: 'lg' }} border">
+          <p class="text-{{ section.settings.note_text_size | default: 'xs' }} sm:text-{{ section.settings.note_text_size_sm | default: 'sm' }}">
+            <span class="benefits-note-accent-{{ section.id }} font-{{ section.settings.note_accent_weight | default: '600' }}">{{ section.settings.warranty_note_label | default: 'Warranty Details:' }}</span> 
+            {{ section.settings.warranty_note | default: '30-day warranty from Manyfatcor included. Add 2-year extended guarantee for just $10 at checkout.' }}
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 {% schema %}
 {
   "name": "Benefits LED Mask",
   "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding (mobile)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "padding_sm",
+      "label": "Padding (tablet)",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "padding_lg",
+      "label": "Padding (desktop)",
+      "min": 6,
+      "max": 16,
+      "step": 2,
+      "default": 12,
+      "unit": "p"
+    },
+    {
+      "type": "select",
+      "id": "border_radius",
+      "label": "Border radius",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "box_shadow",
+      "label": "Box shadow",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap",
+      "label": "Gap between columns",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "max_benefits",
+      "label": "Maximum number of benefits",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "max_stats",
+      "label": "Maximum number of stats",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_start",
+      "label": "Background gradient start",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_end",
+      "label": "Background gradient end",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#FEE2E2"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_start",
+      "label": "Icon gradient start",
+      "default": "#F43F5E"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_end",
+      "label": "Icon gradient end",
+      "default": "#EC4899"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Benefit text color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "stat_bg",
+      "label": "Stat card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "stat_border",
+      "label": "Stat card border",
+      "default": "#FEE2E2"
+    },
+    {
+      "type": "color",
+      "id": "stat_value_color",
+      "label": "Stat value color",
+      "default": "#E11D48"
+    },
+    {
+      "type": "color",
+      "id": "stat_label_color",
+      "label": "Stat label color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "note_bg",
+      "label": "Note background",
+      "default": "#FFF1F2"
+    },
+    {
+      "type": "color",
+      "id": "note_border",
+      "label": "Note border",
+      "default": "#FEE2E2"
+    },
+    {
+      "type": "color",
+      "id": "note_text_color",
+      "label": "Note text color",
+      "default": "#374151"
+    },
+    {
+      "type": "color",
+      "id": "note_accent_color",
+      "label": "Note accent color",
+      "default": "#E11D48"
+    },
     {
       "type": "header",
       "content": "Section Title"
@@ -96,106 +507,751 @@
       "default": "Why Our LED Mask Stands Out"
     },
     {
+      "type": "select",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_sm",
+      "label": "Title size (tablet)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_lg",
+      "label": "Title size (desktop)",
+      "options": [
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" }
+      ],
+      "default": "4xl"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "900"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin (mobile)",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_sm",
+      "label": "Title bottom margin (desktop)",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "title_padding",
+      "label": "Title bottom padding (mobile)",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "title_padding_sm",
+      "label": "Title bottom padding (desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
       "type": "header",
-      "content": "Benefits List"
+      "content": "Benefits List Settings"
+    },
+    {
+      "type": "range",
+      "id": "benefits_spacing",
+      "label": "Benefit spacing (mobile)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "benefits_spacing_sm",
+      "label": "Benefit spacing (desktop)",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "benefits_margin",
+      "label": "Benefits bottom margin",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefit_1",
+      "label": "Show benefit 1",
+      "default": true
     },
     {
       "type": "textarea",
       "id": "benefit_1",
-      "label": "Benefit 1",
+      "label": "Benefit 1 text",
       "default": "Dual-area treatment for face and neck simultaneously"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_custom_icon_1",
+      "label": "Use custom icon for benefit 1",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_1",
+      "label": "Custom icon 1"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefit_2",
+      "label": "Show benefit 2",
+      "default": true
     },
     {
       "type": "textarea",
       "id": "benefit_2",
-      "label": "Benefit 2",
+      "label": "Benefit 2 text",
       "default": "7 specialized light wavelengths for different skin concerns"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_custom_icon_2",
+      "label": "Use custom icon for benefit 2",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_2",
+      "label": "Custom icon 2"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefit_3",
+      "label": "Show benefit 3",
+      "default": true
     },
     {
       "type": "textarea",
       "id": "benefit_3",
-      "label": "Benefit 3",
+      "label": "Benefit 3 text",
       "default": "Clinically tested technology with proven safety standards"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_custom_icon_3",
+      "label": "Use custom icon for benefit 3",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_3",
+      "label": "Custom icon 3"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefit_4",
+      "label": "Show benefit 4",
+      "default": true
     },
     {
       "type": "textarea",
       "id": "benefit_4",
-      "label": "Benefit 4",
+      "label": "Benefit 4 text",
       "default": "Ergonomic design fits all face shapes and neck contours"
     },
     {
+      "type": "checkbox",
+      "id": "use_custom_icon_4",
+      "label": "Use custom icon for benefit 4",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_4",
+      "label": "Custom icon 4"
+    },
+    {
       "type": "header",
-      "content": "Statistics"
+      "content": "Icon Settings"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon container size",
+      "min": 32,
+      "max": 60,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Icon right spacing (mobile)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing_sm",
+      "label": "Icon right spacing (desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "icon_hover_scale",
+      "label": "Icon hover scale",
+      "min": 100,
+      "max": 120,
+      "step": 5,
+      "default": 110,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "icon_transition",
+      "label": "Icon transition speed",
+      "min": 200,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "header",
+      "content": "Benefit Text Settings"
+    },
+    {
+      "type": "select",
+      "id": "text_size_mobile",
+      "label": "Text size (mobile)",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "text_size_sm",
+      "label": "Text size (desktop)",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "text_weight",
+      "label": "Text font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "text_padding",
+      "label": "Text top padding (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "text_padding_sm",
+      "label": "Text top padding (desktop)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Stats Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "stats_per_row_mobile",
+      "label": "Stats per row (mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "stats_per_row_sm",
+      "label": "Stats per row (tablet)",
+      "min": 2,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "stats_per_row",
+      "label": "Stats per row (desktop)",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap (mobile)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_sm",
+      "label": "Grid gap (desktop)",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "stat_radius",
+      "label": "Stat card radius (mobile)",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "stat_radius_sm",
+      "label": "Stat card radius (desktop)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "range",
+      "id": "stat_padding",
+      "label": "Stat card padding",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Stat 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat_1",
+      "label": "Show stat 1",
+      "default": true
     },
     {
       "type": "text",
       "id": "stat_1_value",
-      "label": "Stat 1 Value",
+      "label": "Stat 1 value",
       "default": "94%"
     },
     {
       "type": "text",
       "id": "stat_1_label",
-      "label": "Stat 1 Label",
+      "label": "Stat 1 label",
       "default": "Users See Results"
+    },
+    {
+      "type": "header",
+      "content": "Stat 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat_2",
+      "label": "Show stat 2",
+      "default": true
     },
     {
       "type": "text",
       "id": "stat_2_value",
-      "label": "Stat 2 Value",
+      "label": "Stat 2 value",
       "default": "12min"
     },
     {
       "type": "text",
       "id": "stat_2_label",
-      "label": "Stat 2 Label",
+      "label": "Stat 2 label",
       "default": "Daily Treatment"
+    },
+    {
+      "type": "header",
+      "content": "Stat 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat_3",
+      "label": "Show stat 3",
+      "default": true
     },
     {
       "type": "text",
       "id": "stat_3_value",
-      "label": "Stat 3 Value",
+      "label": "Stat 3 value",
       "default": "7-in-1"
     },
     {
       "type": "text",
       "id": "stat_3_label",
-      "label": "Stat 3 Label",
+      "label": "Stat 3 label",
       "default": "Light Therapy"
+    },
+    {
+      "type": "header",
+      "content": "Stat 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat_4",
+      "label": "Show stat 4",
+      "default": true
     },
     {
       "type": "text",
       "id": "stat_4_value",
-      "label": "Stat 4 Value",
+      "label": "Stat 4 value",
       "default": "30D+"
     },
     {
       "type": "text",
       "id": "stat_4_label",
-      "label": "Stat 4 Label",
+      "label": "Stat 4 label",
       "default": "Warranty"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_warranty_upsell",
+      "label": "Show warranty upsell",
+      "default": true
     },
     {
       "type": "text",
       "id": "warranty_upsell",
-      "label": "Warranty Upsell",
+      "label": "Warranty upsell text",
       "default": "+2Y for $10"
+    },
+    {
+      "type": "select",
+      "id": "warranty_size",
+      "label": "Warranty text size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "range",
+      "id": "warranty_margin",
+      "label": "Warranty top margin",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Stat Value Settings"
+    },
+    {
+      "type": "select",
+      "id": "stat_value_size_mobile",
+      "label": "Value size (mobile)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "select",
+      "id": "stat_value_size_sm",
+      "label": "Value size (desktop)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "stat_value_weight",
+      "label": "Value font weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "900"
+    },
+    {
+      "type": "select",
+      "id": "stat_suffix_size",
+      "label": "Suffix text size",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "header",
+      "content": "Stat Label Settings"
+    },
+    {
+      "type": "select",
+      "id": "stat_label_size",
+      "label": "Label size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "stat_label_weight",
+      "label": "Label font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "stat_label_margin",
+      "label": "Label top margin",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
     },
     {
       "type": "header",
       "content": "Warranty Note"
     },
     {
+      "type": "checkbox",
+      "id": "show_warranty_note",
+      "label": "Show warranty note",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "warranty_note_label",
-      "label": "Warranty Note Label",
+      "label": "Note label",
       "default": "Warranty Details:"
     },
     {
       "type": "textarea",
       "id": "warranty_note",
-      "label": "Warranty Note Text",
+      "label": "Note text",
       "default": "30-day warranty from Manyfatcor included. Add 2-year extended guarantee for just $10 at checkout."
+    },
+    {
+      "type": "select",
+      "id": "note_accent_weight",
+      "label": "Note accent weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "note_text_size",
+      "label": "Note text size (mobile)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "select",
+      "id": "note_text_size_sm",
+      "label": "Note text size (desktop)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "range",
+      "id": "note_margin",
+      "label": "Note top margin (mobile)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "note_margin_sm",
+      "label": "Note top margin (desktop)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "note_padding",
+      "label": "Note padding (mobile)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "note_padding_sm",
+      "label": "Note padding (desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "p"
+    },
+    {
+      "type": "select",
+      "id": "note_radius",
+      "label": "Note border radius",
+      "options": [
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "header",
+      "content": "Card Shadow"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow style",
+      "options": [
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
     }
   ],
   "presets": [

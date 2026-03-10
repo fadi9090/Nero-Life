@@ -1,18 +1,19 @@
 {% comment %}
-  Icon: Close / X
-  Usage: {% render 'icon-close', size: 6, color: '#000000' %}
+  Icon: Heart / Wishlist
+  Usage: {% render 'icon-heart', size: 6, color: '#000000', filled: false %}
 {% endcomment %}
 
 {%- assign size = size | default: 6 -%}
 {%- assign color = color | default: 'currentColor' -%}
+{%- assign filled = filled | default: false -%}
 {%- assign stroke = stroke_width | default: 1.5 -%}
 {%- assign custom_class = class | default: '' -%}
 
 <svg xmlns="http://www.w3.org/2000/svg" 
      class="w-{{ size }} h-{{ size }} {{ custom_class }}" 
-     fill="none" 
+     fill="{% if filled %}currentColor{% else %}none{% endif %}" 
      viewBox="0 0 24 24" 
      stroke="{{ color }}" 
      stroke-width="{{ stroke }}">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
 </svg>

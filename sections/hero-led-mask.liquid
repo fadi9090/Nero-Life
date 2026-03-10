@@ -1,119 +1,151 @@
 {% comment %}
   Section: Hero LED Mask
   Description: Main hero section with product details and CTA
+  Fully customizable through theme editor
 {% endcomment %}
 
-{% comment %} Load discount configuration - ONCE is enough {% endcomment %}
 {% render 'discount' %}
-
-{% comment %} Get the featured product from section settings {% endcomment %}
 {% assign featured_product = all_products[section.settings.featured_product] %}
 
-{% comment %} Calculate discounted price only if discount is active {% endcomment %}
-{% if regular_discount > 0 %}
+{% if regular_discount > 0 and featured_product.price > 0 %}
   {% assign discount_multiplier = 100.0 | minus: regular_discount %}
   {% assign discounted_price = featured_product.price | times: discount_multiplier | divided_by: 100 %}
   {% assign compare_price = featured_product.compare_at_price | default: featured_product.price %}
 {% endif %}
 
-<div class="w-full max-w-7xl mx-auto">
-  <div class="rounded-3xl shadow-2xl overflow-hidden">
-    <div
-      class="relative w-full min-h-[280px] sm:min-h-[300px] lg:min-h-[400px] bg-cover bg-center flex items-center justify-center lg:justify-start p-4 sm:p-6 lg:p-12"
-      style="background-image: linear-gradient(to bottom, rgba(120, 0, 45, 0.5), rgba(120, 0, 45, 0.8)), url('{{ section.settings.hero_background_image | image_url: width: 2000 }}');"
-    >
-      <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-black/20 pointer-events-none z-5"></div>
-      <div
-        class="absolute inset-0 shadow-[inset_0_0_80px_20px_rgba(220,38,38,0.3)] pointer-events-none mix-blend-overlay z-6"
-      ></div>
+<style>
+  #hero-{{ section.id }} {
+    --hero-min-height: {{ section.settings.hero_height_mobile | default: '280' }}px;
+    --hero-bg-overlay: {{ section.settings.overlay_color | default: 'rgba(120, 0, 45, 0.5)' }};
+    --hero-text-color: {{ section.settings.text_color | default: '#FFFFFF' }};
+    --hero-badge-bg: {{ section.settings.badge_bg | default: 'linear-gradient(to right, #e11d48, #db2777)' }};
+    --hero-button-bg: {{ section.settings.button_bg | default: 'linear-gradient(to right, #e11d48, #db2777)' }};
+    --hero-button-hover: {{ section.settings.button_hover | default: 'linear-gradient(to right, #be123c, #b81d66)' }};
+    --hero-price-color: {{ section.settings.price_color | default: '#fecdd3' }};
+  }
 
-      <div class="relative z-10 text-white text-center lg:text-left max-w-xl lg:pl-10 w-full">
-        {% comment %} Badge - Only show if discount is active {% endcomment %}
-        {% if regular_discount > 0 %}
-          <div class="inline-block bg-gradient-to-r from-rose-600 to-pink-500 text-white text-xs font-bold px-4 py-2 rounded-full mb-3 sm:mb-4 uppercase tracking-wider shadow-lg border border-rose-400/30">
+  @media (min-width: 640px) {
+    #hero-{{ section.id }} {
+      --hero-min-height: {{ section.settings.hero_height_sm | default: '300' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #hero-{{ section.id }} {
+      --hero-min-height: {{ section.settings.hero_height_lg | default: '400' }}px;
+    }
+  }
+
+  .hero-{{ section.id }} {
+    min-height: var(--hero-min-height);
+  }
+
+  .hero-badge-{{ section.id }} {
+    background: var(--hero-badge-bg);
+  }
+
+  .hero-button-{{ section.id }} {
+    background: var(--hero-button-bg);
+  }
+
+  .hero-button-{{ section.id }}:hover {
+    background: var(--hero-button-hover);
+  }
+</style>
+
+<div class="w-full max-w-7xl mx-auto" {{ section.shopify_attributes }}>
+  <div class="rounded-{{ section.settings.border_radius | default: '3xl' }} shadow-{{ section.settings.box_shadow | default: '2xl' }} overflow-hidden">
+    <div
+      id="hero-{{ section.id }}"
+      class="hero-{{ section.id }} relative w-full bg-cover bg-center flex items-center justify-{{ section.settings.content_alignment_mobile | default: 'center' }} lg:justify-{{ section.settings.content_alignment_desktop | default: 'start' }} p-{{ section.settings.padding_mobile | default: '4' }} sm:p-{{ section.settings.padding_sm | default: '6' }} lg:p-{{ section.settings.padding_lg | default: '12' }}"
+      style="background-image: linear-gradient(to bottom, var(--hero-bg-overlay), var(--hero-bg-overlay)), url('{% if section.settings.hero_background_image != blank %}{{ section.settings.hero_background_image | image_url: width: 2000 }}{% else %}{{ 'hero-placeholder.jpg' | asset_url }}{% endif %}');"
+    >
+      {% if section.settings.show_overlay_gradient %}
+        <div class="absolute inset-0 bg-gradient-to-r from-black/{{ section.settings.overlay_opacity_start | default: '30' }} to-black/{{ section.settings.overlay_opacity_end | default: '20' }} pointer-events-none"></div>
+      {% endif %}
+      
+      {% if section.settings.show_glow_effect %}
+        <div class="absolute inset-0 shadow-[inset_0_0_80px_20px_rgba(220,38,38,0.3)] pointer-events-none mix-blend-overlay"></div>
+      {% endif %}
+
+      <div class="relative z-10 text-{% if section.settings.content_alignment_mobile == 'center' %}center{% else %}left{% endif %} lg:text-{{ section.settings.content_alignment_desktop }} max-w-{{ section.settings.content_width | default: 'xl' }} lg:pl-{{ section.settings.content_offset | default: '10' }} w-full" style="color: var(--hero-text-color);">
+        {% if section.settings.show_badge and regular_discount > 0 %}
+          <div class="hero-badge-{{ section.section.id }} inline-block text-{{ section.settings.badge_text_size | default: 'xs' }} font-{{ section.settings.badge_font_weight | default: 'bold' }} px-{{ section.settings.badge_padding_x | default: '4' }} py-{{ section.settings.badge_padding_y | default: '2' }} rounded-{{ section.settings.badge_radius | default: 'full' }} mb-{{ section.settings.badge_margin | default: '3' }} sm:mb-{{ section.settings.badge_margin_sm | default: '4' }} uppercase tracking-{{ section.settings.badge_tracking | default: 'wider' }} shadow-{{ section.settings.badge_shadow | default: 'lg' }}">
             {{ section.settings.badge_text | default: 'Limited Time Launch Offer' }}
           </div>
         {% endif %}
 
-        {% comment %} Title {% endcomment %}
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black uppercase mb-3 sm:mb-4 leading-snug sm:leading-tight tracking-tight drop-shadow-2xl">
-          {% if section.settings.hero_title != blank %}
-            {{ section.settings.hero_title }}
+        <h1 class="text-{{ section.settings.title_size_mobile | default: '2xl' }} sm:text-{{ section.settings.title_size_sm | default: '3xl' }} lg:text-{{ section.settings.title_size_lg | default: '4xl' }} font-{{ section.settings.title_font_weight | default: 'black' }} uppercase mb-{{ section.settings.title_margin | default: '3' }} sm:mb-{{ section.settings.title_margin_sm | default: '4' }} leading-{{ section.settings.title_leading | default: 'snug' }} tracking-{{ section.settings.title_tracking | default: 'tight' }} drop-shadow-{{ section.settings.title_shadow | default: '2xl' }}">
+          {% if section.settings.custom_title != blank %}
+            {{ section.settings.custom_title }}
           {% elsif featured_product.title != blank %}
             {{ featured_product.title }}
           {% else %}
-            PROFESSIONAL LED THERAPY FOR FACE & NECK
+            {{ section.settings.default_title }}
           {% endif %}
         </h1>
 
-        {% comment %} Description {% endcomment %}
-        <p class="text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 leading-relaxed drop-shadow-lg max-w-md mx-auto lg:mx-0 opacity-95 font-medium bg-black/20 backdrop-blur-sm rounded-lg p-3 sm:p-0 sm:bg-transparent sm:backdrop-blur-none">
-          {% if section.settings.hero_description != blank %}
-            {{ section.settings.hero_description }}
-          {% elsif featured_product.description != blank %}
-            {{ featured_product.description | truncatewords: 25 }}
-          {% else %}
-            Advanced 7-wavelength LED technology for comprehensive facial and neck rejuvenation. Visible results in just
-            15 minutes daily.
-          {% endif %}
-        </p>
-
-        {% comment %} Pricing - Conditional display based on discount {% endcomment %}
-        <div class="flex items-baseline justify-center lg:justify-start space-x-2 sm:space-x-3 mb-4 sm:mb-6">
-          {% if regular_discount > 0 and featured_product.price > 0 %}
-            {% comment %} Show discounted price with compare at price {% endcomment %}
-            <span class="text-2xl sm:text-3xl lg:text-6xl font-black text-rose-200 drop-shadow-md">
-              {{ discounted_price | money_without_trailing_zeros }}
-            </span>
-            <span class="text-lg sm:text-xl lg:text-4xl font-normal line-through opacity-80 text-rose-100">
-              {{ compare_price | money_without_trailing_zeros }}
-            </span>
-          {% elsif featured_product.price > 0 %}
-            {% comment %} Show regular price only {% endcomment %}
-            <span class="text-2xl sm:text-3xl lg:text-6xl font-black text-rose-200 drop-shadow-md">
-              {{ featured_product.price | money_without_trailing_zeros }}
-            </span>
-          {% endif %}
-        </div>
-
-        {% comment %} CTA Button - Dynamic based on discount {% endcomment %}
-        <div class="mb-4 sm:mb-6">
-          <a
-            href="{% if featured_product.url != blank %}{{ featured_product.url }}{% else %}{{ section.settings.cta_link }}{% endif %}"
-            class="inline-block px-6 sm:px-8 py-3 text-sm sm:text-base font-black text-white bg-gradient-to-r from-rose-600 to-pink-500 hover:from-rose-700 hover:to-pink-600 transition-all duration-300 rounded-full shadow-2xl hover:shadow-3xl uppercase tracking-wider transform hover:scale-105 active:scale-95 border border-rose-400/30"
-          >
-            {% if regular_discount > 0 %}
-              {{ section.settings.cta_text_discounted | default: 'GET 35% OFF NOW' }}
+        {% if section.settings.show_description %}
+          <p class="text-{{ section.settings.desc_size_mobile | default: 'sm' }} sm:text-{{ section.settings.desc_size_sm | default: 'base' }} lg:text-{{ section.settings.desc_size_lg | default: 'lg' }} mb-{{ section.settings.desc_margin | default: '4' }} sm:mb-{{ section.settings.desc_margin_sm | default: '6' }} leading-{{ section.settings.desc_leading | default: 'relaxed' }} max-w-{{ section.settings.desc_width | default: 'md' }} mx-auto{% if section.settings.content_alignment_desktop == 'start' %} lg:mx-0{% endif %} {% if section.settings.desc_backdrop %}bg-black/20 backdrop-blur-sm rounded-lg p-3 sm:p-0 sm:bg-transparent sm:backdrop-blur-none{% endif %}">
+            {% if section.settings.custom_description != blank %}
+              {{ section.settings.custom_description }}
+            {% elsif featured_product.description != blank %}
+              {{ featured_product.description | truncatewords: section.settings.description_words | default: 25 }}
             {% else %}
-              {{ section.settings.cta_text | default: 'SHOP NOW' }}
+              {{ section.settings.default_description }}
             {% endif %}
-          </a>
-        </div>
+          </p>
+        {% endif %}
 
-        {% comment %} Features - Always show these {% endcomment %}
-        <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm font-semibold">
-          <div class="flex items-center justify-center lg:justify-start text-white opacity-95 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1 sm:bg-transparent sm:backdrop-blur-none sm:px-0">
-            <svg
-              class="w-3 h-3 sm:w-4 sm:h-4 text-rose-300 mr-1 sm:mr-2 flex-shrink-0"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-xs sm:text-sm">{{ section.settings.feature_1 | default: '60-Day Satisfaction' }}</span>
+        {% if section.settings.show_price %}
+          <div class="flex items-baseline justify-{% if section.settings.content_alignment_mobile == 'center' %}center{% else %}start{% endif %} lg:justify-{{ section.settings.content_alignment_desktop }} space-x-{{ section.settings.price_spacing | default: '2' }} sm:space-x-{{ section.settings.price_spacing_sm | default: '3' }} mb-{{ section.settings.price_margin | default: '4' }} sm:mb-{{ section.settings.price_margin_sm | default: '6' }}">
+            {% if regular_discount > 0 and featured_product.price > 0 %}
+              <span class="text-{{ section.settings.discounted_price_size | default: '2xl' }} sm:text-{{ section.settings.discounted_price_size_sm | default: '3xl' }} lg:text-{{ section.settings.discounted_price_size_lg | default: '6xl' }} font-{{ section.settings.price_font_weight | default: 'black' }}" style="color: var(--hero-price-color);">
+                {{ discounted_price | money_without_trailing_zeros }}
+              </span>
+              <span class="text-{{ section.settings.compare_price_size | default: 'lg' }} sm:text-{{ section.settings.compare_price_size_sm | default: 'xl' }} lg:text-{{ section.settings.compare_price_size_lg | default: '4xl' }} font-{{ section.settings.compare_price_weight | default: 'normal' }} line-through opacity-{{ section.settings.compare_price_opacity | default: '80' }}">
+                {{ compare_price | money_without_trailing_zeros }}
+              </span>
+            {% elsif featured_product.price > 0 %}
+              <span class="text-{{ section.settings.regular_price_size | default: '2xl' }} sm:text-{{ section.settings.regular_price_size_sm | default: '3xl' }} lg:text-{{ section.settings.regular_price_size_lg | default: '6xl' }} font-{{ section.settings.price_font_weight | default: 'black' }}" style="color: var(--hero-price-color);">
+                {{ featured_product.price | money_without_trailing_zeros }}
+              </span>
+            {% endif %}
           </div>
+        {% endif %}
 
-          <div class="flex items-center justify-center lg:justify-start text-white opacity-95 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1 sm:bg-transparent sm:backdrop-blur-none sm:px-0">
-            <svg
-              class="w-3 h-3 sm:w-4 sm:h-4 text-rose-300 mr-1 sm:mr-2 flex-shrink-0"
-              fill="currentColor"
-              viewBox="0 0 20 20"
+        {% if section.settings.show_cta %}
+          <div class="mb-{{ section.settings.cta_margin | default: '4' }} sm:mb-{{ section.settings.cta_margin_sm | default: '6' }}">
+            <a
+              href="{% if section.settings.cta_link != blank %}{{ section.settings.cta_link }}{% elsif featured_product.url != blank %}{{ featured_product.url }}{% else %}#{% endif %}"
+              class="hero-button-{{ section.section.id }} inline-block px-{{ section.settings.button_padding_x | default: '6' }} sm:px-{{ section.settings.button_padding_x_sm | default: '8' }} py-{{ section.settings.button_padding_y | default: '3' }} text-{{ section.settings.button_text_size | default: 'sm' }} sm:text-{{ section.settings.button_text_size_sm | default: 'base' }} font-{{ section.settings.button_font_weight | default: 'black' }} text-white transition-all duration-{{ section.settings.button_transition | default: '300' }} rounded-{{ section.settings.button_radius | default: 'full' }} shadow-{{ section.settings.button_shadow | default: '2xl' }} hover:shadow-{{ section.settings.button_hover_shadow | default: '3xl' }} uppercase tracking-{{ section.settings.button_tracking | default: 'wider' }} transform hover:scale-{{ section.settings.button_hover_scale | default: '105' }} active:scale-95"
             >
-              <path fill-rule="evenodd" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-xs sm:text-sm">{{ section.settings.feature_2 | default: 'Medical-Grade' }}</span>
+              {% if regular_discount > 0 and section.settings.cta_text_discounted != blank %}
+                {{ section.settings.cta_text_discounted | replace: '[discount]', regular_discount }}
+              {% else %}
+                {{ section.settings.cta_text | default: 'SHOP NOW' }}
+              {% endif %}
+            </a>
           </div>
-        </div>
+        {% endif %}
+
+        {% if section.settings.show_features %}
+          <div class="flex flex-col sm:flex-row justify-{% if section.settings.content_alignment_mobile == 'center' %}center{% else %}start{% endif %} lg:justify-{{ section.settings.content_alignment_desktop }} space-y-{{ section.settings.features_spacing | default: '2' }} sm:space-y-0 sm:space-x-{{ section.settings.features_spacing_sm | default: '4' }} text-{{ section.settings.features_size | default: 'xs' }} sm:text-{{ section.settings.features_size_sm | default: 'sm' }} font-{{ section.settings.features_weight | default: 'semibold' }}">
+            {% for i in (1..4) %}
+              {% assign feature_text = 'feature_' | append: i %}
+              {% if section.settings[feature_text] != blank %}
+                <div class="flex items-center justify-{% if section.settings.content_alignment_mobile == 'center' %}center{% else %}start{% endif %} lg:justify-start {% if section.settings.features_backdrop %}bg-black/20 backdrop-blur-sm rounded-full px-3 py-1 sm:bg-transparent sm:backdrop-blur-none sm:px-0{% endif %}">
+                  {% if section.settings.show_feature_icons %}
+                    <svg class="w-{{ section.settings.feature_icon_size | default: '3' }} h-{{ section.settings.feature_icon_size | default: '3' }} sm:w-{{ section.settings.feature_icon_size_sm | default: '4' }} sm:h-{{ section.settings.feature_icon_size_sm | default: '4' }} mr-{{ section.settings.feature_icon_spacing | default: '1' }} sm:mr-{{ section.settings.feature_icon_spacing_sm | default: '2' }} flex-shrink-0" style="color: {{ section.settings.feature_icon_color | default: '#fecdd3' }};" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  {% endif %}
+                  <span>{{ section.settings[feature_text] }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -131,61 +163,995 @@
       "type": "product",
       "id": "featured_product",
       "label": "Featured Product",
-      "info": "Select a product to feature in the hero section"
-    },
-    {
-      "type": "header",
-      "content": "Hero Content"
-    },
-    {
-      "type": "image_picker",
-      "id": "hero_background_image",
-      "label": "Hero Background Image",
-      "info": "Upload the hero background image"
+      "info": "Select a product to feature"
     },
     {
       "type": "text",
-      "id": "badge_text",
-      "label": "Badge Text",
-      "default": "Limited Time Launch Offer"
+      "id": "default_title",
+      "label": "Default Title",
+      "default": "PROFESSIONAL LED THERAPY FOR FACE & NECK",
+      "info": "Shown when no product is selected"
     },
     {
       "type": "text",
-      "id": "hero_title",
-      "label": "Hero Title",
+      "id": "custom_title",
+      "label": "Custom Title",
       "info": "Leave blank to use product title"
     },
     {
       "type": "textarea",
-      "id": "hero_description",
-      "label": "Hero Description",
+      "id": "default_description",
+      "label": "Default Description",
+      "default": "Advanced 7-wavelength LED technology for comprehensive facial and neck rejuvenation. Visible results in just 15 minutes daily."
+    },
+    {
+      "type": "textarea",
+      "id": "custom_description",
+      "label": "Custom Description",
       "info": "Leave blank to use product description"
     },
     {
+      "type": "range",
+      "id": "description_words",
+      "label": "Description word limit",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 25
+    },
+    {
       "type": "header",
-      "content": "Call to Action"
+      "content": "Hero Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_mobile",
+      "label": "Height (mobile)",
+      "min": 200,
+      "max": 500,
+      "step": 20,
+      "default": 280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_sm",
+      "label": "Height (tablet)",
+      "min": 250,
+      "max": 600,
+      "step": 20,
+      "default": 300,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_lg",
+      "label": "Height (desktop)",
+      "min": 300,
+      "max": 800,
+      "step": 20,
+      "default": 400,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "border_radius",
+      "label": "Border radius",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "box_shadow",
+      "label": "Box shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment_mobile",
+      "label": "Content alignment (mobile)",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "start", "label": "Left" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment_desktop",
+      "label": "Content alignment (desktop)",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "start", "label": "Left" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "range",
+      "id": "content_offset",
+      "label": "Content left offset",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content max width",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding (mobile)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "padding_sm",
+      "label": "Padding (tablet)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "padding_lg",
+      "label": "Padding (desktop)",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 12,
+      "unit": "p"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Effects"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#FECDD3"
+    },
+    {
+      "type": "color_background",
+      "id": "overlay_color",
+      "label": "Background overlay",
+      "default": "rgba(120, 0, 45, 0.5)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay_gradient",
+      "label": "Show gradient overlay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity_start",
+      "label": "Overlay opacity start",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity_end",
+      "label": "Overlay opacity end",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_glow_effect",
+      "label": "Show glow effect",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Badge Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show discount badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Limited Time Launch Offer"
+    },
+    {
+      "type": "color_background",
+      "id": "badge_bg",
+      "label": "Badge background",
+      "default": "linear-gradient(to right, #e11d48, #db2777)"
+    },
+    {
+      "type": "select",
+      "id": "badge_text_size",
+      "label": "Badge text size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "select",
+      "id": "badge_font_weight",
+      "label": "Badge font weight",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "semibold", "label": "Semibold" },
+        { "value": "bold", "label": "Bold" }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_x",
+      "label": "Badge horizontal padding",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_y",
+      "label": "Badge vertical padding",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "badge_radius",
+      "label": "Badge border radius",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "full", "label": "Full" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "badge_margin",
+      "label": "Badge bottom margin (mobile)",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "badge_margin_sm",
+      "label": "Badge bottom margin (desktop)",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "badge_tracking",
+      "label": "Badge letter spacing",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" },
+        { "value": "wider", "label": "Wider" },
+        { "value": "widest", "label": "Widest" }
+      ],
+      "default": "wider"
+    },
+    {
+      "type": "select",
+      "id": "badge_shadow",
+      "label": "Badge shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "select",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_sm",
+      "label": "Title size (tablet)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_lg",
+      "label": "Title size (desktop)",
+      "options": [
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" }
+      ],
+      "default": "4xl"
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "bold", "label": "Bold" },
+        { "value": "extrabold", "label": "Extra bold" },
+        { "value": "black", "label": "Black" }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin (mobile)",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_sm",
+      "label": "Title bottom margin (desktop)",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "title_leading",
+      "label": "Title line height",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "tight", "label": "Tight" },
+        { "value": "snug", "label": "Snug" },
+        { "value": "normal", "label": "Normal" }
+      ],
+      "default": "snug"
+    },
+    {
+      "type": "select",
+      "id": "title_tracking",
+      "label": "Title letter spacing",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "tight", "label": "Tight" },
+        { "value": "tighter", "label": "Tighter" }
+      ],
+      "default": "tight"
+    },
+    {
+      "type": "select",
+      "id": "title_shadow",
+      "label": "Title text shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "header",
+      "content": "Description Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "desc_size_mobile",
+      "label": "Description size (mobile)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "desc_size_sm",
+      "label": "Description size (tablet)",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "desc_size_lg",
+      "label": "Description size (desktop)",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "range",
+      "id": "desc_margin",
+      "label": "Description bottom margin (mobile)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "desc_margin_sm",
+      "label": "Description bottom margin (desktop)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "desc_leading",
+      "label": "Description line height",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "relaxed", "label": "Relaxed" },
+        { "value": "loose", "label": "Loose" }
+      ],
+      "default": "relaxed"
+    },
+    {
+      "type": "select",
+      "id": "desc_width",
+      "label": "Description max width",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "checkbox",
+      "id": "desc_backdrop",
+      "label": "Add background backdrop on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Price Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "discounted_price_size",
+      "label": "Discounted price size (mobile)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "select",
+      "id": "discounted_price_size_sm",
+      "label": "Discounted price size (tablet)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "discounted_price_size_lg",
+      "label": "Discounted price size (desktop)",
+      "options": [
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" },
+        { "value": "6xl", "label": "6XL" }
+      ],
+      "default": "6xl"
+    },
+    {
+      "type": "select",
+      "id": "regular_price_size",
+      "label": "Regular price size (mobile)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "select",
+      "id": "regular_price_size_sm",
+      "label": "Regular price size (tablet)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "regular_price_size_lg",
+      "label": "Regular price size (desktop)",
+      "options": [
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" },
+        { "value": "6xl", "label": "6XL" }
+      ],
+      "default": "6xl"
+    },
+    {
+      "type": "select",
+      "id": "compare_price_size",
+      "label": "Compare price size (mobile)",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "compare_price_size_sm",
+      "label": "Compare price size (tablet)",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "compare_price_size_lg",
+      "label": "Compare price size (desktop)",
+      "options": [
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "4xl"
+    },
+    {
+      "type": "select",
+      "id": "price_font_weight",
+      "label": "Price font weight",
+      "options": [
+        { "value": "bold", "label": "Bold" },
+        { "value": "extrabold", "label": "Extra bold" },
+        { "value": "black", "label": "Black" }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "select",
+      "id": "compare_price_weight",
+      "label": "Compare price weight",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "compare_price_opacity",
+      "label": "Compare price opacity",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 80,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "price_spacing",
+      "label": "Price spacing (mobile)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "price_spacing_sm",
+      "label": "Price spacing (desktop)",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "price_margin",
+      "label": "Price bottom margin (mobile)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "price_margin_sm",
+      "label": "Price bottom margin (desktop)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show CTA button",
+      "default": true
     },
     {
       "type": "url",
       "id": "cta_link",
-      "label": "CTA Link",
+      "label": "Button link",
       "info": "Leave blank to use product URL"
     },
     {
       "type": "text",
       "id": "cta_text",
-      "label": "CTA Text (No Discount)",
+      "label": "Button text (no discount)",
       "default": "SHOP NOW"
     },
     {
       "type": "text",
       "id": "cta_text_discounted",
-      "label": "CTA Text (With Discount)",
-      "default": "GET 35% OFF NOW"
+      "label": "Button text (with discount)",
+      "default": "GET [discount]% OFF NOW"
+    },
+    {
+      "type": "color_background",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "linear-gradient(to right, #e11d48, #db2777)"
+    },
+    {
+      "type": "color_background",
+      "id": "button_hover",
+      "label": "Button hover background",
+      "default": "linear-gradient(to right, #be123c, #b81d66)"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Button horizontal padding (mobile)",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x_sm",
+      "label": "Button horizontal padding (desktop)",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Button vertical padding",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "button_text_size",
+      "label": "Button text size (mobile)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "button_text_size_sm",
+      "label": "Button text size (desktop)",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button font weight",
+      "options": [
+        { "value": "semibold", "label": "Semibold" },
+        { "value": "bold", "label": "Bold" },
+        { "value": "extrabold", "label": "Extra bold" },
+        { "value": "black", "label": "Black" }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "select",
+      "id": "button_radius",
+      "label": "Button border radius",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "full", "label": "Full" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "button_hover_scale",
+      "label": "Button hover scale",
+      "min": 100,
+      "max": 110,
+      "step": 1,
+      "default": 105,
+      "unit": "%"
+    },
+    {
+      "type": "select",
+      "id": "button_shadow",
+      "label": "Button shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "select",
+      "id": "button_hover_shadow",
+      "label": "Button hover shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "button_tracking",
+      "label": "Button letter spacing",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" },
+        { "value": "wider", "label": "Wider" },
+        { "value": "widest", "label": "Widest" }
+      ],
+      "default": "wider"
+    },
+    {
+      "type": "range",
+      "id": "button_transition",
+      "label": "Button transition duration",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "cta_margin",
+      "label": "Button bottom margin (mobile)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "cta_margin_sm",
+      "label": "Button bottom margin (desktop)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
     },
     {
       "type": "header",
       "content": "Feature Badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show feature badges",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_feature_icons",
+      "label": "Show feature icons",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "feature_icon_color",
+      "label": "Feature icon color",
+      "default": "#FECDD3"
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_size",
+      "label": "Icon size (mobile)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "unit": "scale"
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_size_sm",
+      "label": "Icon size (desktop)",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "scale"
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_spacing",
+      "label": "Icon spacing (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_spacing_sm",
+      "label": "Icon spacing (desktop)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
     },
     {
       "type": "text",
@@ -198,6 +1164,77 @@
       "id": "feature_2",
       "label": "Feature 2",
       "default": "Medical-Grade"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature 3",
+      "default": "FDA Cleared"
+    },
+    {
+      "type": "text",
+      "id": "feature_4",
+      "label": "Feature 4",
+      "default": "Dermatologist Recommended"
+    },
+    {
+      "type": "select",
+      "id": "features_size",
+      "label": "Features text size (mobile)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "select",
+      "id": "features_size_sm",
+      "label": "Features text size (desktop)",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "features_weight",
+      "label": "Features font weight",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "semibold", "label": "Semibold" }
+      ],
+      "default": "semibold"
+    },
+    {
+      "type": "range",
+      "id": "features_spacing",
+      "label": "Features spacing (mobile)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "features_spacing_sm",
+      "label": "Features spacing (desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "checkbox",
+      "id": "features_backdrop",
+      "label": "Add background backdrop on mobile",
+      "default": true
     }
   ],
   "presets": [

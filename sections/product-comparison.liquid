@@ -1,94 +1,683 @@
-<!-- Product Comparison Table -->
-<div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100">
-    <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">Why Choose Our LED Mask?</h2>
+{% comment %}
+  Product Comparison Table - Fully customizable with icons
+{% endcomment %}
 
-    <div class="w-full mb-10 text-center">
-        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-            Experience revolutionary skincare with our advanced LED Light Therapy Mask. Featuring medical-grade technology in a comfortable, flexible design, our mask delivers professional results from home. Transform your skin with clinically-proven light treatments that are safe, effective, and incredibly easy to use.
-        </p>
-    </div>
+<style>
+  #comparison-table-{{ section.id }} {
+    --comp-bg: {{ section.settings.comp_bg | default: '#FFFFFF' }};
+    --comp-border: {{ section.settings.comp_border | default: '#F3F4F6' }};
+    --comp-shadow: {{ section.settings.comp_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --comp-radius: {{ section.settings.comp_radius | default: '12' }}px;
+    --comp-padding: {{ section.settings.comp_padding | default: '32' }}px;
+    --title-color: {{ section.settings.title_color | default: '#111827' }};
+    --title-size: {{ section.settings.title_size | default: '30' }}px;
+    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --text-size: {{ section.settings.text_size | default: '18' }}px;
+    --header-bg: {{ section.settings.header_bg | default: '#F5F5DC' }};
+    --header-our-bg: {{ section.settings.header_our_bg | default: '#F5F5DC' }};
+    --header-other-bg: {{ section.settings.header_other_bg | default: '#EF4444' }};
+    --header-our-color: {{ section.settings.header_our_color | default: '#166534' }};
+    --header-other-color: {{ section.settings.header_other_color | default: '#FFFFFF' }};
+    --row-bg: {{ section.settings.row_bg | default: '#FFFFFF' }};
+    --row-border: {{ section.settings.row_border | default: '#E5E7EB' }};
+    --check-color: {{ section.settings.check_color | default: '#10B981' }};
+    --x-color: {{ section.settings.x_color | default: '#EF4444' }};
+    --benefit-color: {{ section.settings.benefit_color | default: '#1F2937' }};
+    --benefit-weight: {{ section.settings.benefit_weight | default: '600' }};
+  }
 
-    <div class="w-full flex justify-center">
-        <div class="w-full max-w-3xl border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-            <div class="grid grid-cols-3 text-sm sm:text-base">
+  .comparison-section-{{ section.id }} {
+    background-color: var(--comp-bg);
+    border-radius: var(--comp-radius);
+    padding: var(--comp-padding);
+    box-shadow: var(--comp-shadow);
+    border: 1px solid var(--comp-border);
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
 
-                <div class="col-span-1 px-4 py-4 text-left font-bold text-black bg-white">Benefit</div>
-                <div class="col-span-1 px-2 py-4 font-bold text-green-700 text-center bg-[#F5F5DC]">
-                    Our LED Mask
-                </div>
-                <div class="col-span-1 px-2 py-4 font-bold text-white text-center bg-red-500">Others</div>
+  .comparison-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '800' }};
+    text-align: center;
+    margin-bottom: {{ section.settings.title_margin | default: '32' }}px;
+  }
 
-                <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
-                    Stimulate natural cell renewal
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-[#F5F5DC]">
-                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-red-100">
-                    <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
+  .comparison-subtitle-{{ section.id }} {
+    color: var(--text-color);
+    font-size: var(--text-size);
+    text-align: center;
+    max-width: {{ section.settings.subtitle_width | default: '768' }}px;
+    margin: 0 auto {{ section.settings.subtitle_margin | default: '40' }}px;
+    line-height: {{ section.settings.subtitle_line_height | default: '1.6' }};
+  }
 
-                <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
-                    Support deep skin hydration
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-[#F5F5DC]">
-                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-red-100">
-                    <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
+  .table-container-{{ section.id }} {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 
-                <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
-                    Smooth fine lines and wrinkles
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-[#F5F5DC]">
-                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-red-100">
-                    <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
+  .comparison-table-{{ section.id }} {
+    width: 100%;
+    max-width: {{ section.settings.table_width | default: '768' }}px;
+    border: {{ section.settings.table_border_width | default: '1' }}px solid var(--row-border);
+    border-radius: {{ section.settings.table_radius | default: '12' }}px;
+    overflow: hidden;
+    box-shadow: {{ section.settings.table_shadow | default: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }};
+  }
 
-                <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
-                    Improve skin tone and clarity
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-[#F5F5DC]">
-                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-red-100">
-                    <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
+  .table-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: {{ section.settings.first_col_width | default: '1.5fr' }} {{ section.settings.second_col_width | default: '1fr' }} {{ section.settings.third_col_width | default: '1fr' }};
+  }
 
-                <div class="col-span-1 px-4 py-4 bg-white text-gray-800 text-left border-t border-gray-200 font-semibold">
-                    Strengthen skin's natural barrier
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-[#F5F5DC]">
-                    <svg class="w-6 h-6 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <div class="col-span-1 px-2 py-4 text-center border-t border-gray-200 bg-red-100">
-                    <svg class="w-6 h-6 text-red-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
+  .table-header-{{ section.id }} {
+    background-color: var(--header-bg);
+    font-weight: {{ section.settings.header_weight | default: '700' }};
+    padding: {{ section.settings.header_padding | default: '16' }}px;
+    text-align: {{ section.settings.header_align | default: 'left' }};
+  }
 
-            </div>
+  .table-header-our-{{ section.id }} {
+    background-color: var(--header-our-bg);
+    color: var(--header-our-color);
+    text-align: center;
+    padding: {{ section.settings.header_padding | default: '16' }}px;
+    font-weight: {{ section.settings.header_weight | default: '700' }};
+  }
+
+  .table-header-other-{{ section.id }} {
+    background-color: var(--header-other-bg);
+    color: var(--header-other-color);
+    text-align: center;
+    padding: {{ section.settings.header_padding | default: '16' }}px;
+    font-weight: {{ section.settings.header_weight | default: '700' }};
+  }
+
+  .table-cell-{{ section.id }} {
+    padding: {{ section.settings.cell_padding | default: '16' }}px;
+    border-top: 1px solid var(--row-border);
+    background-color: var(--row-bg);
+  }
+
+  .table-cell-benefit-{{ section.id }} {
+    color: var(--benefit-color);
+    font-weight: var(--benefit-weight);
+  }
+
+  .table-cell-center-{{ section.id }} {
+    text-align: center;
+    border-top: 1px solid var(--row-border);
+    background-color: {{ section.settings.our_col_bg | default: '#F5F5DC' }};
+    padding: {{ section.settings.cell_padding | default: '16' }}px;
+  }
+
+  .table-cell-other-{{ section.id }} {
+    text-align: center;
+    border-top: 1px solid var(--row-border);
+    background-color: {{ section.settings.other_col_bg | default: '#FEE2E2' }};
+    padding: {{ section.settings.cell_padding | default: '16' }}px;
+  }
+
+  .check-icon-{{ section.id }} {
+    color: var(--check-color);
+    margin: 0 auto;
+  }
+
+  .x-icon-{{ section.id }} {
+    color: var(--x-color);
+    margin: 0 auto;
+  }
+
+  @media (max-width: 640px) {
+    .table-grid-{{ section.id }} {
+      font-size: {{ section.settings.mobile_font_size | default: '14' }}px;
+    }
+    
+    .table-header-{{ section.id }},
+    .table-header-our-{{ section.id }},
+    .table-header-other-{{ section.id }},
+    .table-cell-{{ section.id }},
+    .table-cell-center-{{ section.id }},
+    .table-cell-other-{{ section.id }} {
+      padding: {{ section.settings.mobile_padding | default: '8' }}px;
+    }
+  }
+</style>
+
+<div id="comparison-table-{{ section.id }}" class="comparison-section-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Title -->
+  <h2 class="comparison-title-{{ section.id }}">
+    {{ section.settings.title | default: 'Why Choose Our LED Mask?' }}
+  </h2>
+  
+  <!-- Subtitle -->
+  {% if section.settings.show_subtitle %}
+    <p class="comparison-subtitle-{{ section.id }}">
+      {{ section.settings.subtitle | default: 'Experience revolutionary skincare with our advanced LED Light Therapy Mask. Featuring medical-grade technology in a comfortable, flexible design, our mask delivers professional results from home.' }}
+    </p>
+  {% endif %}
+
+  <!-- Comparison Table -->
+  <div class="table-container-{{ section.id }}">
+    <div class="comparison-table-{{ section.id }}">
+      <div class="table-grid-{{ section.id }}">
+        <!-- Header Row -->
+        <div class="table-header-{{ section.id }}">
+          {{ section.settings.benefit_header | default: 'Benefit' }}
         </div>
+        <div class="table-header-our-{{ section.id }}">
+          {{ section.settings.our_header | default: 'Our LED Mask' }}
+        </div>
+        <div class="table-header-other-{{ section.id }}">
+          {{ section.settings.other_header | default: 'Others' }}
+        </div>
+
+        <!-- Dynamic Rows -->
+        {% for i in (1..section.settings.row_count) %}
+          {% assign benefit_text = 'benefit_' | append: i %}
+          {% if section.settings[benefit_text] != blank %}
+            <!-- Benefit Cell -->
+            <div class="table-cell-{{ section.id }} table-cell-benefit-{{ section.id }}">
+              {{ section.settings[benefit_text] }}
+            </div>
+            
+            <!-- Our Mask Cell (Checkmark) -->
+            <div class="table-cell-center-{{ section.id }}">
+              <div class="check-icon-{{ section.id }}">
+                {% render 'icon-check-circle', size: section.settings.icon_size | default: 6, color: section.settings.check_color %}
+              </div>
+            </div>
+            
+            <!-- Others Cell (X Mark) -->
+            <div class="table-cell-other-{{ section.id }}">
+              <div class="x-icon-{{ section.id }}">
+                {% render 'icon-x-circle', size: section.settings.icon_size | default: 6, color: section.settings.x_color %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
+  </div>
 </div>
+
+{% schema %}
+{
+  "name": "Comparison Table",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "comp_bg",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "comp_border",
+      "label": "Section border",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "range",
+      "id": "comp_padding",
+      "label": "Section padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "comp_radius",
+      "label": "Section radius",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "comp_shadow",
+      "label": "Section shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Table Settings"
+    },
+    {
+      "type": "range",
+      "id": "row_count",
+      "label": "Number of rows",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "table_width",
+      "label": "Table max width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "default": 768,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "table_radius",
+      "label": "Table border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "table_border_width",
+      "label": "Table border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "row_border",
+      "label": "Row border color",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "select",
+      "id": "table_shadow",
+      "label": "Table shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" }
+      ],
+      "default": "0 4px 6px -1px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "header",
+      "content": "Column Widths"
+    },
+    {
+      "type": "text",
+      "id": "first_col_width",
+      "label": "First column width",
+      "default": "1.5fr",
+      "info": "Use fr units (e.g., 1fr, 1.5fr, 2fr)"
+    },
+    {
+      "type": "text",
+      "id": "second_col_width",
+      "label": "Second column width",
+      "default": "1fr"
+    },
+    {
+      "type": "text",
+      "id": "third_col_width",
+      "label": "Third column width",
+      "default": "1fr"
+    },
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
+    {
+      "type": "text",
+      "id": "benefit_header",
+      "label": "Benefit column header",
+      "default": "Benefit"
+    },
+    {
+      "type": "text",
+      "id": "our_header",
+      "label": "Our product header",
+      "default": "Our LED Mask"
+    },
+    {
+      "type": "text",
+      "id": "other_header",
+      "label": "Other products header",
+      "default": "Others"
+    },
+    {
+      "type": "color",
+      "id": "header_bg",
+      "label": "Benefit header background",
+      "default": "#F5F5DC"
+    },
+    {
+      "type": "color",
+      "id": "header_our_bg",
+      "label": "Our product header background",
+      "default": "#F5F5DC"
+    },
+    {
+      "type": "color",
+      "id": "header_other_bg",
+      "label": "Other products header background",
+      "default": "#EF4444"
+    },
+    {
+      "type": "color",
+      "id": "header_our_color",
+      "label": "Our product header text color",
+      "default": "#166534"
+    },
+    {
+      "type": "color",
+      "id": "header_other_color",
+      "label": "Other products header text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "header_weight",
+      "label": "Header font weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "First header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "header_padding",
+      "label": "Header padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Row Settings"
+    },
+    {
+      "type": "color",
+      "id": "row_bg",
+      "label": "Benefit row background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "our_col_bg",
+      "label": "Our product column background",
+      "default": "#F5F5DC"
+    },
+    {
+      "type": "color",
+      "id": "other_col_bg",
+      "label": "Other products column background",
+      "default": "#FEE2E2"
+    },
+    {
+      "type": "color",
+      "id": "benefit_color",
+      "label": "Benefit text color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "select",
+      "id": "benefit_weight",
+      "label": "Benefit text weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "cell_padding",
+      "label": "Cell padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "color",
+      "id": "check_color",
+      "label": "Checkmark color",
+      "default": "#10B981"
+    },
+    {
+      "type": "color",
+      "id": "x_color",
+      "label": "X mark color",
+      "default": "#EF4444"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 6,
+      "info": "Tailwind size scale (4=16px, 6=24px, 8=32px)"
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Why Choose Our LED Mask?"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Subtitle"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle",
+      "label": "Show subtitle",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle text",
+      "default": "Experience revolutionary skincare with our advanced LED Light Therapy Mask. Featuring medical-grade technology in a comfortable, flexible design, our mask delivers professional results from home."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Subtitle color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Subtitle size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_width",
+      "label": "Subtitle max width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "default": 768,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_line_height",
+      "label": "Subtitle line height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "subtitle_margin",
+      "label": "Subtitle bottom margin",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "range",
+      "id": "mobile_font_size",
+      "label": "Mobile font size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding",
+      "label": "Mobile padding",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Benefits (Rows)"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_1",
+      "label": "Benefit 1",
+      "default": "Stimulate natural cell renewal"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_2",
+      "label": "Benefit 2",
+      "default": "Support deep skin hydration"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_3",
+      "label": "Benefit 3",
+      "default": "Smooth fine lines and wrinkles"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_4",
+      "label": "Benefit 4",
+      "default": "Improve skin tone and clarity"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_5",
+      "label": "Benefit 5",
+      "default": "Strengthen skin's natural barrier"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table"
+    }
+  ]
+}
+{% endschema %}

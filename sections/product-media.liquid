@@ -1,40 +1,361 @@
-<!-- Product Media Gallery - Equal Height -->
-<div class="h-full bg-white rounded-xl shadow-lg p-4 flex flex-col">
-    <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4 flex-shrink-0">
-        <img id="media-display"
-            src="{{ product.featured_media | image_url: width: 1024, height: 1024 }}"
-            alt="{{ product.featured_media.alt | escape }}"
-            width="1024"
-            height="1024"
-            class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
-            onerror="this.onerror=null; this.src='https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error';"
-        />
-    </div>
+{% comment %}
+  Product Media Gallery - Fully customizable
+{% endcomment %}
 
-    <div class="mt-auto pt-4">
-        <div id="thumbnails-container"
-            class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
-        >
-            {% for media in product.media %}
-                {% assign is_active = false %}
-                {% if product.featured_media.id == media.id %}
-                    {% assign is_active = true %}
-                {% endif %}
-                <img src="{{ media.preview_image | image_url: width: 64, height: 64 }}"
-                    alt="{{ media.alt | escape }}"
-                    width="64"
-                    height="64"
-                    data-full-url="{{ media | image_url: width: 1024, height: 1024 }}"
-                    data-media-id="{{ media.id }}"
-                    class="media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100
-                                    {% if is_active %}
-                                        border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
-                                    {% else %}
-                                        border-gray-300 border opacity-75
-                                    {% endif %}"
-                    onclick="swapMedia(this, '{{ media | image_url: width: 1024, height: 1024 }}')"
-                />
-            {% endfor %}
-        </div>
+<style>
+  #product-media-{{ section.id }} {
+    --media-bg: {{ section.settings.media_bg | default: '#FFFFFF' }};
+    --media-border: {{ section.settings.media_border | default: '#E5E7EB' }};
+    --media-shadow: {{ section.settings.media_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --media-radius: {{ section.settings.media_radius | default: '12' }}px;
+    --media-padding: {{ section.settings.media_padding | default: '16' }}px;
+    --main-image-height: {{ section.settings.main_image_height | default: '384' }}px;
+    --thumb-size: {{ section.settings.thumb_size | default: '64' }}px;
+    --thumb-gap: {{ section.settings.thumb_gap | default: '12' }}px;
+    --active-border: {{ section.settings.active_border | default: '#3B82F6' }};
+  }
+
+  @media (min-width: 640px) {
+    #product-media-{{ section.id }} {
+      --main-image-height: {{ section.settings.main_image_height_sm | default: '384' }}px;
+    }
+  }
+
+  .media-gallery-{{ section.id }} {
+    background-color: var(--media-bg);
+    border-radius: var(--media-radius);
+    padding: var(--media-padding);
+    box-shadow: var(--media-shadow);
+    border: 1px solid var(--media-border);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-image-{{ section.id }} {
+    height: var(--main-image-height);
+    margin-bottom: var(--media-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-image-{{ section.id }} img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: {{ section.settings.image_radius | default: '8' }}px;
+    transition: opacity {{ section.settings.transition_speed | default: '300' }}ms ease;
+  }
+
+  .thumbnail-container-{{ section.id }} {
+    display: flex;
+    gap: var(--thumb-gap);
+    overflow-x: auto;
+    padding-bottom: 4px;
+    justify-content: {{ section.settings.thumb_alignment | default: 'start' }};
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .thumbnail-container-{{ section.id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thumbnail-{{ section.id }} {
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: {{ section.settings.thumb_radius | default: '8' }}px;
+    cursor: pointer;
+    transition: all {{ section.settings.thumb_transition | default: '200' }}ms ease;
+    border: {{ section.settings.thumb_border_width | default: '1' }}px solid var(--media-border);
+    opacity: {{ section.settings.thumb_opacity | default: '0.75' }};
+  }
+
+  .thumbnail-{{ section.id }}:hover {
+    transform: scale({{ section.settings.thumb_hover_scale | default: '1.05' }});
+    opacity: 1;
+  }
+
+  .thumbnail-{{ section.id }}.active {
+    border-color: var(--active-border);
+    border-width: {{ section.settings.active_border_width | default: '2' }}px;
+    opacity: 1;
+    box-shadow: 0 0 0 2px {{ section.settings.active_ring | default: '#3B82F6' }}/50;
+  }
+</style>
+
+<div id="product-media-{{ section.id }}" class="media-gallery-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Main Image -->
+  <div class="main-image-{{ section.id }}">
+    <img id="media-display"
+         src="{{ product.featured_media | image_url: width: 1024, height: 1024 }}"
+         alt="{{ product.featured_media.alt | escape }}"
+         width="1024"
+         height="1024"
+         loading="lazy"
+         onerror="this.onerror=null; this.src='{{ section.settings.placeholder_image | image_url | default: 'https://placehold.co/600x600/f0f0f0/000000?text=Image+Load+Error' }}';" />
+  </div>
+
+  <!-- Thumbnails -->
+  {% if section.settings.show_thumbnails and product.media.size > 1 %}
+    <div class="thumbnail-container-{{ section.id }}">
+      {% for media in product.media %}
+        {% assign is_active = false %}
+        {% if product.featured_media.id == media.id %}
+          {% assign is_active = true %}
+        {% endif %}
+        <img src="{{ media.preview_image | image_url: width: 128, height: 128 }}"
+             alt="{{ media.alt | escape }}"
+             width="{{ section.settings.thumb_size | default: 64 }}"
+             height="{{ section.settings.thumb_size | default: 64 }}"
+             data-full-url="{{ media | image_url: width: 1024, height: 1024 }}"
+             data-media-id="{{ media.id }}"
+             class="thumbnail-{{ section.id }} {% if is_active %}active{% endif %}"
+             onclick="swapMedia(this, '{{ media | image_url: width: 1024, height: 1024 }}')"
+             loading="lazy" />
+      {% endfor %}
     </div>
+  {% endif %}
 </div>
+
+<script>
+  function swapMedia(thumbnail, fullImageUrl) {
+    const mediaDisplay = document.getElementById('media-display');
+    const thumbnails = document.querySelectorAll('.thumbnail-{{ section.id }}');
+
+    if (!mediaDisplay) return;
+
+    mediaDisplay.style.opacity = '0';
+    setTimeout(() => {
+      mediaDisplay.src = fullImageUrl;
+      mediaDisplay.style.opacity = '1';
+    }, {{ section.settings.transition_speed | default: '300' }});
+
+    thumbnails.forEach(thumb => {
+      thumb.classList.remove('active');
+    });
+    thumbnail.classList.add('active');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product Media",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "media_border",
+      "label": "Border color",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "range",
+      "id": "media_padding",
+      "label": "Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "media_radius",
+      "label": "Border radius",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "media_shadow",
+      "label": "Box shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "header",
+      "content": "Main Image"
+    },
+    {
+      "type": "range",
+      "id": "main_image_height",
+      "label": "Image height (mobile)",
+      "min": 200,
+      "max": 500,
+      "step": 10,
+      "default": 384,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "main_image_height_sm",
+      "label": "Image height (desktop)",
+      "min": 250,
+      "max": 600,
+      "step": 10,
+      "default": 384,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "placeholder_image",
+      "label": "Placeholder image"
+    },
+    {
+      "type": "header",
+      "content": "Thumbnail Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_thumbnails",
+      "label": "Show thumbnails",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "thumb_size",
+      "label": "Thumbnail size",
+      "min": 40,
+      "max": 100,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "thumb_gap",
+      "label": "Gap between thumbnails",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "thumb_radius",
+      "label": "Thumbnail radius",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "thumb_alignment",
+      "label": "Thumbnail alignment",
+      "options": [
+        { "value": "start", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "range",
+      "id": "thumb_opacity",
+      "label": "Inactive thumbnail opacity",
+      "min": 0.3,
+      "max": 1,
+      "step": 0.5,
+      "default": 0.75
+    },
+    {
+      "type": "range",
+      "id": "thumb_hover_scale",
+      "label": "Hover scale",
+      "min": 1,
+      "max": 1.2,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "thumb_transition",
+      "label": "Transition speed",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "thumb_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Active State"
+    },
+    {
+      "type": "color",
+      "id": "active_border",
+      "label": "Active border color",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "range",
+      "id": "active_border_width",
+      "label": "Active border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "active_ring",
+      "label": "Active ring color",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Image transition speed",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    }
+  ]
+}
+{% endschema %}

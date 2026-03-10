@@ -1,160 +1,315 @@
 {% comment %}
   Section: Comparison Section
-  Description: Comparison between home use vs clinic treatments
+  Description: Three-column comparison between home use vs clinic treatments
+  Fully customizable through theme editor
 {% endcomment %}
 
-<div class="w-full max-w-7xl mx-auto">
-    <div class="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12">
-        <div class="text-center mb-8 sm:mb-12">
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-4 leading-tight">
-                {{ section.settings.main_title | default: 'REVOLUTIONIZE YOUR SKIN CARE ROUTINE' }}
-            </h2>
-            <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-                {{ section.settings.main_subtitle | default: 'Experience professional-grade LED therapy at home versus traditional clinic treatments' }}
-            </p>
-        </div>
+<style>
+  #comparison-{{ section.id }} {
+    --comp-bg-start: {{ section.settings.bg_gradient_start | default: '#FFFFFF' }};
+    --comp-bg-end: {{ section.settings.bg_gradient_end | default: '#F9FAFB' }};
+    --comp-title-color: {{ section.settings.title_color | default: '#111827' }};
+    --comp-subtitle-color: {{ section.settings.subtitle_color | default: '#4B5563' }};
+    --comp-card-bg: {{ section.settings.card_bg | default: '#FFFFFF' }};
+    --comp-card-border: {{ section.settings.card_border | default: '#FEE2E2' }};
+    --comp-card-shadow: {{ section.settings.card_shadow | default: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }};
+    --comp-icon-bg-start: {{ section.settings.icon_bg_start | default: '#F43F5E' }};
+    --comp-icon-bg-end: {{ section.settings.icon_bg_end | default: '#EC4899' }};
+    --comp-icon-color: {{ section.settings.icon_color | default: '#FFFFFF' }};
+    --comp-bullet-color: {{ section.settings.bullet_color | default: '#F43F5E' }};
+    --comp-badge-bg-start: {{ section.settings.badge_bg_start | default: '#F43F5E' }};
+    --comp-badge-bg-end: {{ section.settings.badge_bg_end | default: '#EC4899' }};
+    --comp-badge-color: {{ section.settings.badge_color | default: '#FFFFFF' }};
+    --comp-icon-size: {{ section.settings.icon_size | default: '96' }}px;
+    --comp-card-padding: {{ section.settings.card_padding | default: '32' }}px;
+    --comp-border-radius: {{ section.settings.border_radius | default: '24' }}px;
+  }
 
-        <!-- Three Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <!-- Card 1: Your LED Mask -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 flex flex-col border-2 border-rose-100 transform hover:-translate-y-2 transition-all duration-300">
-                <div class="flex-shrink-0 mb-6 text-center">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                </div>
-                <h3 class="text-2xl sm:text-3xl font-black text-gray-900 mb-6 text-center">
-                    {{ section.settings.card_1_title | default: 'LUMINA LED MASK' }}
-                </h3>
-                <ul class="space-y-3 sm:space-y-4 mb-6 sm:mb-8 flex-grow">
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-rose-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_1_bullet_1 | default: 'Use anytime at your convenience' }}
-                    </li>
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-rose-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_1_bullet_2 | default: 'One-time investment for lasting care' }}
-                    </li>
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-rose-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_1_bullet_3 | default: 'Treat both face and neck areas' }}
-                    </li>
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-rose-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_1_bullet_4 | default: 'No scheduling or travel required' }}
-                    </li>
-                </ul>
-                <div class="mt-auto">
-                    <div class="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-center py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg">
-                        {{ section.settings.card_1_badge | default: 'SMART INVESTMENT' }}
-                    </div>
-                </div>
-            </div>
+  .comparison-section-{{ section.id }} {
+    background: linear-gradient(to bottom right, var(--comp-bg-start), var(--comp-bg-end));
+  }
 
-            <!-- Card 2: Professional Clinic -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 flex flex-col border-2 border-gray-200 transform hover:-translate-y-2 transition-all duration-300 relative overflow-hidden">
-                <div class="absolute inset-0 bg-cover bg-center opacity-5" style="background-image: url('{{ section.settings.clinic_bg_image | image_url: width: 800 | default: 'https://images.unsplash.com/photo-1600334089607-1e0e4c53c0a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80' }}');"></div>
-                <div class="relative z-10">
-                    <div class="flex-shrink-0 mb-6 text-center">
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-gray-500 to-gray-700 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl sm:text-3xl font-black text-gray-900 mb-6 text-center">
-                        {{ section.settings.card_2_title | default: 'CLINIC TREATMENTS' }}
-                    </h3>
-                    <ul class="space-y-3 sm:space-y-4 mb-6 sm:mb-8 flex-grow">
-                        <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ section.settings.card_2_bullet_1 | default: 'Requires advance appointments' }}
-                        </li>
-                        <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ section.settings.card_2_bullet_2 | default: 'Only facial treatment available' }}
-                        </li>
-                        <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ section.settings.card_2_bullet_3 | default: 'Repeated expensive sessions' }}
-                        </li>
-                        <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ section.settings.card_2_bullet_4 | default: 'Temporary results only' }}
-                        </li>
-                    </ul>
-                    <div class="mt-auto">
-                        <div class="bg-gradient-to-r from-gray-500 to-gray-700 text-white text-center py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg">
-                            {{ section.settings.card_2_badge | default: 'COSTLY OPTION' }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+  .comparison-title-{{ section.id }} {
+    color: var(--comp-title-color);
+    font-size: {{ section.settings.title_size_mobile | default: '3xl' }};
+    font-weight: {{ section.settings.title_weight | default: '900' }};
+    line-height: {{ section.settings.title_leading | default: '1.2' }};
+  }
 
-            <!-- Card 3: Advanced Technology -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 flex flex-col border-2 border-blue-100 transform hover:-translate-y-2 transition-all duration-300">
-                <div class="flex-shrink-0 mb-6 text-center">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                </div>
-                <h3 class="text-2xl sm:text-3xl font-black text-gray-900 mb-6 text-center">
-                    {{ section.settings.card_3_title | default: 'ADVANCED FEATURES' }}
-                </h3>
-                <ul class="space-y-3 sm:space-y-4 mb-6 sm:mb-8 flex-grow">
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_3_bullet_1 | default: '420 Medical-grade LED diodes' }}
-                    </li>
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_3_bullet_2 | default: '7 specialized wavelength settings' }}
-                    </li>
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_3_bullet_3 | default: '8 adjustable intensity levels' }}
-                    </li>
-                    <li class="flex items-start text-gray-700 text-base sm:text-lg">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 mr-3 sm:mr-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        {{ section.settings.card_3_bullet_4 | default: 'Flexible medical-grade silicone' }}
-                    </li>
-                </ul>
-                <div class="mt-auto">
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-center py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg">
-                        {{ section.settings.card_3_badge | default: 'CUTTING-EDGE' }}
-                    </div>
-                </div>
-            </div>
-        </div>
+  @media (min-width: 640px) {
+    .comparison-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_sm | default: '4xl' }};
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .comparison-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_lg | default: '5xl' }};
+    }
+  }
+
+  .comparison-subtitle-{{ section.id }} {
+    color: var(--comp-subtitle-color);
+    font-size: {{ section.settings.subtitle_size_mobile | default: 'lg' }};
+  }
+
+  @media (min-width: 640px) {
+    .comparison-subtitle-{{ section.id }} {
+      font-size: {{ section.settings.subtitle_size_sm | default: 'xl' }};
+    }
+  }
+
+  .comparison-card-{{ section.id }} {
+    background-color: var(--comp-card-bg);
+    border-color: var(--comp-card-border);
+    border-width: {{ section.settings.card_border_width | default: '2' }}px;
+    padding: var(--comp-card-padding);
+    border-radius: var(--comp-border-radius);
+    box-shadow: var(--comp-card-shadow);
+    transition: all {{ section.settings.card_transition | default: '300' }}ms ease;
+  }
+
+  .comparison-card-{{ section.id }}:hover {
+    transform: translateY(-{{ section.settings.card_hover_offset | default: '8' }}px);
+  }
+
+  .comparison-icon-{{ section.id }} {
+    width: var(--comp-icon-size);
+    height: var(--comp-icon-size);
+    background: linear-gradient(to right, var(--comp-icon-bg-start), var(--comp-icon-bg-end));
+    border-radius: {{ section.settings.icon_radius | default: '16' }}px;
+    margin-bottom: {{ section.settings.icon_margin | default: '24' }}px;
+  }
+
+  .comparison-icon-{{ section.id }} svg {
+    width: {{ section.settings.icon_svg_size | default: '40' }}px;
+    height: {{ section.settings.icon_svg_size | default: '40' }}px;
+    color: var(--comp-icon-color);
+  }
+
+  .comparison-card-title-{{ section.id }} {
+    color: var(--comp-title-color);
+    font-size: {{ section.settings.card_title_size | default: '30' }}px;
+    font-weight: {{ section.settings.card_title_weight | default: '900' }};
+    margin-bottom: {{ section.settings.card_title_margin | default: '24' }}px;
+    text-align: center;
+  }
+
+  .comparison-bullet-{{ section.id }} {
+    color: {{ section.settings.bullet_text_color | default: '#374151' }};
+    font-size: {{ section.settings.bullet_size | default: '18' }}px;
+    margin-bottom: {{ section.settings.bullet_spacing | default: '16' }}px;
+  }
+
+  .comparison-bullet-icon-{{ section.id }} {
+    width: {{ section.settings.bullet_icon_size | default: '24' }}px;
+    height: {{ section.settings.bullet_icon_size | default: '24' }}px;
+    color: var(--comp-bullet-color);
+    margin-right: {{ section.settings.bullet_icon_spacing | default: '16' }}px;
+    flex-shrink: 0;
+  }
+
+  .comparison-badge-{{ section.id }} {
+    background: linear-gradient(to right, var(--comp-badge-bg-start), var(--comp-badge-bg-end));
+    color: var(--comp-badge-color);
+    padding: {{ section.settings.badge_padding_y | default: '16' }}px {{ section.settings.badge_padding_x | default: '16' }}px;
+    border-radius: {{ section.settings.badge_radius | default: '12' }}px;
+    font-size: {{ section.settings.badge_size | default: '18' }}px;
+    font-weight: {{ section.settings.badge_weight | default: '700' }};
+    text-align: center;
+    box-shadow: {{ section.settings.badge_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+  }
+
+  .comparison-grid-{{ section.id }} {
+    gap: {{ section.settings.grid_gap | default: '24' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .comparison-grid-{{ section.id }} {
+      gap: {{ section.settings.grid_gap_md | default: '32' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .comparison-grid-{{ section.id }} {
+      gap: {{ section.settings.grid_gap_lg | default: '32' }}px;
+    }
+  }
+</style>
+
+<div id="comparison-{{ section.id }}" class="w-full max-w-7xl mx-auto" {{ section.shopify_attributes }}>
+  <div class="comparison-section-{{ section.id }} rounded-{{ section.settings.section_radius | default: '3xl' }} shadow-{{ section.settings.section_shadow | default: '2xl' }} p-{{ section.settings.section_padding_mobile | default: '6' }} sm:p-{{ section.settings.section_padding_sm | default: '8' }} lg:p-{{ section.settings.section_padding_lg | default: '12' }}">
+    
+    <!-- Section Header -->
+    <div class="text-center mb-{{ section.settings.header_margin | default: '8' }} sm:mb-{{ section.settings.header_margin_sm | default: '12' }}">
+      <h2 class="comparison-title-{{ section.id }} font-{{ section.settings.title_weight | default: '900' }} mb-{{ section.settings.title_margin | default: '4' }}">
+        {{ section.settings.main_title | default: 'REVOLUTIONIZE YOUR SKIN CARE ROUTINE' }}
+      </h2>
+      {% if section.settings.show_subtitle %}
+        <p class="comparison-subtitle-{{ section.id }} max-w-{{ section.settings.subtitle_width | default: '3xl' }} mx-auto">
+          {{ section.settings.main_subtitle | default: 'Experience professional-grade LED therapy at home versus traditional clinic treatments' }}
+        </p>
+      {% endif %}
     </div>
+
+    <!-- Three Cards Grid -->
+    <div class="comparison-grid-{{ section.id }} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ section.settings.columns | default: '3' }}">
+      
+      <!-- Card 1: Your LED Mask -->
+      {% if section.settings.show_card_1 %}
+        <div class="comparison-card-{{ section.id }} flex flex-col border-2">
+          
+          <!-- Icon -->
+          <div class="flex-shrink-0 mb-{{ section.settings.icon_wrapper_margin | default: '6' }} text-center">
+            <div class="comparison-icon-{{ section.id }} flex items-center justify-center mx-auto shadow-{{ section.settings.icon_shadow | default: 'lg' }}">
+              {% if section.settings.card_1_icon != blank %}
+                <img src="{{ section.settings.card_1_icon | image_url: width: 96, height: 96 }}" alt="" width="40" height="40" class="w-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }} h-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }}" loading="lazy">
+              {% else %}
+                <svg class="w-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }} h-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }}" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"></path>
+                </svg>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Title -->
+          <h3 class="comparison-card-title-{{ section.id }}">
+            {{ section.settings.card_1_title | default: 'LUMINA LED MASK' }}
+          </h3>
+          
+          <!-- Bullet Points -->
+          <ul class="space-y-{{ section.settings.bullet_spacing | default: '3' }} sm:space-y-{{ section.settings.bullet_spacing_sm | default: '4' }} mb-{{ section.settings.bullet_section_margin | default: '6' }} sm:mb-{{ section.settings.bullet_section_margin_sm | default: '8' }} flex-grow">
+            
+            {% for i in (1..section.settings.card_1_bullets) %}
+              {% assign bullet_text = 'card_1_bullet_' | append: i %}
+              {% if section.settings[bullet_text] != blank %}
+                <li class="flex items-start comparison-bullet-{{ section.id }}">
+                  <svg class="comparison-bullet-icon-{{ section.id }}" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>{{ section.settings[bullet_text] }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          
+          <!-- Badge -->
+          <div class="mt-auto">
+            <div class="comparison-badge-{{ section.id }}">
+              {{ section.settings.card_1_badge | default: 'SMART INVESTMENT' }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Card 2: Professional Clinic -->
+      {% if section.settings.show_card_2 %}
+        <div class="comparison-card-{{ section.id }} flex flex-col border-2 border-gray-200 relative overflow-hidden">
+          
+          <!-- Background Image (optional) -->
+          {% if section.settings.clinic_bg_image != blank %}
+            <div class="absolute inset-0 bg-cover bg-center opacity-{{ section.settings.clinic_bg_opacity | default: '5' }}" 
+                 style="background-image: url('{{ section.settings.clinic_bg_image | image_url: width: 800 }}');">
+            </div>
+          {% endif %}
+          
+          <div class="relative z-10">
+            <!-- Icon -->
+            <div class="flex-shrink-0 mb-{{ section.settings.icon_wrapper_margin | default: '6' }} text-center">
+              <div class="comparison-icon-{{ section.id }} flex items-center justify-center mx-auto shadow-{{ section.settings.icon_shadow | default: 'lg' }}" 
+                   style="background: linear-gradient(to right, {{ section.settings.card_2_icon_bg_start | default: '#6B7280' }}, {{ section.settings.card_2_icon_bg_end | default: '#374151' }});">
+                {% if section.settings.card_2_icon != blank %}
+                    <img src="{{ section.settings.card_2_icon | image_url: width: 96, height: 96 }}" alt="" width="40" height="40" class="w-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }} h-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }}" loading="lazy">
+                  {% else %}
+                  <svg class="w-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }} h-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }}" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
+                  </svg>
+                {% endif %}
+              </div>
+            </div>
+            
+            <!-- Title -->
+            <h3 class="comparison-card-title-{{ section.id }}">
+              {{ section.settings.card_2_title | default: 'CLINIC TREATMENTS' }}
+            </h3>
+            
+            <!-- Bullet Points (with X icons) -->
+            <ul class="space-y-{{ section.settings.bullet_spacing | default: '3' }} sm:space-y-{{ section.settings.bullet_spacing_sm | default: '4' }} mb-{{ section.settings.bullet_section_margin | default: '6' }} sm:mb-{{ section.settings.bullet_section_margin_sm | default: '8' }} flex-grow">
+              
+              {% for i in (1..section.settings.card_2_bullets) %}
+                {% assign bullet_text = 'card_2_bullet_' | append: i %}
+                {% if section.settings[bullet_text] != blank %}
+                  <li class="flex items-start comparison-bullet-{{ section.id }}">
+                    <svg class="comparison-bullet-icon-{{ section.id }}" style="color: {{ section.settings.card_2_bullet_color | default: '#EF4444' }};" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>{{ section.settings[bullet_text] }}</span>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            
+            <!-- Badge -->
+            <div class="mt-auto">
+              <div class="comparison-badge-{{ section.id }}" 
+                   style="background: linear-gradient(to right, {{ section.settings.card_2_badge_bg_start | default: '#6B7280' }}, {{ section.settings.card_2_badge_bg_end | default: '#374151' }});">
+                {{ section.settings.card_2_badge | default: 'COSTLY OPTION' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Card 3: Advanced Features -->
+      {% if section.settings.show_card_3 %}
+        <div class="comparison-card-{{ section.id }} flex flex-col border-2 border-blue-100">
+          
+          <!-- Icon -->
+          <div class="flex-shrink-0 mb-{{ section.settings.icon_wrapper_margin | default: '6' }} text-center">
+            <div class="comparison-icon-{{ section.id }} flex items-center justify-center mx-auto shadow-{{ section.settings.icon_shadow | default: 'lg' }}" 
+                 style="background: linear-gradient(to right, {{ section.settings.card_3_icon_bg_start | default: '#3B82F6' }}, {{ section.settings.card_3_icon_bg_end | default: '#A855F7' }});">
+              {% if section.settings.card_3_icon != blank %}
+                <img src="{{ section.settings.card_3_icon | image_url: width: 96, height: 96 }}" alt="" width="40" height="40" class="w-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }} h-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }}" loading="lazy">
+              {% else %}
+                <svg class="w-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }} h-{{ section.settings.icon_svg_size | divided_by: 4 | default: '10' }}" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                </svg>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Title -->
+          <h3 class="comparison-card-title-{{ section.id }}">
+            {{ section.settings.card_3_title | default: 'ADVANCED FEATURES' }}
+          </h3>
+          
+          <!-- Bullet Points -->
+          <ul class="space-y-{{ section.settings.bullet_spacing | default: '3' }} sm:space-y-{{ section.settings.bullet_spacing_sm | default: '4' }} mb-{{ section.settings.bullet_section_margin | default: '6' }} sm:mb-{{ section.settings.bullet_section_margin_sm | default: '8' }} flex-grow">
+            
+            {% for i in (1..section.settings.card_3_bullets) %}
+              {% assign bullet_text = 'card_3_bullet_' | append: i %}
+              {% if section.settings[bullet_text] != blank %}
+                <li class="flex items-start comparison-bullet-{{ section.id }}">
+                  <svg class="comparison-bullet-icon-{{ section.id }}" style="color: {{ section.settings.card_3_bullet_color | default: '#3B82F6' }};" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span>{{ section.settings[bullet_text] }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          
+          <!-- Badge -->
+          <div class="mt-auto">
+            <div class="comparison-badge-{{ section.id }}" 
+                 style="background: linear-gradient(to right, {{ section.settings.card_3_badge_bg_start | default: '#3B82F6' }}, {{ section.settings.card_3_badge_bg_end | default: '#A855F7' }});">
+              {{ section.settings.card_3_badge | default: 'CUTTING-EDGE' }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 {% schema %}
@@ -163,7 +318,200 @@
   "settings": [
     {
       "type": "header",
-      "content": "Main Title"
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Number of columns",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap (mobile)",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_md",
+      "label": "Grid gap (tablet)",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_lg",
+      "label": "Grid gap (desktop)",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_mobile",
+      "label": "Section padding (mobile)",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_sm",
+      "label": "Section padding (tablet)",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_lg",
+      "label": "Section padding (desktop)",
+      "min": 8,
+      "max": 16,
+      "step": 2,
+      "default": 12,
+      "unit": "p"
+    },
+    {
+      "type": "select",
+      "id": "section_radius",
+      "label": "Section border radius",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "section_shadow",
+      "label": "Section shadow",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "2xl"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_start",
+      "label": "Background gradient start",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_end",
+      "label": "Background gradient end",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border color",
+      "default": "#FEE2E2"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Card border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_start",
+      "label": "Icon gradient start",
+      "default": "#F43F5E"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_end",
+      "label": "Icon gradient end",
+      "default": "#EC4899"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "bullet_color",
+      "label": "Bullet icon color",
+      "default": "#F43F5E"
+    },
+    {
+      "type": "color",
+      "id": "bullet_text_color",
+      "label": "Bullet text color",
+      "default": "#374151"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_start",
+      "label": "Badge gradient start",
+      "default": "#F43F5E"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_end",
+      "label": "Badge gradient end",
+      "default": "#EC4899"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Badge text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Section Header"
     },
     {
       "type": "text",
@@ -172,20 +520,426 @@
       "default": "REVOLUTIONIZE YOUR SKIN CARE ROUTINE"
     },
     {
+      "type": "select",
+      "id": "title_size_mobile",
+      "label": "Title size (mobile)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_sm",
+      "label": "Title size (tablet)",
+      "options": [
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" }
+      ],
+      "default": "4xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_lg",
+      "label": "Title size (desktop)",
+      "options": [
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" },
+        { "value": "6xl", "label": "6XL" }
+      ],
+      "default": "5xl"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "900"
+    },
+    {
+      "type": "range",
+      "id": "title_leading",
+      "label": "Title line height",
+      "min": 1,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle",
+      "label": "Show subtitle",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "main_subtitle",
       "label": "Main Subtitle",
       "default": "Experience professional-grade LED therapy at home versus traditional clinic treatments"
     },
     {
+      "type": "select",
+      "id": "subtitle_size_mobile",
+      "label": "Subtitle size (mobile)",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_size_sm",
+      "label": "Subtitle size (desktop)",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "subtitle_width",
+      "label": "Subtitle max width",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" },
+        { "value": "5xl", "label": "5XL" },
+        { "value": "6xl", "label": "6XL" },
+        { "value": "7xl", "label": "7XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "range",
+      "id": "header_margin",
+      "label": "Header bottom margin (mobile)",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "header_margin_sm",
+      "label": "Header bottom margin (desktop)",
+      "min": 8,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Card border radius",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" },
+        { "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)", "label": "2XL" }
+      ],
+      "default": "0 20px 25px -5px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "card_transition",
+      "label": "Card hover transition",
+      "min": 200,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "card_hover_offset",
+      "label": "Card hover lift",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon container size",
+      "min": 64,
+      "max": 128,
+      "step": 4,
+      "default": 96,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_svg_size",
+      "label": "Icon SVG size",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_radius",
+      "label": "Icon border radius",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_margin",
+      "label": "Icon bottom margin",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_wrapper_margin",
+      "label": "Icon wrapper bottom margin",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "icon_shadow",
+      "label": "Icon shadow",
+      "options": [
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "header",
+      "content": "Bullet Point Settings"
+    },
+    {
+      "type": "range",
+      "id": "bullet_size",
+      "label": "Bullet text size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "bullet_spacing",
+      "label": "Bullet spacing (mobile)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "bullet_spacing_sm",
+      "label": "Bullet spacing (desktop)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "bullet_icon_size",
+      "label": "Bullet icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "bullet_icon_spacing",
+      "label": "Bullet icon right spacing",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "bullet_section_margin",
+      "label": "Bullet section bottom margin (mobile)",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "bullet_section_margin_sm",
+      "label": "Bullet section bottom margin (desktop)",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Badge Settings"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_x",
+      "label": "Badge horizontal padding",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_y",
+      "label": "Badge vertical padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "badge_size",
+      "label": "Badge font size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "badge_weight",
+      "label": "Badge font weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "badge_radius",
+      "label": "Badge border radius",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "badge_shadow",
+      "label": "Badge shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
       "type": "header",
       "content": "Card 1: LED Mask"
     },
     {
+      "type": "checkbox",
+      "id": "show_card_1",
+      "label": "Show Card 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "card_1_icon",
+      "label": "Card 1 Icon"
+    },
+    {
       "type": "text",
       "id": "card_1_title",
-      "label": "Title",
+      "label": "Card 1 Title",
       "default": "LUMINA LED MASK"
+    },
+    {
+      "type": "range",
+      "id": "card_1_bullets",
+      "label": "Number of bullet points",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
     },
     {
       "type": "textarea",
@@ -222,16 +976,64 @@
       "content": "Card 2: Clinic Treatments"
     },
     {
+      "type": "checkbox",
+      "id": "show_card_2",
+      "label": "Show Card 2",
+      "default": true
+    },
+    {
       "type": "image_picker",
       "id": "clinic_bg_image",
       "label": "Background Image",
       "info": "Optional background image for clinic card"
     },
     {
+      "type": "range",
+      "id": "clinic_bg_opacity",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 5,
+      "unit": "%"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_2_icon",
+      "label": "Card 2 Icon"
+    },
+    {
+      "type": "color",
+      "id": "card_2_icon_bg_start",
+      "label": "Icon gradient start",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "card_2_icon_bg_end",
+      "label": "Icon gradient end",
+      "default": "#374151"
+    },
+    {
       "type": "text",
       "id": "card_2_title",
-      "label": "Title",
+      "label": "Card 2 Title",
       "default": "CLINIC TREATMENTS"
+    },
+    {
+      "type": "range",
+      "id": "card_2_bullets",
+      "label": "Number of bullet points",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "card_2_bullet_color",
+      "label": "Bullet icon color",
+      "default": "#EF4444"
     },
     {
       "type": "textarea",
@@ -264,14 +1066,64 @@
       "default": "COSTLY OPTION"
     },
     {
+      "type": "color",
+      "id": "card_2_badge_bg_start",
+      "label": "Badge gradient start",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "card_2_badge_bg_end",
+      "label": "Badge gradient end",
+      "default": "#374151"
+    },
+    {
       "type": "header",
       "content": "Card 3: Advanced Features"
     },
     {
+      "type": "checkbox",
+      "id": "show_card_3",
+      "label": "Show Card 3",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "card_3_icon",
+      "label": "Card 3 Icon"
+    },
+    {
+      "type": "color",
+      "id": "card_3_icon_bg_start",
+      "label": "Icon gradient start",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "color",
+      "id": "card_3_icon_bg_end",
+      "label": "Icon gradient end",
+      "default": "#A855F7"
+    },
+    {
       "type": "text",
       "id": "card_3_title",
-      "label": "Title",
+      "label": "Card 3 Title",
       "default": "ADVANCED FEATURES"
+    },
+    {
+      "type": "range",
+      "id": "card_3_bullets",
+      "label": "Number of bullet points",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "card_3_bullet_color",
+      "label": "Bullet icon color",
+      "default": "#3B82F6"
     },
     {
       "type": "textarea",
@@ -302,6 +1154,53 @@
       "id": "card_3_badge",
       "label": "Badge Text",
       "default": "CUTTING-EDGE"
+    },
+    {
+      "type": "color",
+      "id": "card_3_badge_bg_start",
+      "label": "Badge gradient start",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "color",
+      "id": "card_3_badge_bg_end",
+      "label": "Badge gradient end",
+      "default": "#A855F7"
+    },
+    {
+      "type": "header",
+      "content": "Card Titles (Global)"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Card title size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_title_weight",
+      "label": "Card title weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "900"
+    },
+    {
+      "type": "range",
+      "id": "card_title_margin",
+      "label": "Card title bottom margin",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
     }
   ],
   "presets": [

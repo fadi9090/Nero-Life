@@ -1,40 +1,565 @@
-<!-- Product Reviews -->
-<div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100">
-    <h2 class="text-2xl font-bold mb-6 text-gray-800">Verified Customer Stories</h2>
+{% comment %}
+  Product Reviews - Customer testimonials with star ratings
+  Fully customizable
+{% endcomment %}
 
-    <div class="grid md:grid-cols-2 gap-6">
+<style>
+  #product-reviews-{{ section.id }} {
+    --reviews-bg: {{ section.settings.reviews_bg | default: '#FFFFFF' }};
+    --reviews-border: {{ section.settings.reviews_border | default: '#F3F4F6' }};
+    --reviews-shadow: {{ section.settings.reviews_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --reviews-radius: {{ section.settings.reviews_radius | default: '12' }}px;
+    --reviews-padding: {{ section.settings.reviews_padding | default: '32' }}px;
+    --title-color: {{ section.settings.title_color | default: '#1F2937' }};
+    --title-size: {{ section.settings.title_size | default: '24' }}px;
+    --card-bg: {{ section.settings.card_bg | default: '#F9FAFB' }};
+    --card-border: {{ section.settings.card_border | default: '#E5E7EB' }};
+    --card-shadow: {{ section.settings.card_shadow | default: '0 1px 2px 0 rgb(0 0 0 / 0.05)' }};
+    --card-radius: {{ section.settings.card_radius | default: '8' }}px;
+    --card-padding: {{ section.settings.card_padding | default: '24' }}px;
+    --star-color: {{ section.settings.star_color | default: '#FBBF24' }};
+    --star-empty-color: {{ section.settings.star_empty_color | default: '#D1D5DB' }};
+    --quote-color: {{ section.settings.quote_color | default: '#4B5563' }};
+    --author-color: {{ section.settings.author_color | default: '#1F2937' }};
+    --note-color: {{ section.settings.note_color | default: '#6B7280' }};
+  }
 
-        <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-200">
-            <div class="flex items-center mb-3 text-yellow-500">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-            </div>
-            <blockquote class="text-gray-700 italic">
-                "Excellent supplier communication and service. The 7-color LED Mask shipment arrived promptly and exactly as described. Very satisfied with the quality of the product."
-            </blockquote>
-            <p class="mt-4 text-sm font-semibold text-gray-800">- Verified Buyer (Source: Alibaba B2B Review)</p>
+  .reviews-section-{{ section.id }} {
+    background-color: var(--reviews-bg);
+    border-radius: var(--reviews-radius);
+    padding: var(--reviews-padding);
+    box-shadow: var(--reviews-shadow);
+    border: 1px solid var(--reviews-border);
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  .reviews-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '700' }};
+    margin-bottom: {{ section.settings.title_margin | default: '24' }}px;
+  }
+
+  .reviews-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.grid_gap | default: '24' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .reviews-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.columns | default: '2' }}, 1fr);
+    }
+  }
+
+  .review-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+  }
+
+  .review-stars-{{ section.id }} {
+    display: flex;
+    gap: {{ section.settings.star_gap | default: '2' }}px;
+    margin-bottom: {{ section.settings.star_margin | default: '12' }}px;
+  }
+
+  .review-quote-{{ section.id }} {
+    color: var(--quote-color);
+    font-size: {{ section.settings.quote_size | default: '16' }}px;
+    line-height: {{ section.settings.quote_line_height | default: '1.6' }};
+    font-style: {{ section.settings.quote_style | default: 'italic' }};
+    margin-bottom: {{ section.settings.quote_margin | default: '16' }}px;
+  }
+
+  .review-author-{{ section.id }} {
+    color: var(--author-color);
+    font-size: {{ section.settings.author_size | default: '14' }}px;
+    font-weight: {{ section.settings.author_weight | default: '600' }};
+  }
+
+  .reviews-note-{{ section.id }} {
+    color: var(--note-color);
+    font-size: {{ section.settings.note_size | default: '14' }}px;
+    text-align: center;
+    margin-top: {{ section.settings.note_margin | default: '32' }}px;
+    padding-top: {{ section.settings.note_padding | default: '16' }}px;
+    border-top: 1px solid var(--card-border);
+  }
+</style>
+
+<div id="product-reviews-{{ section.id }}" class="reviews-section-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Title -->
+  <h2 class="reviews-title-{{ section.id }}">
+    {{ section.settings.title | default: 'Verified Customer Stories' }}
+  </h2>
+
+  <!-- Reviews Grid -->
+  <div class="reviews-grid-{{ section.id }}">
+    {% for i in (1..section.settings.review_count) %}
+      {% assign review_rating = 'review_' | append: i | append: '_rating' %}
+      {% assign review_text = 'review_' | append: i | append: '_text' %}
+      {% assign review_author = 'review_' | append: i | append: '_author' %}
+      
+      {% if section.settings[review_text] != blank %}
+        <div class="review-card-{{ section.id }}">
+          <!-- Star Rating -->
+          <div class="review-stars-{{ section.id }}">
+            {% assign rating = section.settings[review_rating] | default: 5 %}
+            {% for star in (1..5) %}
+              {% if star <= rating %}
+                {% render 'icon-star', size: section.settings.star_size | default: 5, color: section.settings.star_color, filled: true %}
+              {% else %}
+                {% render 'icon-star', size: section.settings.star_size | default: 5, color: section.settings.star_empty_color, filled: false %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <!-- Review Text -->
+          <blockquote class="review-quote-{{ section.id }}">
+            "{{ section.settings[review_text] }}"
+          </blockquote>
+
+          <!-- Author -->
+          <p class="review-author-{{ section.id }}">
+            - {{ section.settings[review_author] }}
+          </p>
         </div>
+      {% endif %}
+    {% endfor %}
+  </div>
 
-        <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-200">
-            <div class="flex items-center mb-3 text-yellow-500">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-                <svg class="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.121-6.545L.487 7.21l6.56-.955L10 0l2.953 6.255 6.56.955-4.756 4.335 1.121 6.545z"/></svg>
-            </div>
-            <blockquote class="text-gray-700 italic">
-                "High quality material, not cheap plastic. The neck piece is a game changer for me. Setup was simple and the controls are intuitive. Great value for the price!"
-            </blockquote>
-            <p class="mt-4 text-sm font-semibold text-gray-800">- David L. (Source: Verified Purchase)</p>
-        </div>
-
-    </div>
-
-    <p class="mt-8 text-center text-sm text-gray-500">
-        Note: For official, real-time reviews, we recommend implementing a dedicated e-commerce review application.
+  <!-- Note -->
+  {% if section.settings.show_note %}
+    <p class="reviews-note-{{ section.id }}">
+      {{ section.settings.note_text | default: 'Note: For official, real-time reviews, we recommend implementing a dedicated e-commerce review application.' }}
     </p>
+  {% endif %}
 </div>
+
+{% schema %}
+{
+  "name": "Product Reviews",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "reviews_bg",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "reviews_border",
+      "label": "Section border",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "range",
+      "id": "reviews_padding",
+      "label": "Section padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "reviews_radius",
+      "label": "Section radius",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "reviews_shadow",
+      "label": "Section shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between cards",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Verified Customer Stories"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card radius",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" }
+      ],
+      "default": "0 1px 2px 0 rgb(0 0 0 / 0.05)"
+    },
+    {
+      "type": "header",
+      "content": "Star Settings"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Filled star color",
+      "default": "#FBBF24"
+    },
+    {
+      "type": "color",
+      "id": "star_empty_color",
+      "label": "Empty star color",
+      "default": "#D1D5DB"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "label": "Star size",
+      "min": 4,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "info": "Tailwind size scale (4=16px, 5=20px, 6=24px)"
+    },
+    {
+      "type": "range",
+      "id": "star_gap",
+      "label": "Gap between stars",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "star_margin",
+      "label": "Stars bottom margin",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Review Text Settings"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quote_line_height",
+      "label": "Quote line height",
+      "min": 1.4,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "select",
+      "id": "quote_style",
+      "label": "Quote style",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "italic", "label": "Italic" }
+      ],
+      "default": "italic"
+    },
+    {
+      "type": "range",
+      "id": "quote_margin",
+      "label": "Quote bottom margin",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Author Settings"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Author color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "range",
+      "id": "author_size",
+      "label": "Author size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "author_weight",
+      "label": "Author weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "range",
+      "id": "review_count",
+      "label": "Number of reviews",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Review 1"
+    },
+    {
+      "type": "range",
+      "id": "review_1_rating",
+      "label": "Rating (1-5)",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "textarea",
+      "id": "review_1_text",
+      "label": "Review text",
+      "default": "Excellent supplier communication and service. The 7-color LED Mask shipment arrived promptly and exactly as described. Very satisfied with the quality of the product."
+    },
+    {
+      "type": "text",
+      "id": "review_1_author",
+      "label": "Author",
+      "default": "Verified Buyer (Source: Alibaba B2B Review)"
+    },
+    {
+      "type": "header",
+      "content": "Review 2"
+    },
+    {
+      "type": "range",
+      "id": "review_2_rating",
+      "label": "Rating (1-5)",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "textarea",
+      "id": "review_2_text",
+      "label": "Review text",
+      "default": "High quality material, not cheap plastic. The neck piece is a game changer for me. Setup was simple and the controls are intuitive. Great value for the price!"
+    },
+    {
+      "type": "text",
+      "id": "review_2_author",
+      "label": "Author",
+      "default": "David L. (Source: Verified Purchase)"
+    },
+    {
+      "type": "header",
+      "content": "Footer Note"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show footer note",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "note_text",
+      "label": "Note text",
+      "default": "Note: For official, real-time reviews, we recommend implementing a dedicated e-commerce review application."
+    },
+    {
+      "type": "color",
+      "id": "note_color",
+      "label": "Note color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "range",
+      "id": "note_size",
+      "label": "Note size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "note_margin",
+      "label": "Note top margin",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "note_padding",
+      "label": "Note top padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Reviews"
+    }
+  ]
+}
+{% endschema %}

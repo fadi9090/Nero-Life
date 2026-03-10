@@ -1,3 +1,8 @@
+{% comment %}
+  Homepage Template
+  All sections are fully customizable through the theme editor
+{% endcomment %}
+
 {% comment %} Load discount configuration for Alpine.js data {% endcomment %}
 {% render 'discount' %}
 
@@ -9,7 +14,8 @@
       bulk: {{ bulk_discount | default: 40 }}
     }
   }"
-  class="w-full max-w-7xl mx-auto space-y-8"
+  class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-{{ section.settings.section_spacing | default: '8' }}"
+  style="max-width: {{ section.settings.container_width | default: '1400' }}px;"
 >
   {% section 'hero-led-mask' %}
   {% section 'product-led-mask' %}
@@ -32,3 +38,35 @@
     }));
   });
 </script>
+
+{% schema %}
+{
+  "name": "Homepage",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 1200,
+      "max": 1600,
+      "step": 50,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Space between sections",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "space"
+    }
+  ]
+}
+{% endschema %}

@@ -1,49 +1,664 @@
-<!-- Product Features -->
-<div class="flex flex-col lg:flex-row items-center justify-center py-6 gap-8 lg:gap-12 p-8 lg:p-12 bg-gray-50 rounded-xl shadow-sm mx-auto max-w-7xl mt-6">
-    <div class="w-full lg:w-1/2 flex justify-center lg:justify-start order-1 lg:order-1">
-        <img
-            src="{{ 'skin-effact.png' | asset_url }}"
-            alt="LED Facial and Neck Mask showing skin rejuvenation benefits"
-            width="500"
-            height="400"
-            loading="lazy"
-            class="w-full max-w-[500px] h-auto rounded-lg shadow-md"
-        >
+{% comment %}
+  Product Features - Side by side layout with image
+  Fully customizable
+{% endcomment %}
+
+<style>
+  #product-features-{{ section.id }} {
+    --features-bg: {{ section.settings.features_bg | default: '#F9FAFB' }};
+    --features-radius: {{ section.settings.features_radius | default: '12' }}px;
+    --features-padding: {{ section.settings.features_padding | default: '48' }}px;
+    --title-color: {{ section.settings.title_color | default: '#1F2937' }};
+    --title-size: {{ section.settings.title_size | default: '24' }}px;
+    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --check-bg: {{ section.settings.check_bg | default: '#2563EB' }};
+    --check-color: {{ section.settings.check_color | default: '#FFFFFF' }};
+    --heading-color: {{ section.settings.heading_color | default: '#374151' }};
+    --heading-size: {{ section.settings.heading_size | default: '16' }}px;
+    --desc-size: {{ section.settings.desc_size | default: '14' }}px;
+    --icon-size: {{ section.settings.icon_size | default: '20' }}px;
+  }
+
+  .features-section-{{ section.id }} {
+    background-color: var(--features-bg);
+    border-radius: var(--features-radius);
+    padding: var(--features-padding);
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  .features-container-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: {{ section.settings.container_gap | default: '32' }}px;
+  }
+
+  @media (min-width: 1024px) {
+    .features-container-{{ section.id }} {
+      flex-direction: row;
+      gap: {{ section.settings.container_gap_lg | default: '48' }}px;
+    }
+  }
+
+  .features-image-{{ section.id }} {
+    width: 100%;
+    max-width: {{ section.settings.image_max_width | default: '500' }}px;
+    display: flex;
+    justify-content: {% if section.settings.image_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    order: {{ section.settings.image_order | default: '1' }};
+  }
+
+  @media (min-width: 1024px) {
+    .features-image-{{ section.id }} {
+      width: 50%;
+    }
+  }
+
+  .features-image-{{ section.id }} img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: {{ section.settings.image_radius | default: '8' }}px;
+    box-shadow: {{ section.settings.image_shadow | default: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }};
+  }
+
+  .features-content-{{ section.id }} {
+    width: 100%;
+    max-width: {{ section.settings.content_max_width | default: '500' }}px;
+    order: {{ section.settings.content_order | default: '2' }};
+  }
+
+  @media (min-width: 1024px) {
+    .features-content-{{ section.id }} {
+      width: 50%;
+    }
+  }
+
+  .features-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '600' }};
+    margin-bottom: {{ section.settings.title_margin | default: '24' }}px;
+    text-align: {{ section.settings.title_align | default: 'left' }};
+    line-height: {{ section.settings.title_line_height | default: '1.2' }};
+  }
+
+  .features-list-{{ section.id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .feature-item-{{ section.id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: {{ section.settings.item_gap | default: '12' }}px;
+    margin-bottom: {{ section.settings.item_spacing | default: '16' }}px;
+  }
+
+  .feature-check-{{ section.id }} {
+    flex-shrink: 0;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    background-color: var(--check-bg);
+    color: var(--check-color);
+    border-radius: {{ section.settings.check_radius | default: '9999' }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: {{ section.settings.check_weight | default: '700' }};
+    font-size: {{ section.settings.check_font_size | default: '12' }}px;
+    margin-top: 2px;
+  }
+
+  .feature-text-{{ section.id }} {
+    flex: 1;
+  }
+
+  .feature-heading-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: var(--heading-size);
+    font-weight: {{ section.settings.heading_weight | default: '500' }};
+    margin-bottom: {{ section.settings.heading_margin | default: '4' }}px;
+  }
+
+  .feature-description-{{ section.id }} {
+    color: var(--text-color);
+    font-size: var(--desc-size);
+    line-height: {{ section.settings.desc_line_height | default: '1.5' }};
+  }
+</style>
+
+<div id="product-features-{{ section.id }}" class="features-section-{{ section.id }}" {{ section.shopify_attributes }}>
+  <div class="features-container-{{ section.id }}">
+    <!-- Image Side -->
+    <div class="features-image-{{ section.id }}">
+      {% if section.settings.feature_image != blank %}
+        <img src="{{ section.settings.feature_image | image_url: width: 800 }}"
+             alt="{{ section.settings.image_alt | default: 'LED Facial and Neck Mask showing skin rejuvenation benefits' }}"
+             width="{{ section.settings.image_width | default: '500' }}"
+             height="{{ section.settings.image_height | default: '400' }}"
+             loading="lazy">
+      {% else %}
+        <img src="{{ 'assets/skin-effect.png' | asset_url }}"
+             alt="LED Facial and Neck Mask"
+             width="500"
+             height="400"
+             loading="lazy">
+      {% endif %}
     </div>
 
-    <div class="w-full lg:w-1/2 flex-grow max-w-[500px] order-2 lg:order-2">
-        <h2 class="font-sans text-2xl lg:text-2xl font-semibold text-gray-800 mb-6 leading-tight text-center lg:text-left">
-            Professional-Grade LED Therapy At Home
-        </h2>
-        <ul class="list-none p-0 m-0">
-            <li class="mb-4 flex items-start">
-                <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-600 rounded-full text-white font-bold text-xs mr-3 flex-shrink-0 mt-0.5">✓</span>
-                <div>
-                    <strong class="font-sans text-base font-medium text-gray-700 block">Immediate Radiance Enhancement</strong>
-                    <p class="font-sans text-sm text-gray-600 mt-1">Achieve a vibrant, youthful complexion with consistent daily treatments.</p>
-                </div>
+    <!-- Content Side -->
+    <div class="features-content-{{ section.id }}">
+      <h2 class="features-title-{{ section.id }}">
+        {{ section.settings.title | default: 'Professional-Grade LED Therapy At Home' }}
+      </h2>
+
+      <ul class="features-list-{{ section.id }}">
+        {% for i in (1..section.settings.feature_count) %}
+          {% assign feature_heading = 'feature_heading_' | append: i %}
+          {% assign feature_desc = 'feature_desc_' | append: i %}
+          
+          {% if section.settings[feature_heading] != blank %}
+            <li class="feature-item-{{ section.id }}">
+              <span class="feature-check-{{ section.id }}">
+                {% if section.settings.check_style == 'icon' %}
+                  {% render 'icon-check', size: 3, color: '#FFFFFF' %}
+                {% else %}
+                  ✓
+                {% endif %}
+              </span>
+              <div class="feature-text-{{ section.id }}">
+                <h3 class="feature-heading-{{ section.id }}">
+                  {{ section.settings[feature_heading] }}
+                </h3>
+                <p class="feature-description-{{ section.id }}">
+                  {{ section.settings[feature_desc] }}
+                </p>
+              </div>
             </li>
-            <li class="mb-4 flex items-start">
-                <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-600 rounded-full text-white font-bold text-xs mr-3 flex-shrink-0 mt-0.5">✓</span>
-                <div>
-                    <strong class="font-sans text-base font-medium text-gray-700 block">Deep Cellular Regeneration</strong>
-                    <p class="font-sans text-sm text-gray-600 mt-1">Our advanced LED technology works at the cellular level to renew and fortify both facial and neck skin.</p>
-                </div>
-            </li>
-            <li class="mb-4 flex items-start">
-                <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-600 rounded-full text-white font-bold text-xs mr-3 flex-shrink-0 mt-0.5">✓</span>
-                <div>
-                    <strong class="font-sans text-base font-medium text-gray-700 block">Natural Collagen Activation</strong>
-                    <p class="font-sans text-sm text-gray-600 mt-1">Stimulate your skin's collagen production for lasting firmness and elasticity.</p>
-                </div>
-            </li>
-            <li class="flex items-start">
-                <span class="inline-flex items-center justify-center w-5 h-5 bg-blue-600 rounded-full text-white font-bold text-xs mr-3 flex-shrink-0 mt-0.5">✓</span>
-                <div>
-                    <strong class="font-sans text-base font-medium text-gray-700 block">Gentle Yet Effective Treatment</strong>
-                    <p class="font-sans text-sm text-gray-600 mt-1">Suitable for all skin types, including sensitive skin, with zero downtime or irritation.</p>
-                </div>
-            </li>
-        </ul>
+          {% endif %}
+        {% endfor %}
+      </ul>
     </div>
+  </div>
 </div>
+
+{% schema %}
+{
+  "name": "Product Features",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "features_bg",
+      "label": "Background color",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "range",
+      "id": "features_padding",
+      "label": "Section padding",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "features_radius",
+      "label": "Section radius",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_gap",
+      "label": "Gap on mobile",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_gap_lg",
+      "label": "Gap on desktop",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_image",
+      "label": "Feature image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "LED Facial and Neck Mask showing skin rejuvenation benefits"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "default": 500,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image height",
+      "min": 200,
+      "max": 600,
+      "step": 50,
+      "default": 400,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_max_width",
+      "label": "Image max width",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "default": 500,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "image_shadow",
+      "label": "Image shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 4px 6px -1px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "select",
+      "id": "image_alignment",
+      "label": "Image alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "image_order",
+      "label": "Image order",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 300,
+      "max": 700,
+      "step": 50,
+      "default": 500,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_order",
+      "label": "Content order",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Professional-Grade LED Therapy At Home"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "title_align",
+      "label": "Title alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_line_height",
+      "label": "Title line height",
+      "min": 1,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "header",
+      "content": "Checkmark Settings"
+    },
+    {
+      "type": "color",
+      "id": "check_bg",
+      "label": "Checkmark background",
+      "default": "#2563EB"
+    },
+    {
+      "type": "color",
+      "id": "check_color",
+      "label": "Checkmark color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Checkmark size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "check_radius",
+      "label": "Checkmark radius",
+      "min": 0,
+      "max": 9999,
+      "step": 2,
+      "default": 9999,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "check_font_size",
+      "label": "Checkmark font size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "check_weight",
+      "label": "Checkmark weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "check_style",
+      "label": "Checkmark style",
+      "options": [
+        { "value": "text", "label": "Text (✓)" },
+        { "value": "icon", "label": "Icon" }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "header",
+      "content": "Feature Items"
+    },
+    {
+      "type": "range",
+      "id": "feature_count",
+      "label": "Number of features",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Gap between icon and text",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Space between items",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "text",
+      "id": "feature_heading_1",
+      "label": "Heading",
+      "default": "Immediate Radiance Enhancement"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_desc_1",
+      "label": "Description",
+      "default": "Achieve a vibrant, youthful complexion with consistent daily treatments."
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "text",
+      "id": "feature_heading_2",
+      "label": "Heading",
+      "default": "Deep Cellular Regeneration"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_desc_2",
+      "label": "Description",
+      "default": "Our advanced LED technology works at the cellular level to renew and fortify both facial and neck skin."
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "text",
+      "id": "feature_heading_3",
+      "label": "Heading",
+      "default": "Natural Collagen Activation"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_desc_3",
+      "label": "Description",
+      "default": "Stimulate your skin's collagen production for lasting firmness and elasticity."
+    },
+    {
+      "type": "header",
+      "content": "Feature 4"
+    },
+    {
+      "type": "text",
+      "id": "feature_heading_4",
+      "label": "Heading",
+      "default": "Gentle Yet Effective Treatment"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_desc_4",
+      "label": "Description",
+      "default": "Suitable for all skin types, including sensitive skin, with zero downtime or irritation."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Feature heading color",
+      "default": "#374151"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Heading bottom margin",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Description color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "range",
+      "id": "desc_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "desc_line_height",
+      "label": "Description line height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Features"
+    }
+  ]
+}
+{% endschema %}

@@ -6,5 +6,70 @@
     "theme_author": "Shopify",
     "theme_documentation_url": "https://github.com/Shopify/themekit",
     "theme_support_url": "https://github.com/Shopify/themekit/issues"
+  },
+  {
+    "name": "Icons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Icon Settings"
+      },
+      {
+        "type": "color",
+        "id": "icon_primary_color",
+        "label": "Primary Icon Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "icon_secondary_color",
+        "label": "Secondary Icon Color",
+        "default": "#FA8072"
+      },
+      {
+        "type": "color",
+        "id": "icon_accent_color",
+        "label": "Accent Icon Color",
+        "default": "#0077B6"
+      },
+      {
+        "type": "range",
+        "id": "icon_default_size",
+        "label": "Default Icon Size",
+        "min": 4,
+        "max": 10,
+        "step": 1,
+        "default": 6,
+        "info": "Size in Tailwind scale (4=16px, 6=24px, 8=32px)"
+      },
+      {
+        "type": "range",
+        "id": "icon_stroke_width",
+        "label": "Default Stroke Width",
+        "min": 1,
+        "max": 3,
+        "step": 0.5,
+        "default": 1.5
+      },
+      {
+        "type": "header",
+        "content": "Social Media Icons"
+      },
+      {
+        "type": "color",
+        "id": "social_icon_color",
+        "label": "Social Icons Color",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "id": "social_icon_size",
+        "label": "Social Icons Size",
+        "min": 4,
+        "max": 8,
+        "step": 1,
+        "default": 6
+      }
+    ]
   }
 ]

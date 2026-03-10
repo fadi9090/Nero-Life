@@ -1,50 +1,590 @@
-<!-- Product Description -->
-<div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100">
-    <h2 class="text-2xl font-bold mb-4 text-gray-800">Product Description</h2>
-    <div class="text-base leading-relaxed text-gray-600">
-        <p class="mb-4">
-            Bring professional skincare technology into your home with the <span class="font-semibold text-gray-800 bg-blue-50 px-1 rounded">14™ Silicone Face & Neck Photon Rejuvenation Mask</span>.
-        </p>
-        <p class="mb-6">
-            Designed with ultra-soft, skin-friendly silicone, this mask fits tightly to the contours of your face and neck — ensuring deep light absorption with minimal light leakage. Its flexible, bendable structure makes it comfortable to wear while sitting, lying down, or moving around.
-        </p>
+{% comment %}
+  Product Description - Fully customizable with icons
+{% endcomment %}
 
-        <div class="bg-blue-50 p-5 rounded-lg mb-6">
-            <h3 class="text-lg font-semibold mb-3 text-gray-800 flex items-center">
-                <svg class="w-5 h-5 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                Key Features
-            </h3>
-            <ul class="space-y-3">
-                <li class="flex items-start">
-                    <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span><span class="font-medium text-gray-800">Full Coverage:</span> Targeted light therapy across both the face and neck.</span>
-                </li>
-                <li class="flex items-start">
-                    <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span><span class="font-medium text-gray-800">Lightweight & Thin:</span> Lightweight 0.2 kg design and only 0.3 cm thickness for comfort.</span>
-                </li>
-                <li class="flex items-start">
-                    <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span><span class="font-medium text-gray-800">Deep Absorption:</span> Soft silicone ensures a tight fit for maximum light effectiveness.</span>
-                </li>
-                <li class="flex items-start">
-                    <svg class="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span><span class="font-medium text-gray-800">Secure Fit:</span> Features an adjustable strap system for a perfect and secure fit for all face shapes.</span>
-                </li>
-            </ul>
-        </div>
-        <p class="mt-4 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
-            Whether you're looking to brighten your complexion, reduce the appearance of fine lines, or support healthier, firmer skin, the 14™ mask delivers consistent, targeted light therapy.
-        </p>
+<style>
+  #product-desc-{{ section.id }} {
+    --desc-bg: {{ section.settings.desc_bg | default: '#FFFFFF' }};
+    --desc-border: {{ section.settings.desc_border | default: '#F3F4F6' }};
+    --desc-shadow: {{ section.settings.desc_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --desc-radius: {{ section.settings.desc_radius | default: '12' }}px;
+    --desc-padding: {{ section.settings.desc_padding | default: '32' }}px;
+    --title-color: {{ section.settings.title_color | default: '#1F2937' }};
+    --title-size: {{ section.settings.title_size | default: '24' }}px;
+    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --text-size: {{ section.settings.text_size | default: '16' }}px;
+    --accent-bg: {{ section.settings.accent_bg | default: '#EFF6FF' }};
+    --accent-border: {{ section.settings.accent_border | default: '#3B82F6' }};
+    --feature-color: {{ section.settings.feature_color | default: '#10B981' }};
+    --highlight-color: {{ section.settings.highlight_color | default: '#1F2937' }};
+  }
+
+  .desc-section-{{ section.id }} {
+    background-color: var(--desc-bg);
+    border-radius: var(--desc-radius);
+    padding: var(--desc-padding);
+    box-shadow: var(--desc-shadow);
+    border: 1px solid var(--desc-border);
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  .desc-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '700' }};
+    margin-bottom: {{ section.settings.title_margin | default: '16' }}px;
+  }
+
+  .desc-text-{{ section.id }} {
+    color: var(--text-color);
+    font-size: var(--text-size);
+    line-height: {{ section.settings.text_line_height | default: '1.625' }};
+  }
+
+  .desc-text-{{ section.id }} p {
+    margin-bottom: {{ section.settings.paragraph_margin | default: '16' }}px;
+  }
+
+  .highlight-{{ section.id }} {
+    color: var(--highlight-color);
+    font-weight: {{ section.settings.highlight_weight | default: '600' }};
+    background-color: {{ section.settings.highlight_bg | default: '#EFF6FF' }};
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+
+  .feature-box-{{ section.id }} {
+    background-color: var(--accent-bg);
+    border-radius: {{ section.settings.feature_radius | default: '8' }}px;
+    padding: {{ section.settings.feature_padding | default: '20' }}px;
+    margin: {{ section.settings.feature_margin | default: '24' }}px 0;
+    border-left: {{ section.settings.feature_border_width | default: '4' }}px solid var(--accent-border);
+  }
+
+  .feature-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: {{ section.settings.feature_title_size | default: '18' }}px;
+    font-weight: {{ section.settings.feature_title_weight | default: '600' }};
+    margin-bottom: {{ section.settings.feature_title_margin | default: '12' }}px;
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.feature_icon_gap | default: '8' }}px;
+  }
+
+  .feature-list-{{ section.id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .feature-item-{{ section.id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: {{ section.settings.bullet_gap | default: '8' }}px;
+    margin-bottom: {{ section.settings.bullet_spacing | default: '12' }}px;
+    color: var(--text-color);
+    font-size: var(--text-size);
+  }
+
+  .bullet-icon-{{ section.id }} {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .note-box-{{ section.id }} {
+    background-color: var(--accent-bg);
+    border-radius: {{ section.settings.note_radius | default: '8' }}px;
+    padding: {{ section.settings.note_padding | default: '16' }}px;
+    border-left: {{ section.settings.note_border_width | default: '4' }}px solid var(--accent-border);
+    margin-top: {{ section.settings.note_margin | default: '16' }}px;
+    font-style: {{ section.settings.note_style | default: 'normal' }};
+  }
+</style>
+
+<div id="product-desc-{{ section.id }}" class="desc-section-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Title -->
+  <h2 class="desc-title-{{ section.id }}">
+    {{ section.settings.title | default: 'Product Description' }}
+  </h2>
+
+  <!-- Description Content -->
+  <div class="desc-text-{{ section.id }}">
+    <p>
+      {{ section.settings.paragraph_1 | default: 'Bring professional skincare technology into your home with the <span class="highlight-">14™ Silicone Face & Neck Photon Rejuvenation Mask</span>.' }}
+    </p>
+    
+    <p>
+      {{ section.settings.paragraph_2 | default: 'Designed with ultra-soft, skin-friendly silicone, this mask fits tightly to the contours of your face and neck — ensuring deep light absorption with minimal light leakage. Its flexible, bendable structure makes it comfortable to wear while sitting, lying down, or moving around.' }}
+    </p>
+  </div>
+
+  <!-- Features Box -->
+  {% if section.settings.show_features %}
+    <div class="feature-box-{{ section.id }}">
+      <h3 class="feature-title-{{ section.id }}">
+        {% render 'icon-star', size: 5, color: '#3B82F6', filled: true %}
+        {{ section.settings.feature_box_title | default: 'Key Features' }}
+      </h3>
+      
+      <ul class="feature-list-{{ section.id }}">
+        {% for i in (1..section.settings.feature_count) %}
+          {% assign feature_text = 'feature_' | append: i %}
+          {% if section.settings[feature_text] != blank %}
+            <li class="feature-item-{{ section.id }}">
+              <span class="bullet-icon-{{ section.id }}">
+                {% render 'icon-check-circle', size: 5, color: section.settings.feature_color, class: 'mt-0.5' %}
+              </span>
+              <span>{{ section.settings[feature_text] }}</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
     </div>
+  {% endif %}
+
+  <!-- Note Box -->
+  {% if section.settings.show_note %}
+    <div class="note-box-{{ section.id }}">
+      <p class="desc-text-{{ section.id }} m-0">
+        {{ section.settings.note_text | default: 'Whether you are looking to brighten your complexion, reduce the appearance of fine lines, or support healthier, firmer skin, the 14™ mask delivers consistent, targeted light therapy.' }}
+      </p>
+    </div>
+  {% endif %}
 </div>
+
+{% schema %}
+{
+  "name": "Product Description",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "desc_bg",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "desc_border",
+      "label": "Border color",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "range",
+      "id": "desc_padding",
+      "label": "Padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "desc_radius",
+      "label": "Border radius",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "desc_shadow",
+      "label": "Box shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Product Description"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "label": "Line height",
+      "min": 1.4,
+      "max": 2,
+      "step": 0.5,
+      "default": 1.625
+    },
+    {
+      "type": "range",
+      "id": "paragraph_margin",
+      "label": "Paragraph spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_1",
+      "label": "Paragraph 1",
+      "default": "Bring professional skincare technology into your home with the 14™ Silicone Face & Neck Photon Rejuvenation Mask."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_2",
+      "label": "Paragraph 2",
+      "default": "Designed with ultra-soft, skin-friendly silicone, this mask fits tightly to the contours of your face and neck — ensuring deep light absorption with minimal light leakage. Its flexible, bendable structure makes it comfortable to wear while sitting, lying down, or moving around."
+    },
+    {
+      "type": "header",
+      "content": "Highlight Settings"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight text color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg",
+      "label": "Highlight background",
+      "default": "#EFF6FF"
+    },
+    {
+      "type": "select",
+      "id": "highlight_weight",
+      "label": "Highlight weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Features Box"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Show features box",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feature_box_title",
+      "label": "Features box title",
+      "default": "Key Features"
+    },
+    {
+      "type": "range",
+      "id": "feature_count",
+      "label": "Number of features",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1",
+      "label": "Feature 1",
+      "default": "Full Coverage: Targeted light therapy across both the face and neck."
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2",
+      "label": "Feature 2",
+      "default": "Lightweight & Thin: Lightweight 0.2 kg design and only 0.3 cm thickness for comfort."
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3",
+      "label": "Feature 3",
+      "default": "Deep Absorption: Soft silicone ensures a tight fit for maximum light effectiveness."
+    },
+    {
+      "type": "textarea",
+      "id": "feature_4",
+      "label": "Feature 4",
+      "default": "Secure Fit: Features an adjustable strap system for a perfect and secure fit for all face shapes."
+    },
+    {
+      "type": "color",
+      "id": "feature_color",
+      "label": "Feature icon color",
+      "default": "#10B981"
+    },
+    {
+      "type": "header",
+      "content": "Features Box Styling"
+    },
+    {
+      "type": "color",
+      "id": "accent_bg",
+      "label": "Accent background",
+      "default": "#EFF6FF"
+    },
+    {
+      "type": "color",
+      "id": "accent_border",
+      "label": "Accent border",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "range",
+      "id": "feature_radius",
+      "label": "Feature box radius",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "feature_padding",
+      "label": "Feature box padding",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "feature_margin",
+      "label": "Feature box margin",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "feature_border_width",
+      "label": "Left border width",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Feature Title"
+    },
+    {
+      "type": "range",
+      "id": "feature_title_size",
+      "label": "Feature title size",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "feature_title_weight",
+      "label": "Feature title weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "feature_title_margin",
+      "label": "Title bottom margin",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "feature_icon_gap",
+      "label": "Icon and text gap",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Bullet Points"
+    },
+    {
+      "type": "range",
+      "id": "bullet_gap",
+      "label": "Icon and text gap",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "bullet_spacing",
+      "label": "Space between bullets",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Note Box"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show note box",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "note_text",
+      "label": "Note text",
+      "default": "Whether you are looking to brighten your complexion, reduce the appearance of fine lines, or support healthier, firmer skin, the 14™ mask delivers consistent, targeted light therapy."
+    },
+    {
+      "type": "range",
+      "id": "note_radius",
+      "label": "Note box radius",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "note_padding",
+      "label": "Note box padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "note_margin",
+      "label": "Note top margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "note_border_width",
+      "label": "Note left border width",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "note_style",
+      "label": "Note font style",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "italic", "label": "Italic" }
+      ],
+      "default": "normal"
+    }
+  ]
+}
+{% endschema %}

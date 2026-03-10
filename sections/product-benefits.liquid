@@ -1,28 +1,536 @@
-<!-- Product Benefits -->
-<div class="bg-white p-8 max-w-7xl mx-auto mt-6 rounded-xl shadow-lg border border-gray-100 text-center">
-    <h2 class="text-3xl font-extrabold text-gray-900 mb-8">
-        <span class="text-pink-600">4 Reasons</span> Why You Will Love It:
-    </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
-            <svg class="w-10 h-10 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <h3 class="font-bold text-lg mb-2 text-gray-800">Fast Results</h3>
-            <p class="text-sm text-gray-600">Visible improvement in skin tone and texture within 2 weeks of consistent use.</p>
+{% comment %}
+  Product Benefits - 4 reasons with icons
+  Fully customizable
+{% endcomment %}
+
+<style>
+  #product-benefits-{{ section.id }} {
+    --benefits-bg: {{ section.settings.benefits_bg | default: '#FFFFFF' }};
+    --benefits-border: {{ section.settings.benefits_border | default: '#F3F4F6' }};
+    --benefits-shadow: {{ section.settings.benefits_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    --benefits-radius: {{ section.settings.benefits_radius | default: '12' }}px;
+    --benefits-padding: {{ section.settings.benefits_padding | default: '32' }}px;
+    --title-color: {{ section.settings.title_color | default: '#111827' }};
+    --title-size: {{ section.settings.title_size | default: '30' }}px;
+    --accent-color: {{ section.settings.accent_color | default: '#DB2777' }};
+    --card-bg: {{ section.settings.card_bg | default: '#F9FAFB' }};
+    --card-shadow: {{ section.settings.card_shadow | default: '0 1px 2px 0 rgb(0 0 0 / 0.05)' }};
+    --card-radius: {{ section.settings.card_radius | default: '8' }}px;
+    --card-padding: {{ section.settings.card_padding | default: '24' }}px;
+    --icon-color: {{ section.settings.icon_color | default: '#2563EB' }};
+    --icon-size: {{ section.settings.icon_size | default: '40' }}px;
+    --heading-color: {{ section.settings.heading_color | default: '#1F2937' }};
+    --heading-size: {{ section.settings.heading_size | default: '18' }}px;
+    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --text-size: {{ section.settings.text_size | default: '14' }}px;
+  }
+
+  .benefits-section-{{ section.id }} {
+    background-color: var(--benefits-bg);
+    border-radius: var(--benefits-radius);
+    padding: var(--benefits-padding);
+    box-shadow: var(--benefits-shadow);
+    border: 1px solid var(--benefits-border);
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  .benefits-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '800' }};
+    text-align: center;
+    margin-bottom: {{ section.settings.title_margin | default: '32' }}px;
+  }
+
+  .benefits-title-{{ section.id }} span {
+    color: var(--accent-color);
+  }
+
+  .benefits-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_mobile | default: '1' }}, 1fr);
+    gap: {{ section.settings.grid_gap | default: '24' }}px;
+  }
+
+  @media (min-width: 640px) {
+    .benefits-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.columns_sm | default: '2' }}, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .benefits-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.columns_lg | default: '4' }}, 1fr);
+    }
+  }
+
+  .benefit-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    transition: all {{ section.settings.card_transition | default: '300' }}ms ease;
+  }
+
+  .benefit-card-{{ section.id }}:hover {
+    transform: translateY(-{{ section.settings.hover_offset | default: '4' }}px);
+    box-shadow: {{ section.settings.hover_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+  }
+
+  .benefit-icon-{{ section.id }} {
+    color: var(--icon-color);
+    margin-bottom: {{ section.settings.icon_margin | default: '12' }}px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .benefit-heading-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: var(--heading-size);
+    font-weight: {{ section.settings.heading_weight | default: '700' }};
+    margin-bottom: {{ section.settings.heading_margin | default: '8' }}px;
+  }
+
+  .benefit-text-{{ section.id }} {
+    color: var(--text-color);
+    font-size: var(--text-size);
+    line-height: {{ section.settings.text_line_height | default: '1.5' }};
+  }
+</style>
+
+<div id="product-benefits-{{ section.id }}" class="benefits-section-{{ section.id }}" {{ section.shopify_attributes }}>
+  <!-- Title -->
+  <h2 class="benefits-title-{{ section.id }}">
+    <span>{{ section.settings.title_prefix | default: '4 Reasons' }}</span>
+    {{ section.settings.title_suffix | default: 'Why You Will Love It:' }}
+  </h2>
+
+  <!-- Benefits Grid -->
+  <div class="benefits-grid-{{ section.id }}">
+    {% for i in (1..4) %}
+      {% assign benefit_icon = 'benefit_icon_' | append: i %}
+      {% assign benefit_title = 'benefit_title_' | append: i %}
+      {% assign benefit_text = 'benefit_text_' | append: i %}
+      
+      <div class="benefit-card-{{ section.id }}">
+        <div class="benefit-icon-{{ section.id }}">
+          {% case i %}
+            {% when 1 %}
+              {% render 'icon-clock', size: section.settings.icon_size | divided_by: 4, color: section.settings.icon_color %}
+            {% when 2 %}
+              {% render 'icon-beaker', size: section.settings.icon_size | divided_by: 4, color: section.settings.icon_color %}
+            {% when 3 %}
+              {% render 'icon-shield-check', size: section.settings.icon_size | divided_by: 4, color: section.settings.icon_color %}
+            {% when 4 %}
+              {% render 'icon-check-circle', size: section.settings.icon_size | divided_by: 4, color: section.settings.icon_color %}
+          {% endcase %}
         </div>
-        <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
-            <svg class="w-10 h-10 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5 5 0 0011.5 0L21 7l-3-1m0 0V4a2 2 0 00-2-2H8a2 2 0 00-2 2v2m0 0h12"></path></svg>
-            <h3 class="font-bold text-lg mb-2 text-gray-800">Maximum Coverage</h3>
-            <p class="text-sm text-gray-600">Designed to treat both the delicate skin on your face and your neck simultaneously.</p>
-        </div>
-        <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
-            <svg class="w-10 h-10 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.228A9 9 0 005.618 19.228l4.472 2.236a1 1 0 00.82 0l4.472-2.236A9 9 0 0019.618 7.772z"></path></svg>
-            <h3 class="font-bold text-lg mb-2 text-gray-800">Non-Invasive</h3>
-            <p class="text-sm text-gray-600">A completely pain-free, zero-downtime, and safe alternative to traditional treatments.</p>
-        </div>
-        <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
-            <svg class="w-10 h-10 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13M3.463 4.29a.862.862 0 011.455.088l5.86 11.72a.862.862 0 001.558 0l5.86-11.72a.862.862 0 011.455-.088l1.378 1.488a.862.862 0 01-.088 1.258l-5.86 11.72a.862.862 0 01-1.558 0l-5.86-11.72a.862.862 0 01-.088-1.258l1.378-1.488z"></path></svg>
-            <h3 class="font-bold text-lg mb-2 text-gray-800">Clinically Proven</h3>
-            <p class="text-sm text-gray-600">Utilizes the exact same technology trusted by dermatologists and leading spas.</p>
-        </div>
-    </div>
+        <h3 class="benefit-heading-{{ section.id }}">
+          {{ section.settings[benefit_title] | default: 'Benefit Title' }}
+        </h3>
+        <p class="benefit-text-{{ section.id }}">
+          {{ section.settings[benefit_text] | default: 'Benefit description goes here.' }}
+        </p>
+      </div>
+    {% endfor %}
+  </div>
 </div>
+
+{% schema %}
+{
+  "name": "Product Benefits",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "benefits_bg",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "benefits_border",
+      "label": "Border color",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "range",
+      "id": "benefits_padding",
+      "label": "Section padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "benefits_radius",
+      "label": "Section radius",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "benefits_shadow",
+      "label": "Section shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "columns_sm",
+      "label": "Columns on tablet",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "columns_lg",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between cards",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "text",
+      "id": "title_prefix",
+      "label": "Title prefix",
+      "default": "4 Reasons"
+    },
+    {
+      "type": "text",
+      "id": "title_suffix",
+      "label": "Title suffix",
+      "default": "Why You Will Love It:"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#DB2777"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Card Settings"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card radius",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" }
+      ],
+      "default": "0 1px 2px 0 rgb(0 0 0 / 0.05)"
+    },
+    {
+      "type": "range",
+      "id": "card_transition",
+      "label": "Card transition speed",
+      "min": 200,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "hover_offset",
+      "label": "Hover lift amount",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "hover_shadow",
+      "label": "Hover shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#2563EB"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 24,
+      "max": 64,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_margin",
+      "label": "Icon bottom margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Heading bottom margin",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "label": "Text line height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Benefit 1"
+    },
+    {
+      "type": "text",
+      "id": "benefit_title_1",
+      "label": "Title",
+      "default": "Fast Results"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_text_1",
+      "label": "Description",
+      "default": "Visible improvement in skin tone and texture within 2 weeks of consistent use."
+    },
+    {
+      "type": "header",
+      "content": "Benefit 2"
+    },
+    {
+      "type": "text",
+      "id": "benefit_title_2",
+      "label": "Title",
+      "default": "Maximum Coverage"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_text_2",
+      "label": "Description",
+      "default": "Designed to treat both the delicate skin on your face and your neck simultaneously."
+    },
+    {
+      "type": "header",
+      "content": "Benefit 3"
+    },
+    {
+      "type": "text",
+      "id": "benefit_title_3",
+      "label": "Title",
+      "default": "Non-Invasive"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_text_3",
+      "label": "Description",
+      "default": "A completely pain-free, zero-downtime, and safe alternative to traditional treatments."
+    },
+    {
+      "type": "header",
+      "content": "Benefit 4"
+    },
+    {
+      "type": "text",
+      "id": "benefit_title_4",
+      "label": "Title",
+      "default": "Clinically Proven"
+    },
+    {
+      "type": "textarea",
+      "id": "benefit_text_4",
+      "label": "Description",
+      "default": "Utilizes the exact same technology trusted by dermatologists and leading spas."
+    }
+  ]
+}
+{% endschema %}

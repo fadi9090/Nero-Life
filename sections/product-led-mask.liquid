@@ -1,15 +1,12 @@
 {% comment %}
   Section: Product LED Mask
   Description: Product display with gallery and purchase options
+  Fully customizable through theme editor
 {% endcomment %}
 
-{% comment %} Load discount configuration - ONCE is enough {% endcomment %}
 {% render 'discount' %}
-
-{% comment %} Get the featured product from section settings {% endcomment %}
 {% assign featured_product = all_products[section.settings.featured_product] %}
 
-{% comment %} Calculate discounted prices based on discount type {% endcomment %}
 {% if regular_discount > 0 and featured_product.price > 0 %}
   {% assign discount_multiplier = 100.0 | minus: regular_discount %}
   {% assign single_discounted_price = featured_product.price | times: discount_multiplier | divided_by: 100 %}
@@ -24,26 +21,142 @@
   {% assign bulk_discounted_price = single_discounted_price %}
 {% endif %}
 
-<div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10 mb-8" id="product-section">
+<style>
+  #product-{{ section.id }} {
+    --product-bg: {{ section.settings.product_bg | default: '#FFFFFF' }};
+    --product-border: {{ section.settings.product_border | default: '#E5E7EB' }};
+    --product-title-color: {{ section.settings.title_color | default: '#111827' }};
+    --product-price-color: {{ section.settings.price_color | default: '#111827' }};
+    --product-sale-price-color: {{ section.settings.sale_price_color | default: '#FA8072' }};
+    --product-compare-color: {{ section.settings.compare_color | default: '#6B7280' }};
+    --product-save-color: {{ section.settings.save_color | default: '#16A34A' }};
+    --product-option-border: {{ section.settings.option_border | default: '#E5E7EB' }};
+    --product-option-selected: {{ section.settings.option_selected | default: '#FA8072' }};
+    --product-option-bg: {{ section.settings.option_bg | default: '#FEF2F2' }};
+    --product-button-bg: {{ section.settings.button_bg | default: '#FA8072' }};
+    --product-button-hover: {{ section.settings.button_hover | default: '#E57365' }};
+    --product-button-text: {{ section.settings.button_text | default: '#FFFFFF' }};
+    --product-gallery-border: {{ section.settings.gallery_border | default: '#3B82F6' }};
+    --thumbnail-size: {{ section.settings.thumbnail_size | default: '64' }}px;
+    --main-image-height: {{ section.settings.main_image_height | default: '384' }}px;
+  }
+
+  @media (min-width: 640px) {
+    #product-{{ section.id }} {
+      --main-image-height: {{ section.settings.main_image_height_sm | default: '384' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #product-{{ section.id }} {
+      --main-image-height: {{ section.settings.main_image_height_lg | default: '384' }}px;
+    }
+  }
+
+  .product-section-{{ section.id }} {
+    background-color: var(--product-bg);
+    border-color: var(--product-border);
+  }
+
+  .product-title-{{ section.id }} {
+    color: var(--product-title-color);
+    font-size: {{ section.settings.title_size | default: '3xl' }};
+    font-weight: {{ section.settings.title_weight | default: '800' }};
+  }
+
+  @media (min-width: 1024px) {
+    .product-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_lg | default: '3xl' }};
+    }
+  }
+
+  .product-price-{{ section.id }} {
+    color: var(--product-price-color);
+  }
+
+  .product-sale-price-{{ section.id }} {
+    color: var(--product-sale-price-color);
+  }
+
+  .product-compare-price-{{ section.id }} {
+    color: var(--product-compare-color);
+  }
+
+  .product-save-badge-{{ section.id }} {
+    color: var(--product-save-color);
+  }
+
+  .product-option-{{ section.id }} {
+    border-color: var(--product-option-border);
+  }
+
+  .product-option-{{ section.id }}.selected {
+    border-color: var(--product-option-selected);
+    background-color: var(--product-option-bg);
+  }
+
+  .product-button-{{ section.id }} {
+    background-color: var(--product-button-bg);
+    color: var(--product-button-text);
+    transition: all {{ section.settings.button_transition | default: '200' }}ms ease;
+  }
+
+  .product-button-{{ section.id }}:hover:not(:disabled) {
+    background-color: var(--product-button-hover);
+  }
+
+  .product-button-{{ section.id }}:disabled {
+    opacity: {{ section.settings.button_disabled_opacity | default: '0.5' }};
+    cursor: not-allowed;
+  }
+
+  .media-display-{{ section.id }} {
+    height: var(--main-image-height);
+  }
+
+  .media-thumbnail-{{ section.id }} {
+    width: var(--thumbnail-size);
+    height: var(--thumbnail-size);
+  }
+
+  .media-thumbnail-{{ section.id }}.active {
+    border-color: var(--product-gallery-border);
+    border-width: {{ section.settings.thumbnail_border_width | default: '2' }}px;
+    --tw-ring-color: var(--product-gallery-border);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
+<div id="product-{{ section.id }}" class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-{{ section.settings.gap | default: '10' }} mb-8" {{ section.shopify_attributes }}>
+  
+  <!-- Gallery Section -->
   <div class="w-full lg:w-1/2 mb-6 lg:mb-0">
-    <div class="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center">
-      <div class="w-full h-80 sm:h-96 flex items-center justify-center mb-4">
+    <div class="product-section-{{ section.id }} rounded-{{ section.settings.gallery_radius | default: 'xl' }} shadow-{{ section.settings.gallery_shadow | default: 'lg' }} p-{{ section.settings.gallery_padding | default: '4' }} flex flex-col items-center">
+      
+      <!-- Main Image -->
+      <div class="media-display-{{ section.id }} w-full flex items-center justify-center mb-4">
         <img
           id="media-display"
-          src="{{ featured_product.featured_image | image_url: width: 1024, height: 1024 | default: section.settings.fallback_image | image_url }}"
-          alt="{{ featured_product.featured_image.alt | escape }}"
-          class="max-h-full max-w-full object-contain rounded-lg transition-opacity duration-300"
+          src="{% if featured_product.featured_image != blank %}{{ featured_product.featured_image | image_url: width: 1024, height: 1024 }}{% elsif section.settings.fallback_image != blank %}{{ section.settings.fallback_image | image_url: width: 1024, height: 1024 }}{% else %}{{ 'placeholder-image' | asset_url }}{% endif %}"
+          alt="{% if featured_product.featured_image != blank %}{{ featured_product.featured_image.alt | escape }}{% else %}{{ section.settings.fallback_title }}{% endif %}"
+          class="max-h-full max-w-full object-contain rounded-{{ section.settings.image_radius | default: 'lg' }} transition-opacity duration-{{ section.settings.image_transition | default: '300' }}"
           width="1024"
           height="1024"
           loading="lazy"
+          style="opacity: 1;"
         >
       </div>
 
+      <!-- Thumbnails -->
       {% if section.settings.show_thumbnails and featured_product.media.size > 0 %}
-        <div
-          id="thumbnails-container"
-          class="w-full flex space-x-3 overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center"
-        >
+        <div class="w-full flex space-x-{{ section.settings.thumbnail_spacing | default: '3' }} overflow-x-auto no-scrollbar pb-1 justify-start sm:justify-center">
           {% for media in featured_product.media %}
             {% assign is_active = false %}
             {% if forloop.first %}
@@ -54,14 +167,7 @@
               alt="{{ media.alt | escape }}"
               data-full-url="{{ media | image_url: width: 1024, height: 1024 }}"
               data-media-id="{{ media.id }}"
-              class="
-                media-thumbnail w-16 h-16 flex-shrink-0 object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 hover:opacity-100
-                {% if is_active %}
-                    border-blue-600 border-2 ring-2 ring-blue-600/50 shadow-md
-                {% else %}
-                    border-gray-300 border opacity-75
-                {% endif %}
-              "
+              class="media-thumbnail-{{ section.id }} flex-shrink-0 object-cover rounded-{{ section.settings.thumbnail_radius | default: 'lg' }} cursor-pointer transition-all duration-{{ section.settings.thumbnail_transition | default: '200' }} hover:scale-{{ section.settings.thumbnail_hover_scale | default: '105' }} {% if is_active %}active{% else %}opacity-{{ section.settings.thumbnail_inactive_opacity | default: '75' }}{% endif %}"
               width="64"
               height="64"
               onclick="swapMedia(this, '{{ media | image_url: width: 1024, height: 1024 }}')"
@@ -73,23 +179,30 @@
     </div>
   </div>
 
-  <div class="w-full lg:w-1/2 p-6 border rounded-xl shadow-sm bg-white">
-    <h1 class="text-3xl font-extrabold mb-4 text-gray-900">
+  <!-- Product Info Section -->
+  <div class="w-full lg:w-1/2 p-{{ section.settings.info_padding | default: '6' }} border rounded-{{ section.settings.info_radius | default: 'xl' }} shadow-{{ section.settings.info_shadow | default: 'sm' }} product-section-{{ section.id }}">
+    
+    <!-- Product Title -->
+    <h1 class="product-title-{{ section.id }} font-{{ section.settings.title_weight | default: '800' }} mb-{{ section.settings.title_margin | default: '4' }}">
       {{ featured_product.title | default: section.settings.fallback_title }}
     </h1>
 
-    <!-- Price Display - Conditional based on discount -->
-    <div class="mt-2 mb-6">
+    <!-- Price Display -->
+    <div class="mt-{{ section.settings.price_margin_top | default: '2' }} mb-{{ section.settings.price_margin_bottom | default: '6' }}">
       {% if regular_discount > 0 and featured_product.price > 0 %}
-        <span class="text-xl font-bold text-gray-900">
+        <span class="product-sale-price-{{ section.id }} text-{{ section.settings.sale_price_size | default: 'xl' }} font-{{ section.settings.price_weight | default: 'bold' }}">
           {{ single_discounted_price | money_without_trailing_zeros }}
         </span>
-        <span class="text-base line-through text-gray-500 ml-2">
+        <span class="product-compare-price-{{ section.id }} text-{{ section.settings.compare_size | default: 'base' }} line-through ml-{{ section.settings.compare_spacing | default: '2' }}">
           {{ featured_product.price | money_without_trailing_zeros }}
         </span>
-        <div class="text-sm text-green-600 font-medium mt-1">Save {{ regular_discount }}% on single</div>
+        {% if section.settings.show_save_badge %}
+          <div class="product-save-badge-{{ section.id }} text-{{ section.settings.save_size | default: 'sm' }} font-{{ section.settings.save_weight | default: '500' }} mt-{{ section.settings.save_margin | default: '1' }}">
+            {{ section.settings.save_text | default: 'Save' }} {{ regular_discount }}%
+          </div>
+        {% endif %}
       {% elsif featured_product.price > 0 %}
-        <span class="text-xl font-bold text-gray-900">
+        <span class="product-price-{{ section.id }} text-{{ section.settings.regular_price_size | default: 'xl' }} font-{{ section.settings.price_weight | default: 'bold' }}">
           {{ featured_product.price | money_without_trailing_zeros }}
         </span>
       {% endif %}
@@ -97,14 +210,16 @@
 
     <!-- Package Options -->
     {% if section.settings.show_packages %}
-      <div class="mb-6">
-        <h3 class="text-base font-semibold text-gray-800 mb-3">Choose Your Package:</h3>
+      <div class="mb-{{ section.settings.packages_margin | default: '6' }}">
+        <h3 class="text-{{ section.settings.packages_title_size | default: 'base' }} font-{{ section.settings.packages_title_weight | default: '600' }} text-gray-800 mb-{{ section.settings.packages_title_margin | default: '3' }}">
+          {{ section.settings.packages_title | default: 'Choose Your Package:' }}
+        </h3>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-{{ section.settings.packages_per_row | default: '2' }} gap-{{ section.settings.packages_gap | default: '3' }}">
+          
           <!-- Single Mask Option -->
           <div
-            id="singleMaskOption"
-            class="mask-option relative border-2 {% if regular_discount > 0 %}border-[#FA8072] bg-rose-50{% else %}border-gray-200{% endif %} rounded-lg p-3 cursor-pointer transition-all duration-200 hover:shadow-md"
+            class="product-option-{{ section.id }} relative border-2 {% if regular_discount > 0 %}selected{% endif %} rounded-{{ section.settings.option_radius | default: 'lg' }} p-{{ section.settings.option_padding | default: '3' }} cursor-pointer transition-all duration-{{ section.settings.option_transition | default: '200' }} hover:shadow-{{ section.settings.option_hover_shadow | default: 'md' }}"
             data-quantity="1"
             data-original-price="{{ featured_product.price | money }}"
             data-discounted-price="{% if regular_discount > 0 %}{{ single_discounted_price | money }}{% else %}{{ featured_product.price | money }}{% endif %}"
@@ -112,8 +227,8 @@
             data-discount-value="{{ regular_discount }}"
             onclick="selectMaskOption(this, 1)"
           >
-            {% if regular_discount > 0 %}
-              <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center">
+            {% if regular_discount > 0 and section.settings.show_selected_check %}
+              <div class="absolute -top-2 -right-2 w-5 h-5 bg-[var(--product-option-selected)] rounded-full flex items-center justify-center">
                 <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
@@ -121,31 +236,35 @@
             {% endif %}
 
             <div class="flex flex-col items-center text-center">
-              <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div class="package-image w-{{ section.settings.package_icon_size | default: '12' }} h-{{ section.settings.package_icon_size | default: '12' }} mb-{{ section.settings.package_icon_margin | default: '2' }} bg-gray-100 rounded-{{ section.settings.package_icon_radius | default: 'lg' }} flex items-center justify-center">
                 {% if section.settings.single_package_image != blank %}
                   <img
                     src="{{ section.settings.single_package_image | image_url: width: 100, height: 100 }}"
-                    alt="Single Face & Neck Mask"
-                    class="w-10 h-10 object-contain"
+                    alt="{{ section.settings.single_package_title | default: 'Single Mask' }}"
+                    class="w-{{ section.settings.package_icon_size | minus: 2 | default: '10' }} h-{{ section.settings.package_icon_size | minus: 2 | default: '10' }} object-contain"
                     width="100"
                     height="100"
                     loading="lazy"
                   >
                 {% else %}
-                  <div class="text-lg font-bold text-gray-700">1x</div>
+                  <div class="text-{{ section.settings.package_fallback_size | default: 'lg' }} font-{{ section.settings.package_fallback_weight | default: 'bold' }} text-gray-700">1x</div>
                 {% endif %}
               </div>
 
-              <h4 class="text-sm font-medium text-gray-900 mb-1">{{ section.settings.single_package_title | default: 'Single Mask' }}</h4>
-              <div class="text-base font-bold {% if regular_discount > 0 %}text-[#FA8072]{% else %}text-gray-900{% endif %}">
+              <h4 class="text-{{ section.settings.package_title_size | default: 'sm' }} font-{{ section.settings.package_title_weight | default: '500' }} text-gray-900 mb-{{ section.settings.package_title_margin | default: '1' }}">
+                {{ section.settings.single_package_title | default: 'Single Mask' }}
+              </h4>
+              
+              <div class="text-{{ section.settings.package_price_size | default: 'base' }} font-{{ section.settings.package_price_weight | default: 'bold' }} {% if regular_discount > 0 %}product-sale-price-{{ section.id }}{% else %}product-price-{{ section.id }}{% endif %}">
                 {% if regular_discount > 0 %}
                   {{ single_discounted_price | money }}
                 {% else %}
                   {{ featured_product.price | money }}
                 {% endif %}
               </div>
-              {% if regular_discount > 0 %}
-                <div class="text-xs line-through text-gray-500">
+              
+              {% if regular_discount > 0 and section.settings.show_package_compare %}
+                <div class="product-compare-price-{{ section.id }} text-{{ section.settings.package_compare_size | default: 'xs' }} line-through">
                   {{ featured_product.price | money }}
                 </div>
               {% endif %}
@@ -154,8 +273,7 @@
 
           <!-- Double Mask Option -->
           <div
-            id="doubleMaskOption"
-            class="mask-option relative border-2 border-gray-200 rounded-lg p-3 cursor-pointer transition-all duration-200 hover:border-[#FA8072] hover:shadow-md"
+            class="product-option-{{ section.id }} relative border-2 border-gray-200 rounded-{{ section.settings.option_radius | default: 'lg' }} p-{{ section.settings.option_padding | default: '3' }} cursor-pointer transition-all duration-{{ section.settings.option_transition | default: '200' }} hover:border-[var(--product-option-selected)] hover:shadow-{{ section.settings.option_hover_shadow | default: 'md' }}"
             data-quantity="2"
             data-original-price="{{ featured_product.price | times: 2 | money }}"
             data-discounted-price="{% if bulk_discount > 0 %}{{ bulk_discounted_price | times: 2 | money }}{% else %}{{ featured_product.price | times: 2 | money }}{% endif %}"
@@ -163,30 +281,35 @@
             data-discount-value="{{ bulk_discount }}"
             onclick="selectMaskOption(this, 2)"
           >
-            <div class="absolute -top-2 -right-2 w-5 h-5 bg-[#FA8072] rounded-full flex items-center justify-center hidden">
-              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-              </svg>
-            </div>
+            {% if section.settings.show_selected_check %}
+              <div class="absolute -top-2 -right-2 w-5 h-5 bg-[var(--product-option-selected)] rounded-full flex items-center justify-center hidden">
+                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            {% endif %}
 
             <div class="flex flex-col items-center text-center">
-              <div class="package-image w-12 h-12 mb-2 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div class="package-image w-{{ section.settings.package_icon_size | default: '12' }} h-{{ section.settings.package_icon_size | default: '12' }} mb-{{ section.settings.package_icon_margin | default: '2' }} bg-gray-100 rounded-{{ section.settings.package_icon_radius | default: 'lg' }} flex items-center justify-center">
                 {% if section.settings.double_package_image != blank %}
                   <img
                     src="{{ section.settings.double_package_image | image_url: width: 100, height: 100 }}"
-                    alt="Two Face & Neck Masks"
-                    class="w-10 h-10 object-contain"
+                    alt="{{ section.settings.double_package_title | default: 'Double Pack' }}"
+                    class="w-{{ section.settings.package_icon_size | minus: 2 | default: '10' }} h-{{ section.settings.package_icon_size | minus: 2 | default: '10' }} object-contain"
                     width="100"
                     height="100"
                     loading="lazy"
                   >
                 {% else %}
-                  <div class="text-lg font-bold text-gray-700">2x</div>
+                  <div class="text-{{ section.settings.package_fallback_size | default: 'lg' }} font-{{ section.settings.package_fallback_weight | default: 'bold' }} text-gray-700">2x</div>
                 {% endif %}
               </div>
 
-              <h4 class="text-sm font-medium text-gray-900 mb-1">{{ section.settings.double_package_title | default: 'Double Pack' }}</h4>
-              <div class="text-base font-bold {% if bulk_discount > 0 %}text-[#FA8072]{% else %}text-gray-900{% endif %}">
+              <h4 class="text-{{ section.settings.package_title_size | default: 'sm' }} font-{{ section.settings.package_title_weight | default: '500' }} text-gray-900 mb-{{ section.settings.package_title_margin | default: '1' }}">
+                {{ section.settings.double_package_title | default: 'Double Pack' }}
+              </h4>
+              
+              <div class="text-{{ section.settings.package_price_size | default: 'base' }} font-{{ section.settings.package_price_weight | default: 'bold' }} {% if bulk_discount > 0 %}product-sale-price-{{ section.id }}{% else %}product-price-{{ section.id }}{% endif %}">
                 {% if bulk_discount > 0 %}
                   {{ bulk_discounted_price | times: 2 | money }}
                 {% else %}
@@ -194,21 +317,22 @@
                 {% endif %}
               </div>
 
-              {% if bulk_discount > 0 %}
-                <div class="text-xs line-through text-gray-500">
+              {% if bulk_discount > 0 and section.settings.show_package_compare %}
+                <div class="product-compare-price-{{ section.id }} text-{{ section.settings.package_compare_size | default: 'xs' }} line-through">
                   {{ featured_product.price | times: 2 | money }}
                 </div>
                 {% assign original_total = featured_product.price | times: 2 %}
                 {% assign discounted_total = bulk_discounted_price | times: 2 %}
                 {% assign save_amount = original_total | minus: discounted_total %}
-                <div class="text-xs text-green-600 font-medium mt-1">Save {{ save_amount | money }}</div>
-              {% elsif regular_discount > 0 %}
-                {% comment %} If no bulk discount but regular discount exists, show regular discount savings {% endcomment %}
+                <div class="product-save-badge-{{ section.id }} text-{{ section.settings.package_save_size | default: 'xs' }} font-{{ section.settings.package_save_weight | default: '500' }} mt-{{ section.settings.package_save_margin | default: '1' }}">
+                  {{ section.settings.save_text | default: 'Save' }} {{ save_amount | money }}
+                </div>
+              {% elsif regular_discount > 0 and section.settings.show_package_save %}
                 {% assign original_total = featured_product.price | times: 2 %}
                 {% assign discounted_total = single_discounted_price | times: 2 %}
                 {% assign save_amount = original_total | minus: discounted_total %}
-                <div class="text-xs text-green-600 font-medium mt-1">
-                  Save {{ save_amount | money }} ({{ regular_discount }}% each)
+                <div class="product-save-badge-{{ section.id }} text-{{ section.settings.package_save_size | default: 'xs' }} font-{{ section.settings.package_save_weight | default: '500' }} mt-{{ section.settings.package_save_margin | default: '1' }}">
+                  {{ section.settings.save_text | default: 'Save' }} {{ save_amount | money }} ({{ regular_discount }}% each)
                 </div>
               {% endif %}
             </div>
@@ -218,7 +342,7 @@
     {% endif %}
 
     <!-- Add to Cart Form -->
-    <div class="mt-6">
+    <div class="mt-{{ section.settings.form_margin_top | default: '6' }}">
       <form method="post" action="/cart/add" id="addToCartForm">
         <input
           type="hidden"
@@ -232,13 +356,13 @@
         <button
           type="submit"
           id="addToCartButton"
-          class="bg-[#FA8072] text-white p-3 rounded-xl w-full text-base font-semibold shadow-md hover:bg-[#E57365] transition duration-200"
+          class="product-button-{{ section.id }} w-full p-{{ section.settings.button_padding | default: '3' }} rounded-{{ section.settings.button_radius | default: 'xl' }} text-{{ section.settings.button_text_size | default: 'base' }} font-{{ section.settings.button_weight | default: '600' }} shadow-{{ section.settings.button_shadow | default: 'md' }}"
           {% unless featured_product.available %}disabled{% endunless %}
         >
           {% if featured_product.available %}
-            Add to Cart - <span class="quantity-text">1 Mask</span>
+            {{ section.settings.button_text | default: 'Add to Cart' }} - <span class="quantity-text">{{ section.settings.button_text_single | default: '1 Mask' }}</span>
           {% else %}
-            Sold Out
+            {{ section.settings.sold_out_text | default: 'Sold Out' }}
           {% endif %}
         </button>
       </form>
@@ -247,141 +371,93 @@
 </div>
 
 <script>
-  // Product-specific JavaScript
   (function () {
-    // Global variables for cart state
     let selectedQuantity = 1;
     let selectedPackageElement = null;
 
-    // --- Media Swapping Functionality ---
     window.swapMedia = function (thumbnail, fullImageUrl) {
       const mediaDisplay = document.getElementById('media-display');
-      const thumbnails = document.querySelectorAll('.media-thumbnail');
+      const thumbnails = document.querySelectorAll('.media-thumbnail-{{ section.id }}');
 
       if (!mediaDisplay) return;
 
-      // Update main image
       mediaDisplay.style.opacity = '0';
       setTimeout(() => {
         mediaDisplay.src = fullImageUrl;
         mediaDisplay.style.opacity = '1';
-      }, 150);
+      }, {{ section.settings.image_transition | default: '300' }});
 
-      // Update thumbnail states
       thumbnails.forEach((thumb) => {
-        thumb.classList.remove('border-blue-600', 'ring-2', 'ring-blue-600/50', 'shadow-md');
-        thumb.classList.add('border-gray-300', 'opacity-75');
+        thumb.classList.remove('active', 'border-{{ section.settings.gallery_border_color | default: "blue-600" }}', 'ring-2', 'ring-{{ section.settings.gallery_border_color | default: "blue-600" }}/50', 'shadow-md');
+        thumb.style.opacity = '{{ section.settings.thumbnail_inactive_opacity | default: "0.75" }}';
       });
 
-      // Activate clicked thumbnail
-      thumbnail.classList.add('border-blue-600', 'ring-2', 'ring-blue-600/50', 'shadow-md');
-      thumbnail.classList.remove('border-gray-300', 'opacity-75');
+      thumbnail.classList.add('active');
+      thumbnail.style.opacity = '1';
     };
 
-    // --- Mask Option Selection Functionality ---
     window.selectMaskOption = function (element, quantity) {
-      // Remove selection from all options
-      document.querySelectorAll('.mask-option').forEach((option) => {
-        option.classList.remove('border-[#FA8072]', 'bg-rose-50');
-        option.classList.add('border-gray-200');
+      document.querySelectorAll('.product-option-{{ section.id }}').forEach((option) => {
+        option.classList.remove('selected');
         const checkmark = option.querySelector('.absolute.-top-2.-right-2');
         if (checkmark) checkmark.classList.add('hidden');
       });
 
-      // Add selection to clicked option
-      element.classList.add('border-[#FA8072]', 'bg-rose-50');
-      element.classList.remove('border-gray-200');
+      element.classList.add('selected');
       const checkmark = element.querySelector('.absolute.-top-2.-right-2');
       if (checkmark) checkmark.classList.remove('hidden');
 
-      // Update selected quantity and store selected element
       selectedQuantity = quantity;
       selectedPackageElement = element;
 
-      // Update hidden quantity input
       const quantityInput = document.getElementById('selectedQuantity');
       if (quantityInput) quantityInput.value = quantity;
 
-      // Update button text
       const button = document.getElementById('addToCartButton');
       if (button) {
         const quantityText = button.querySelector('.quantity-text');
-        if (quantityText) quantityText.textContent = `${quantity} Mask${quantity > 1 ? 's' : ''}`;
+        if (quantityText) {
+          quantityText.textContent = `${quantity} {{ section.settings.button_text_unit | default: 'Mask' }}${quantity > 1 ? 's' : ''}`;
+        }
       }
 
-      // Update the main price display
       updateMainPriceDisplay(element);
     };
 
-    // Function to update the main price display
     function updateMainPriceDisplay(selectedElement) {
       const priceDisplay = document.querySelector('.mt-2.mb-6');
       if (!priceDisplay) return;
 
-      const quantity = parseInt(selectedElement.getAttribute('data-quantity'));
       const originalPrice = selectedElement.getAttribute('data-original-price');
       const discountedPrice = selectedElement.getAttribute('data-discounted-price');
       const discountValue = selectedElement.getAttribute('data-discount-value');
 
       let priceHTML = '';
 
-      // Check if there's a discount applied to this option
       if (discountValue > 0) {
         priceHTML = `
-                    <span class="text-xl font-bold text-gray-900">
-                        ${discountedPrice}
-                    </span>
-                    <span class="text-base line-through text-gray-500 ml-2">
-                        ${originalPrice}
-                    </span>
-                `;
-
-        // Add appropriate save message
-        if (quantity === 1) {
-          priceHTML += `<div class="text-sm text-green-600 font-medium mt-1">Save ${discountValue}%</div>`;
-        } else {
-          const saveElement = selectedElement.querySelector('.text-green-600');
-          if (saveElement) {
-            priceHTML += `<div class="text-sm text-green-600 font-medium mt-1">${saveElement.textContent}</div>`;
-          }
-        }
+          <span class="product-sale-price-{{ section.id }} text-{{ section.settings.sale_price_size | default: 'xl' }} font-{{ section.settings.price_weight | default: 'bold' }}">
+            ${discountedPrice}
+          </span>
+          <span class="product-compare-price-{{ section.id }} text-{{ section.settings.compare_size | default: 'base' }} line-through ml-{{ section.settings.compare_spacing | default: '2' }}">
+            ${originalPrice}
+          </span>
+        `;
       } else {
-        // No discount - just show regular price
         priceHTML = `
-                    <span class="text-xl font-bold text-gray-900">
-                        ${originalPrice}
-                    </span>
-                `;
+          <span class="product-price-{{ section.id }} text-{{ section.settings.regular_price_size | default: 'xl' }} font-{{ section.settings.price_weight | default: 'bold' }}">
+            ${originalPrice}
+          </span>
+        `;
       }
 
       priceDisplay.innerHTML = priceHTML;
     }
 
-    // --- Event Listeners and Initialization ---
     document.addEventListener('DOMContentLoaded', function () {
-      // Initialize with single mask selected
-      const singleMaskOption = document.querySelector('.mask-option[data-quantity="1"]');
+      const singleMaskOption = document.querySelector('.product-option-{{ section.id }}[data-quantity="1"]');
       if (singleMaskOption) {
-        const discountValue = singleMaskOption.getAttribute('data-discount-value');
-        if (discountValue > 0) {
-          selectMaskOption(singleMaskOption, 1);
-        } else {
-          // Even without discount, select it as default
-          selectedPackageElement = singleMaskOption;
-          selectedQuantity = 1;
-
-          // Update hidden input
-          const quantityInput = document.getElementById('selectedQuantity');
-          if (quantityInput) quantityInput.value = 1;
-
-          // Update button text
-          const button = document.getElementById('addToCartButton');
-          if (button) {
-            const quantityText = button.querySelector('.quantity-text');
-            if (quantityText) quantityText.textContent = '1 Mask';
-          }
-        }
-        selectedPackageElement = singleMaskOption;
+        selectMaskOption(singleMaskOption, 1);
       }
     });
   })();
@@ -405,14 +481,457 @@
       "type": "text",
       "id": "fallback_title",
       "label": "Fallback Title",
-      "info": "Shown if no product is selected",
       "default": "LED Face & Neck Mask"
     },
     {
       "type": "image_picker",
       "id": "fallback_image",
-      "label": "Fallback Image",
-      "info": "Shown if product has no images"
+      "label": "Fallback Image"
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between sections",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 10,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "product_bg",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "product_border",
+      "label": "Border color",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Regular price color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "sale_price_color",
+      "label": "Sale price color",
+      "default": "#FA8072"
+    },
+    {
+      "type": "color",
+      "id": "compare_color",
+      "label": "Compare at price color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "save_color",
+      "label": "Save badge color",
+      "default": "#16A34A"
+    },
+    {
+      "type": "color",
+      "id": "option_border",
+      "label": "Package option border",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "color",
+      "id": "option_selected",
+      "label": "Selected option border",
+      "default": "#FA8072"
+    },
+    {
+      "type": "color",
+      "id": "option_bg",
+      "label": "Selected option background",
+      "default": "#FEF2F2"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#FA8072"
+    },
+    {
+      "type": "color",
+      "id": "button_hover",
+      "label": "Button hover",
+      "default": "#E57365"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "gallery_border",
+      "label": "Gallery active border",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "header",
+      "content": "Title Settings"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "label": "Title size (mobile)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "title_size_lg",
+      "label": "Title size (desktop)",
+      "options": [
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" },
+        { "value": "4xl", "label": "4XL" }
+      ],
+      "default": "3xl"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" },
+        { "value": "900", "label": "Black" }
+      ],
+      "default": "800"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Price Settings"
+    },
+    {
+      "type": "select",
+      "id": "regular_price_size",
+      "label": "Regular price size",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "sale_price_size",
+      "label": "Sale price size",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "compare_size",
+      "label": "Compare price size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "price_weight",
+      "label": "Price font weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "compare_spacing",
+      "label": "Compare price left spacing",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "price_margin_top",
+      "label": "Price top margin",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "price_margin_bottom",
+      "label": "Price bottom margin",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_save_badge",
+      "label": "Show save badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "save_text",
+      "label": "Save text",
+      "default": "Save"
+    },
+    {
+      "type": "select",
+      "id": "save_size",
+      "label": "Save badge size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "save_weight",
+      "label": "Save badge weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "save_margin",
+      "label": "Save badge top margin",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Gallery Settings"
+    },
+    {
+      "type": "select",
+      "id": "gallery_radius",
+      "label": "Gallery border radius",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "gallery_shadow",
+      "label": "Gallery shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "range",
+      "id": "gallery_padding",
+      "label": "Gallery padding",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "main_image_height",
+      "label": "Main image height (mobile)",
+      "min": 200,
+      "max": 500,
+      "step": 20,
+      "default": 384,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "main_image_height_sm",
+      "label": "Main image height (tablet)",
+      "min": 250,
+      "max": 550,
+      "step": 20,
+      "default": 384,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "main_image_height_lg",
+      "label": "Main image height (desktop)",
+      "min": 300,
+      "max": 600,
+      "step": 20,
+      "default": 384,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "options": [
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "range",
+      "id": "image_transition",
+      "label": "Image transition speed",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "default": 300,
+      "unit": "ms"
+    },
+    {
+      "type": "header",
+      "content": "Thumbnail Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_thumbnails",
+      "label": "Show thumbnails",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_size",
+      "label": "Thumbnail size",
+      "min": 40,
+      "max": 100,
+      "step": 4,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_spacing",
+      "label": "Thumbnail spacing",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "thumbnail_radius",
+      "label": "Thumbnail radius",
+      "options": [
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_transition",
+      "label": "Thumbnail transition",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_hover_scale",
+      "label": "Thumbnail hover scale",
+      "min": 100,
+      "max": 110,
+      "step": 1,
+      "default": 105,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_inactive_opacity",
+      "label": "Inactive thumbnail opacity",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 75,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_border_width",
+      "label": "Active border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
     },
     {
       "type": "header",
@@ -423,6 +942,91 @@
       "id": "show_packages",
       "label": "Show package options",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_selected_check",
+      "label": "Show checkmark on selected",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_package_compare",
+      "label": "Show compare price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_package_save",
+      "label": "Show save amount",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "packages_title",
+      "label": "Packages section title",
+      "default": "Choose Your Package:"
+    },
+    {
+      "type": "select",
+      "id": "packages_title_size",
+      "label": "Title size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "packages_title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "packages_title_margin",
+      "label": "Title bottom margin",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "packages_margin",
+      "label": "Packages section bottom margin",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
+    },
+    {
+      "type": "range",
+      "id": "packages_per_row",
+      "label": "Packages per row",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "packages_gap",
+      "label": "Gap between packages",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "space"
     },
     {
       "type": "image_picker",
@@ -448,13 +1052,365 @@
     },
     {
       "type": "header",
-      "content": "Display Settings"
+      "content": "Package Card Styling"
     },
     {
-      "type": "checkbox",
-      "id": "show_thumbnails",
-      "label": "Show image thumbnails",
-      "default": true
+      "type": "select",
+      "id": "option_radius",
+      "label": "Card border radius",
+      "options": [
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "range",
+      "id": "option_padding",
+      "label": "Card padding",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "p"
+    },
+    {
+      "type": "range",
+      "id": "option_transition",
+      "label": "Card transition speed",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    },
+    {
+      "type": "select",
+      "id": "option_hover_shadow",
+      "label": "Card hover shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "header",
+      "content": "Package Icon"
+    },
+    {
+      "type": "range",
+      "id": "package_icon_size",
+      "label": "Icon container size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "default": 12,
+      "unit": "scale"
+    },
+    {
+      "type": "range",
+      "id": "package_icon_margin",
+      "label": "Icon bottom margin",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "package_icon_radius",
+      "label": "Icon border radius",
+      "options": [
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "full", "label": "Full" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "package_fallback_size",
+      "label": "Fallback text size",
+      "options": [
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "package_fallback_weight",
+      "label": "Fallback text weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Package Text"
+    },
+    {
+      "type": "select",
+      "id": "package_title_size",
+      "label": "Title size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "package_title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "package_title_margin",
+      "label": "Title bottom margin",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "space"
+    },
+    {
+      "type": "select",
+      "id": "package_price_size",
+      "label": "Price size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "package_price_weight",
+      "label": "Price weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "package_compare_size",
+      "label": "Compare price size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "select",
+      "id": "package_save_size",
+      "label": "Save text size",
+      "options": [
+        { "value": "xs", "label": "Extra small" },
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" }
+      ],
+      "default": "xs"
+    },
+    {
+      "type": "select",
+      "id": "package_save_weight",
+      "label": "Save text weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "package_save_margin",
+      "label": "Save text top margin",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "space"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "text",
+      "id": "button_text_unit",
+      "label": "Item unit name",
+      "default": "Mask"
+    },
+    {
+      "type": "text",
+      "id": "button_text_single",
+      "label": "Single item text",
+      "default": "1 Mask"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold out text",
+      "default": "Sold Out"
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Button padding",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "unit": "p"
+    },
+    {
+      "type": "select",
+      "id": "button_radius",
+      "label": "Button border radius",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "button_text_size",
+      "label": "Button text size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "select",
+      "id": "button_weight",
+      "label": "Button font weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "button_shadow",
+      "label": "Button shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "range",
+      "id": "button_transition",
+      "label": "Button transition speed",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    },
+    {
+      "type": "range",
+      "id": "button_disabled_opacity",
+      "label": "Disabled button opacity",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Info Section"
+    },
+    {
+      "type": "range",
+      "id": "info_padding",
+      "label": "Info section padding",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "p"
+    },
+    {
+      "type": "select",
+      "id": "info_radius",
+      "label": "Info border radius",
+      "options": [
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "XL" },
+        { "value": "2xl", "label": "2XL" },
+        { "value": "3xl", "label": "3XL" }
+      ],
+      "default": "xl"
+    },
+    {
+      "type": "select",
+      "id": "info_shadow",
+      "label": "Info shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "range",
+      "id": "form_margin_top",
+      "label": "Form top margin",
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "default": 6,
+      "unit": "space"
     }
   ],
   "presets": [
