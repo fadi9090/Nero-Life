@@ -479,3 +479,959 @@
     </div>
   {% endif %}
 </div>
+
+{% comment %} {% schema %}
+{
+  "name": "Cart Page",
+  "settings": 
+  [
+    {
+      "type": "header",
+      "content": "⚠️ IMPORTANT: Product Redirect"
+    },
+    {
+      "type": "paragraph",
+      "content": "Set the product handle for your LED mask below. Current handle: '14-silicone-face-neck-photon-mask'"
+    },
+    {
+      "type": "text",
+      "id": "product_handle",
+      "label": "Product Handle",
+      "default": "14-silicone-face-neck-photon-mask",
+      "info": "The URL handle of your product (e.g., 'product-name' from myshopify.com/products/product-name)"
+    },
+    {
+      "type": "url",
+      "id": "fallback_url",
+      "label": "Fallback URL",
+      "info": "URL to redirect to if product is not found"
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "cart_bg",
+      "label": "Page background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_sm",
+      "label": "Horizontal padding (tablet)",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_lg",
+      "label": "Horizontal padding (desktop)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between columns",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "items_column_width",
+      "label": "Items column width",
+      "default": "2fr",
+      "info": "Use fr units (e.g., 2fr, 1fr)"
+    },
+    {
+      "type": "text",
+      "id": "summary_column_width",
+      "label": "Summary column width",
+      "default": "1fr"
+    },
+    {
+      "type": "header",
+      "content": "Colors - Text"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Main heading color",
+      "default": "#111827",
+      "info": "Your Shopping Cart text"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Product title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "body_text_color",
+      "label": "Body text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "light_text_color",
+      "label": "Light text color",
+      "default": "#6B7280",
+      "info": "For variant options and secondary text"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#2563EB"
+    },
+    {
+      "type": "color",
+      "id": "link_hover",
+      "label": "Link hover color",
+      "default": "#1D4ED8"
+    },
+    {
+      "type": "header",
+      "content": "Colors - Item"
+    },
+    {
+      "type": "color",
+      "id": "item_bg",
+      "label": "Item background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "quantity_btn_color",
+      "label": "Quantity button color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "quantity_btn_hover",
+      "label": "Quantity button hover",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "remove_color",
+      "label": "Remove link color",
+      "default": "#DC2626"
+    },
+    {
+      "type": "color",
+      "id": "remove_hover",
+      "label": "Remove link hover",
+      "default": "#B91C1C"
+    },
+    {
+      "type": "header",
+      "content": "Colors - Summary"
+    },
+    {
+      "type": "color",
+      "id": "summary_bg",
+      "label": "Summary background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "summary_text",
+      "label": "Summary text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "summary_heading",
+      "label": "Summary heading color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "discount_color",
+      "label": "Discount text color",
+      "default": "#059669"
+    },
+    {
+      "type": "color",
+      "id": "total_color",
+      "label": "Total price color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "checkout_bg",
+      "label": "Checkout button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "checkout_hover",
+      "label": "Checkout button hover",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "checkout_text",
+      "label": "Checkout button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Colors - Empty Cart"
+    },
+    {
+      "type": "color",
+      "id": "empty_cart_bg",
+      "label": "Empty cart background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "empty_title_color",
+      "label": "Empty title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "empty_text_color",
+      "label": "Empty message color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "empty_icon_color",
+      "label": "Empty icon color",
+      "default": "#9CA3AF"
+    },
+    {
+      "type": "color",
+      "id": "continue_bg",
+      "label": "Continue button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "continue_hover",
+      "label": "Continue button hover",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "continue_text",
+      "label": "Continue button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "cart_title",
+      "label": "Cart title",
+      "default": "Your Shopping Cart"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Heading bottom margin",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Product title size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Product title weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body text size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "light_size",
+      "label": "Light text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Item Settings"
+    },
+    {
+      "type": "range",
+      "id": "items_spacing",
+      "label": "Space between items",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Gap between image and details",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item bottom padding",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "label": "Image size",
+      "min": 64,
+      "max": 160,
+      "step": 8,
+      "default": 96,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "price_weight",
+      "label": "Price weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Quantity Controls"
+    },
+    {
+      "type": "range",
+      "id": "controls_margin",
+      "label": "Controls top margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_radius",
+      "label": "Quantity control radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_padding",
+      "label": "Quantity button padding (vertical)",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_padding_x",
+      "label": "Quantity button padding (horizontal)",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_width",
+      "label": "Quantity display width",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "remove_spacing",
+      "label": "Remove link left spacing",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "remove_size",
+      "label": "Remove text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "remove_icon_gap",
+      "label": "Remove icon spacing",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "remove_text",
+      "label": "Remove link text",
+      "default": "Remove"
+    },
+    {
+      "type": "header",
+      "content": "Summary Card"
+    },
+    {
+      "type": "text",
+      "id": "summary_title",
+      "label": "Summary title",
+      "default": "Order Summary"
+    },
+    {
+      "type": "range",
+      "id": "summary_title_size",
+      "label": "Summary title size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "summary_title_weight",
+      "label": "Summary title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "summary_title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_padding",
+      "label": "Card padding",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_sticky_offset",
+      "label": "Sticky offset",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_text",
+      "label": "Subtotal label",
+      "default": "Subtotal"
+    },
+    {
+      "type": "text",
+      "id": "discount_text",
+      "label": "Discount label",
+      "default": "Discounts"
+    },
+    {
+      "type": "text",
+      "id": "total_text",
+      "label": "Total label",
+      "default": "Total"
+    },
+    {
+      "type": "range",
+      "id": "summary_text_size",
+      "label": "Summary text size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_row_spacing",
+      "label": "Row spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_divider_margin",
+      "label": "Divider margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "total_size",
+      "label": "Total size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "total_weight",
+      "label": "Total weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "total_margin",
+      "label": "Total bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "checkout_text",
+      "label": "Checkout button text",
+      "default": "Proceed to Checkout"
+    },
+    {
+      "type": "select",
+      "id": "checkout_weight",
+      "label": "Checkout button weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "checkout_padding",
+      "label": "Checkout padding (vertical)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "checkout_padding_x",
+      "label": "Checkout padding (horizontal)",
+      "min": 12,
+      "max": 40,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "checkout_icon_gap",
+      "label": "Checkout icon spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty cart title",
+      "default": "Your Cart is Empty"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_message",
+      "label": "Empty cart message",
+      "default": "Looks like you haven't added anything to your cart yet."
+    },
+    {
+      "type": "range",
+      "id": "empty_padding",
+      "label": "Empty section padding (vertical)",
+      "min": 40,
+      "max": 120,
+      "step": 8,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_padding_x",
+      "label": "Empty section padding (horizontal)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_radius",
+      "label": "Empty section radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_icon_size",
+      "label": "Empty icon size",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "info": "Tailwind scale (8=32px, 12=48px, 16=64px)"
+    },
+    {
+      "type": "range",
+      "id": "empty_title_size",
+      "label": "Empty title size",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "empty_title_weight",
+      "label": "Empty title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "empty_title_margin",
+      "label": "Title top/bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_text_size",
+      "label": "Empty text size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_text_margin",
+      "label": "Text top margin",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_text_bottom_margin",
+      "label": "Text bottom margin",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "continue_text",
+      "label": "Continue button text",
+      "default": "Continue Shopping"
+    },
+    {
+      "type": "select",
+      "id": "continue_weight",
+      "label": "Continue button weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "continue_padding",
+      "label": "Continue padding (vertical)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "continue_padding_x",
+      "label": "Continue padding (horizontal)",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "continue_icon_gap",
+      "label": "Continue icon spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size (default)",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "info": "Tailwind scale (4=16px, 5=20px, 6=24px)"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_small",
+      "label": "Icon size (small)",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "info": "For remove icon"
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition speed",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Page"
+    }
+  ]
+}
+{% endschema %} {% endcomment %}
