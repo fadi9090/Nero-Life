@@ -1,63 +1,377 @@
 {% comment %}
-  Simple Cart Template - No AJAX, just form submits
+  Cart Template - Fully customizable through Shopify editor
+  Features: Simple cart with quantity controls, order summary, and responsive design
 {% endcomment %}
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-  
+{% comment %} Get the single product URL for continue shopping {% endcomment %}
+{% assign product_handle = '14-silicone-face-neck-photon-mask' %}
+{% assign single_product = all_products[product_handle] %}
+
+<style>
+  #cart-{{ section.id }} {
+    --cart-max-width: {{ section.settings.max_width | default: '1280' }}px;
+    --cart-padding-y: {{ section.settings.padding_y | default: '48' }}px;
+    --cart-padding-x: {{ section.settings.padding_x | default: '16' }}px;
+    --cart-bg: {{ section.settings.cart_bg | default: '#FFFFFF' }};
+    --title-color: {{ section.settings.title_color | default: '#111827' }};
+    --title-size: {{ section.settings.title_size | default: '30' }}px;
+    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --border-color: {{ section.settings.border_color | default: '#E5E7EB' }};
+    --item-bg: {{ section.settings.item_bg | default: '#F9FAFB' }};
+    --price-color: {{ section.settings.price_color | default: '#111827' }};
+    --quantity-btn-color: {{ section.settings.quantity_btn_color | default: '#4B5563' }};
+    --quantity-btn-hover: {{ section.settings.quantity_btn_hover | default: '#111827' }};
+    --remove-color: {{ section.settings.remove_color | default: '#DC2626' }};
+    --remove-hover: {{ section.settings.remove_hover | default: '#B91C1C' }};
+    --summary-bg: {{ section.settings.summary_bg | default: '#F9FAFB' }};
+    --summary-radius: {{ section.settings.summary_radius | default: '12' }}px;
+    --checkout-bg: {{ section.settings.checkout_bg | default: '#000000' }};
+    --checkout-hover: {{ section.settings.checkout_hover | default: '#1F2937' }};
+    --checkout-text: {{ section.settings.checkout_text | default: '#FFFFFF' }};
+    --empty-cart-bg: {{ section.settings.empty_cart_bg | default: '#F9FAFB' }};
+    --empty-cart-color: {{ section.settings.empty_cart_color | default: '#6B7280' }};
+    --continue-bg: {{ section.settings.continue_bg | default: '#000000' }};
+    --continue-hover: {{ section.settings.continue_hover | default: '#1F2937' }};
+    --continue-text: {{ section.settings.continue_text | default: '#FFFFFF' }};
+  }
+
+  @media (min-width: 640px) {
+    #cart-{{ section.id }} {
+      --cart-padding-x: {{ section.settings.padding_x_sm | default: '24' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #cart-{{ section.id }} {
+      --cart-padding-x: {{ section.settings.padding_x_lg | default: '32' }}px;
+    }
+  }
+
+  .cart-section-{{ section.id }} {
+    max-width: var(--cart-max-width);
+    margin: 0 auto;
+    padding: var(--cart-padding-y) var(--cart-padding-x);
+    background-color: var(--cart-bg);
+  }
+
+  .cart-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: var(--title-size);
+    font-weight: {{ section.settings.title_weight | default: '700' }};
+    text-align: {{ section.settings.title_align | default: 'left' }};
+    margin-bottom: {{ section.settings.title_margin | default: '32' }}px;
+  }
+
+  .cart-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.grid_gap | default: '32' }}px;
+  }
+
+  @media (min-width: 1024px) {
+    .cart-grid-{{ section.id }} {
+      grid-template-columns: {{ section.settings.items_column_width | default: '2fr' }} {{ section.settings.summary_column_width | default: '1fr' }};
+    }
+  }
+
+  .cart-items-{{ section.id }} {
+    space-y: {{ section.settings.items_spacing | default: '24' }}px;
+  }
+
+  .cart-item-{{ section.id }} {
+    display: flex;
+    gap: {{ section.settings.item_gap | default: '16' }}px;
+    padding-bottom: {{ section.settings.item_padding | default: '24' }}px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .item-image-{{ section.id }} {
+    width: {{ section.settings.image_size | default: '96' }}px;
+    height: {{ section.settings.image_size | default: '96' }}px;
+    flex-shrink: 0;
+    background-color: var(--item-bg);
+    border-radius: {{ section.settings.image_radius | default: '8' }}px;
+    overflow: hidden;
+  }
+
+  .item-image-{{ section.id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-details-{{ section.id }} {
+    flex: 1;
+  }
+
+  .item-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: {{ section.settings.item_title_size | default: '18' }}px;
+    font-weight: {{ section.settings.item_title_weight | default: '500' }};
+    margin-bottom: {{ section.settings.item_title_margin | default: '4' }}px;
+  }
+
+  .item-title-{{ section.id }} a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .item-title-{{ section.id }} a:hover {
+    color: var(--quantity-btn-hover);
+  }
+
+  .item-variant-{{ section.id }} {
+    color: var(--text-color);
+    font-size: {{ section.settings.variant_size | default: '14' }}px;
+    margin-bottom: {{ section.settings.variant_margin | default: '8' }}px;
+  }
+
+  .item-price-{{ section.id }} {
+    color: var(--price-color);
+    font-size: {{ section.settings.price_size | default: '18' }}px;
+    font-weight: {{ section.settings.price_weight | default: '500' }};
+  }
+
+  .item-controls-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    margin-top: {{ section.settings.controls_margin | default: '12' }}px;
+  }
+
+  .quantity-control-{{ section.id }} {
+    display: inline-flex;
+    border: 1px solid var(--border-color);
+    border-radius: {{ section.settings.quantity_radius | default: '6' }}px;
+    overflow: hidden;
+  }
+
+  .quantity-btn-{{ section.id }} {
+    padding: {{ section.settings.quantity_padding | default: '8' }}px {{ section.settings.quantity_padding_x | default: '12' }}px;
+    color: var(--quantity-btn-color);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quantity-btn-{{ section.id }}:hover {
+    color: var(--quantity-btn-hover);
+    background-color: var(--item-bg);
+  }
+
+  .quantity-display-{{ section.id }} {
+    width: {{ section.settings.quantity_width | default: '48' }}px;
+    text-align: center;
+    padding: {{ section.settings.quantity_padding | default: '8' }}px 0;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    color: var(--text-color);
+  }
+
+  .remove-link-{{ section.id }} {
+    margin-left: {{ section.settings.remove_spacing | default: '16' }}px;
+    color: var(--remove-color);
+    font-size: {{ section.settings.remove_size | default: '14' }}px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.remove_icon_gap | default: '4' }}px;
+    transition: color {{ section.settings.transition_speed | default: '200' }}ms ease;
+  }
+
+  .remove-link-{{ section.id }}:hover {
+    color: var(--remove-hover);
+  }
+
+  .summary-card-{{ section.id }} {
+    background-color: var(--summary-bg);
+    border-radius: var(--summary-radius);
+    padding: {{ section.settings.summary_padding | default: '24' }}px;
+    position: sticky;
+    top: {{ section.settings.summary_sticky_offset | default: '24' }}px;
+  }
+
+  .summary-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: {{ section.settings.summary_title_size | default: '20' }}px;
+    font-weight: {{ section.settings.summary_title_weight | default: '700' }};
+    margin-bottom: {{ section.settings.summary_title_margin | default: '16' }}px;
+  }
+
+  .summary-row-{{ section.id }} {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-color);
+    font-size: {{ section.settings.summary_text_size | default: '16' }}px;
+    margin-bottom: {{ section.settings.summary_row_spacing | default: '12' }}px;
+  }
+
+  .summary-divider-{{ section.id }} {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: {{ section.settings.summary_divider_margin | default: '16' }}px 0;
+  }
+
+  .summary-total-{{ section.id }} {
+    display: flex;
+    justify-content: space-between;
+    color: var(--title-color);
+    font-size: {{ section.settings.total_size | default: '20' }}px;
+    font-weight: {{ section.settings.total_weight | default: '700' }};
+    margin-bottom: {{ section.settings.total_margin | default: '24' }}px;
+  }
+
+  .checkout-btn-{{ section.id }} {
+    width: 100%;
+    background-color: var(--checkout-bg);
+    color: var(--checkout-text);
+    font-weight: {{ section.settings.checkout_weight | default: '500' }};
+    padding: {{ section.settings.checkout_padding | default: '12' }}px {{ section.settings.checkout_padding_x | default: '24' }}px;
+    border-radius: {{ section.settings.checkout_radius | default: '6' }}px;
+    border: none;
+    cursor: pointer;
+    transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{ section.settings.checkout_icon_gap | default: '8' }}px;
+  }
+
+  .checkout-btn-{{ section.id }}:hover {
+    background-color: var(--checkout-hover);
+  }
+
+  .empty-cart-{{ section.id }} {
+    text-align: center;
+    padding: {{ section.settings.empty_padding | default: '80' }}px {{ section.settings.empty_padding_x | default: '20' }}px;
+    background-color: var(--empty-cart-bg);
+    border-radius: {{ section.settings.empty_radius | default: '12' }}px;
+  }
+
+  .empty-title-{{ section.id }} {
+    color: var(--title-color);
+    font-size: {{ section.settings.empty_title_size | default: '24' }}px;
+    font-weight: {{ section.settings.empty_title_weight | default: '700' }};
+    margin: {{ section.settings.empty_title_margin | default: '16' }}px 0 {{ section.settings.empty_text_margin | default: '8' }}px;
+  }
+
+  .empty-text-{{ section.id }} {
+    color: var(--empty-cart-color);
+    font-size: {{ section.settings.empty_text_size | default: '16' }}px;
+    margin-bottom: {{ section.settings.empty_text_bottom_margin | default: '24' }}px;
+  }
+
+  .continue-btn-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: {{ section.settings.continue_icon_gap | default: '8' }}px;
+    background-color: var(--continue-bg);
+    color: var(--continue-text);
+    font-weight: {{ section.settings.continue_weight | default: '500' }};
+    padding: {{ section.settings.continue_padding | default: '12' }}px {{ section.settings.continue_padding_x | default: '32' }}px;
+    border-radius: {{ section.settings.continue_radius | default: '6' }}px;
+    text-decoration: none;
+    transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
+  }
+
+  .continue-btn-{{ section.id }}:hover {
+    background-color: var(--continue-hover);
+  }
+
+  @media (max-width: 640px) {
+    .cart-item-{{ section.id }} {
+      flex-direction: column;
+    }
+
+    .item-controls-{{ section.id }} {
+      flex-wrap: wrap;
+    }
+
+    .summary-card-{{ section.id }} {
+      position: static;
+    }
+  }
+</style>
+
+<div id="cart-{{ section.id }}" class="cart-section-{{ section.id }}" {{ section.shopify_attributes }}>
   {% if cart.item_count > 0 %}
     
+    <!-- Cart Title -->
+    <h1 class="cart-title-{{ section.id }}">
+      {{ section.settings.cart_title | default: 'Your Shopping Cart' }}
+    </h1>
+
     <form action="{{ routes.cart_url }}" method="post" id="cart-form">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="cart-grid-{{ section.id }}">
         
         <!-- Cart Items -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="cart-items-{{ section.id }}">
           {% for item in cart.items %}
-            <div class="border-b pb-6 flex items-start gap-4">
+            <div class="cart-item-{{ section.id }}">
+              
               <!-- Product Image -->
-              <div class="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+              <div class="item-image-{{ section.id }}">
                 <a href="{{ item.url }}">
                   <img src="{{ item.image | image_url: width: 200 }}" 
                        loading="lazy" 
                        alt="{{ item.image.alt | escape }}"
                        width="200"
-                       height="200"
-                       class="w-full h-full object-cover">
+                       height="200">
                 </a>
               </div>
 
               <!-- Product Details -->
-              <div class="flex-grow">
-                <div class="flex justify-between">
+              <div class="item-details-{{ section.id }}">
+                <div class="flex justify-between items-start">
                   <div>
-                    <h3 class="text-lg font-medium">
+                    <h3 class="item-title-{{ section.id }}">
                       <a href="{{ item.url }}">{{ item.product.title }}</a>
                     </h3>
                     {% unless item.product.has_only_default_variant %}
-                      <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
+                      <p class="item-variant-{{ section.id }}">{{ item.variant.title }}</p>
                     {% endunless %}
                   </div>
-                  <div class="text-lg font-medium">
+                  <div class="item-price-{{ section.id }}">
                     {{ item.final_line_price | money }}
                   </div>
                 </div>
 
-                <!-- Quantity Controls - Simple links that reload the page -->
-                <div class="flex items-center mt-3">
-                  <div class="inline-flex border border-gray-300 rounded-md">
+                <!-- Quantity Controls -->
+                <div class="item-controls-{{ section.id }}">
+                  <div class="quantity-control-{{ section.id }}">
                     <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" 
-                       class="p-2 text-gray-600 hover:text-gray-900 px-3">−</a>
+                       class="quantity-btn-{{ section.id }}"
+                       aria-label="Decrease quantity">
+                      {% render 'icon-minus', 
+                        size: section.settings.icon_size | default: 4, 
+                        color: 'currentColor' 
+                      %}
+                    </a>
                     
-                    <span class="w-12 text-center py-2 border-l border-r border-gray-300">
+                    <span class="quantity-display-{{ section.id }}">
                       {{ item.quantity }}
                     </span>
                     
                     <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" 
-                       class="p-2 text-gray-600 hover:text-gray-900 px-3">+</a>
+                       class="quantity-btn-{{ section.id }}"
+                       aria-label="Increase quantity">
+                      {% render 'icon-plus', 
+                        size: section.settings.icon_size | default: 4, 
+                        color: 'currentColor' 
+                      %}
+                    </a>
                   </div>
                   
                   <a href="/cart/change?line={{ forloop.index }}&quantity=0" 
-                     class="ml-4 text-sm text-red-600 hover:text-red-800">
-                    Remove
+                     class="remove-link-{{ section.id }}">
+                    {% render 'icon-remove', 
+                      size: section.settings.icon_size_small | default: 4, 
+                      color: 'currentColor' 
+                    %}
+                    {{ section.settings.remove_text | default: 'Remove' }}
                   </a>
                 </div>
               </div>
@@ -66,36 +380,978 @@
         </div>
 
         <!-- Order Summary -->
-        <div class="lg:col-span-1 bg-gray-50 p-6 rounded-xl h-fit">
-          <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-          
-          <div class="space-y-3 border-b pb-4">
-            <div class="flex justify-between">
-              <span>Subtotal</span>
+        <div>
+          <div class="summary-card-{{ section.id }}">
+            <h2 class="summary-title-{{ section.id }}">
+              {{ section.settings.summary_title | default: 'Order Summary' }}
+            </h2>
+            
+            <div class="summary-row-{{ section.id }}">
+              <span>{{ section.settings.subtotal_text | default: 'Subtotal' }}</span>
               <span>{{ cart.total_price | money }}</span>
             </div>
-          </div>
-          
-          <div class="flex justify-between text-xl font-bold pt-4">
-            <span>Total</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
+            
+            {% if cart.total_discounts > 0 %}
+              <div class="summary-row-{{ section.id }}" style="color: {{ section.settings.discount_color | default: '#059669' }};">
+                <span>{{ section.settings.discount_text | default: 'Discounts' }}</span>
+                <span>-{{ cart.total_discounts | money }}</span>
+              </div>
+            {% endif %}
+            
+            <div class="summary-divider-{{ section.id }}"></div>
+            
+            <div class="summary-total-{{ section.id }}">
+              <span>{{ section.settings.total_text | default: 'Total' }}</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
 
-          <button type="submit" name="checkout" 
-                  class="w-full mt-6 py-3 px-6 bg-black text-white rounded-md hover:bg-gray-800">
-            Checkout
-          </button>
+            <button type="submit" name="checkout" class="checkout-btn-{{ section.id }}">
+              {{ section.settings.checkout_text | default: 'Proceed to Checkout' }}
+              {% render 'icon-arrow-right', 
+                size: section.settings.icon_size | default: 5, 
+                color: 'currentColor' 
+              %}
+            </button>
+          </div>
         </div>
       </div>
     </form>
 
   {% else %}
     <!-- Empty Cart -->
-    <div class="text-center py-20">
-      <h2 class="text-2xl font-bold mb-4">Your Cart is Empty</h2>
-      <a href="/collections/all" class="inline-block bg-black text-white px-8 py-3 rounded-md">
-        Continue Shopping
+    <div class="empty-cart-{{ section.id }}">
+      {% render 'icon-shopping-bag', 
+        size: section.settings.empty_icon_size | default: 16, 
+        color: section.settings.empty_icon_color | default: '#9CA3AF',
+        class: 'mx-auto mb-4'
+      %}
+      
+      <h2 class="empty-title-{{ section.id }}">
+        {{ section.settings.empty_title | default: 'Your Cart is Empty' }}
+      </h2>
+      
+      <p class="empty-text-{{ section.id }}">
+        {{ section.settings.empty_message | default: 'Looks like you haven\'t added anything to your cart yet.' }}
+      </p>
+      
+      <a href="{% if single_product.url != blank %}{{ single_product.url }}{% else %}/collections/all{% endif %}" 
+         class="continue-btn-{{ section.id }}">
+        {% render 'icon-arrow-left', 
+          size: section.settings.icon_size | default: 5, 
+          color: 'currentColor' 
+        %}
+        {{ section.settings.continue_text | default: 'Continue Shopping' }}
       </a>
     </div>
   {% endif %}
 </div>
+
+{% schema %}
+{
+  "name": "Cart Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "cart_bg",
+      "label": "Page background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_sm",
+      "label": "Horizontal padding (tablet)",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_lg",
+      "label": "Horizontal padding (desktop)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between columns",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "items_column_width",
+      "label": "Items column width",
+      "default": "2fr",
+      "info": "Use fr units (e.g., 2fr, 1fr)"
+    },
+    {
+      "type": "text",
+      "id": "summary_column_width",
+      "label": "Summary column width",
+      "default": "1fr"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "color",
+      "id": "item_bg",
+      "label": "Item background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "quantity_btn_color",
+      "label": "Quantity button color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "quantity_btn_hover",
+      "label": "Quantity button hover",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "remove_color",
+      "label": "Remove link color",
+      "default": "#DC2626"
+    },
+    {
+      "type": "color",
+      "id": "remove_hover",
+      "label": "Remove link hover",
+      "default": "#B91C1C"
+    },
+    {
+      "type": "color",
+      "id": "summary_bg",
+      "label": "Summary background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "discount_color",
+      "label": "Discount color",
+      "default": "#059669"
+    },
+    {
+      "type": "color",
+      "id": "checkout_bg",
+      "label": "Checkout button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "checkout_hover",
+      "label": "Checkout button hover",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "checkout_text",
+      "label": "Checkout button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "empty_cart_bg",
+      "label": "Empty cart background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "empty_cart_color",
+      "label": "Empty cart text color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "empty_icon_color",
+      "label": "Empty cart icon color",
+      "default": "#9CA3AF"
+    },
+    {
+      "type": "color",
+      "id": "continue_bg",
+      "label": "Continue button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "continue_hover",
+      "label": "Continue button hover",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "continue_text",
+      "label": "Continue button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "cart_title",
+      "label": "Cart title",
+      "default": "Your Shopping Cart"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "title_align",
+      "label": "Title alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "title_margin",
+      "label": "Title bottom margin",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Item Settings"
+    },
+    {
+      "type": "range",
+      "id": "items_spacing",
+      "label": "Space between items",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Gap between image and details",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item bottom padding",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "label": "Image size",
+      "min": 64,
+      "max": 160,
+      "step": 8,
+      "default": 96,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_title_size",
+      "label": "Item title size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "item_title_weight",
+      "label": "Item title weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "item_title_margin",
+      "label": "Title bottom margin",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "variant_size",
+      "label": "Variant text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "variant_margin",
+      "label": "Variant bottom margin",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "price_weight",
+      "label": "Price weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Quantity Controls"
+    },
+    {
+      "type": "range",
+      "id": "controls_margin",
+      "label": "Controls top margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_radius",
+      "label": "Quantity control radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_padding",
+      "label": "Quantity button padding (vertical)",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_padding_x",
+      "label": "Quantity button padding (horizontal)",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quantity_width",
+      "label": "Quantity display width",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "remove_spacing",
+      "label": "Remove link left spacing",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "remove_size",
+      "label": "Remove text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "remove_icon_gap",
+      "label": "Remove icon spacing",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "remove_text",
+      "label": "Remove link text",
+      "default": "Remove"
+    },
+    {
+      "type": "header",
+      "content": "Summary Card"
+    },
+    {
+      "type": "text",
+      "id": "summary_title",
+      "label": "Summary title",
+      "default": "Order Summary"
+    },
+    {
+      "type": "range",
+      "id": "summary_title_size",
+      "label": "Summary title size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "summary_title_weight",
+      "label": "Summary title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "summary_title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_padding",
+      "label": "Card padding",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_sticky_offset",
+      "label": "Sticky offset",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_text",
+      "label": "Subtotal label",
+      "default": "Subtotal"
+    },
+    {
+      "type": "text",
+      "id": "discount_text",
+      "label": "Discount label",
+      "default": "Discounts"
+    },
+    {
+      "type": "text",
+      "id": "total_text",
+      "label": "Total label",
+      "default": "Total"
+    },
+    {
+      "type": "range",
+      "id": "summary_text_size",
+      "label": "Summary text size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_row_spacing",
+      "label": "Row spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_divider_margin",
+      "label": "Divider margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "total_size",
+      "label": "Total size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "total_weight",
+      "label": "Total weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "total_margin",
+      "label": "Total bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Checkout Button"
+    },
+    {
+      "type": "text",
+      "id": "checkout_text",
+      "label": "Button text",
+      "default": "Proceed to Checkout"
+    },
+    {
+      "type": "select",
+      "id": "checkout_weight",
+      "label": "Button weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "checkout_padding",
+      "label": "Button padding (vertical)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "checkout_padding_x",
+      "label": "Button padding (horizontal)",
+      "min": 12,
+      "max": 40,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "checkout_radius",
+      "label": "Button radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "checkout_icon_gap",
+      "label": "Icon spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Empty Cart"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty cart title",
+      "default": "Your Cart is Empty"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_message",
+      "label": "Empty cart message",
+      "default": "Looks like you haven't added anything to your cart yet."
+    },
+    {
+      "type": "range",
+      "id": "empty_padding",
+      "label": "Empty section padding (vertical)",
+      "min": 40,
+      "max": 120,
+      "step": 8,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_padding_x",
+      "label": "Empty section padding (horizontal)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_radius",
+      "label": "Empty section radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_icon_size",
+      "label": "Empty icon size",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "Tailwind scale"
+    },
+    {
+      "type": "range",
+      "id": "empty_title_size",
+      "label": "Empty title size",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "empty_title_weight",
+      "label": "Empty title weight",
+      "options": [
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "empty_title_margin",
+      "label": "Title top/bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_text_size",
+      "label": "Empty text size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_text_margin",
+      "label": "Text top margin",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "empty_text_bottom_margin",
+      "label": "Text bottom margin",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Continue Button"
+    },
+    {
+      "type": "text",
+      "id": "continue_text",
+      "label": "Button text",
+      "default": "Continue Shopping"
+    },
+    {
+      "type": "select",
+      "id": "continue_weight",
+      "label": "Button weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "continue_padding",
+      "label": "Button padding (vertical)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "continue_padding_x",
+      "label": "Button padding (horizontal)",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "continue_radius",
+      "label": "Button radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "continue_icon_gap",
+      "label": "Icon spacing",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size (default)",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "info": "Tailwind scale (4=16px, 5=20px, 6=24px)"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_small",
+      "label": "Icon size (small)",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "info": "For remove icon"
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition speed",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Page"
+    }
+  ]
+}
+{% endschema %}

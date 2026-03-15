@@ -1,0 +1,24 @@
+{% comment %}
+  Icon: Remove / Trash
+  Usage: {% render 'icon-remove', size: 5, color: '#EF4444', class: 'mr-1' %}
+  
+  Parameters:
+  - size: Icon size (Tailwind scale: 4=16px, 5=20px, 6=24px)
+  - color: Icon color (default: currentColor)
+  - stroke_width: Stroke width (default: 1.5)
+  - class: Additional CSS classes
+{% endcomment %}
+
+{%- assign size = size | default: 5 -%}
+{%- assign color = color | default: 'currentColor' -%}
+{%- assign stroke = stroke_width | default: 1.5 -%}
+{%- assign custom_class = class | default: '' -%}
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     class="w-{{ size }} h-{{ size }} {{ custom_class }}" 
+     fill="none" 
+     viewBox="0 0 24 24" 
+     stroke="{{ color }}" 
+     stroke-width="{{ stroke }}">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+</svg>
