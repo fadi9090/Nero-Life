@@ -480,10 +480,32 @@
   {% endif %}
 </div>
 
-{% schema %}
+{% comment %} {% schema %}
 {
   "name": "Cart Page",
-  "settings": [
+  "settings": 
+  [
+    {
+      "type": "header",
+      "content": "⚠️ IMPORTANT: Product Redirect"
+    },
+    {
+      "type": "paragraph",
+      "content": "Set the product handle for your LED mask below. Current handle: '14-silicone-face-neck-photon-mask'"
+    },
+    {
+      "type": "text",
+      "id": "product_handle",
+      "label": "Product Handle",
+      "default": "14-silicone-face-neck-photon-mask",
+      "info": "The URL handle of your product (e.g., 'product-name' from myshopify.com/products/product-name)"
+    },
+    {
+      "type": "url",
+      "id": "fallback_url",
+      "label": "Fallback URL",
+      "info": "URL to redirect to if product is not found"
+    },
     {
       "type": "header",
       "content": "⚠️ IMPORTANT: Product Redirect"
@@ -1433,4 +1455,4 @@
     }
   ]
 }
-{% endschema %}
+{% endschema %} {% endcomment %}
