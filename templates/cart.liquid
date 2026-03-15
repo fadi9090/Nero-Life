@@ -3,8 +3,8 @@
   Features: Simple cart with quantity controls, order summary, and responsive design
 {% endcomment %}
 
-{% comment %} Get the single product URL for continue shopping {% endcomment %}
-{% assign product_handle = '14-silicone-face-neck-photon-mask' %}
+{% comment %} Get the single product URL for continue shopping - CHANGE THIS TO YOUR PRODUCT HANDLE {% endcomment %}
+{% assign product_handle = section.settings.product_handle | default: '14-silicone-face-neck-photon-mask' %}
 {% assign single_product = all_products[product_handle] %}
 
 <style>
@@ -13,26 +13,53 @@
     --cart-padding-y: {{ section.settings.padding_y | default: '48' }}px;
     --cart-padding-x: {{ section.settings.padding_x | default: '16' }}px;
     --cart-bg: {{ section.settings.cart_bg | default: '#FFFFFF' }};
+    
+    /* Text Colors - Fixed */
+    --heading-color: {{ section.settings.heading_color | default: '#111827' }};
     --title-color: {{ section.settings.title_color | default: '#111827' }};
-    --title-size: {{ section.settings.title_size | default: '30' }}px;
-    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --body-text-color: {{ section.settings.body_text_color | default: '#4B5563' }};
+    --light-text-color: {{ section.settings.light_text_color | default: '#6B7280' }};
     --border-color: {{ section.settings.border_color | default: '#E5E7EB' }};
+    
+    /* Item Colors */
     --item-bg: {{ section.settings.item_bg | default: '#F9FAFB' }};
     --price-color: {{ section.settings.price_color | default: '#111827' }};
+    
+    /* Interactive Colors */
+    --link-color: {{ section.settings.link_color | default: '#2563EB' }};
+    --link-hover: {{ section.settings.link_hover | default: '#1D4ED8' }};
     --quantity-btn-color: {{ section.settings.quantity_btn_color | default: '#4B5563' }};
     --quantity-btn-hover: {{ section.settings.quantity_btn_hover | default: '#111827' }};
     --remove-color: {{ section.settings.remove_color | default: '#DC2626' }};
     --remove-hover: {{ section.settings.remove_hover | default: '#B91C1C' }};
+    
+    /* Summary Colors */
     --summary-bg: {{ section.settings.summary_bg | default: '#F9FAFB' }};
-    --summary-radius: {{ section.settings.summary_radius | default: '12' }}px;
+    --summary-text: {{ section.settings.summary_text | default: '#4B5563' }};
+    --summary-heading: {{ section.settings.summary_heading | default: '#111827' }};
+    --discount-color: {{ section.settings.discount_color | default: '#059669' }};
+    --total-color: {{ section.settings.total_color | default: '#111827' }};
+    
+    /* Button Colors */
     --checkout-bg: {{ section.settings.checkout_bg | default: '#000000' }};
     --checkout-hover: {{ section.settings.checkout_hover | default: '#1F2937' }};
     --checkout-text: {{ section.settings.checkout_text | default: '#FFFFFF' }};
+    
+    /* Empty Cart Colors */
     --empty-cart-bg: {{ section.settings.empty_cart_bg | default: '#F9FAFB' }};
-    --empty-cart-color: {{ section.settings.empty_cart_color | default: '#6B7280' }};
+    --empty-title-color: {{ section.settings.empty_title_color | default: '#111827' }};
+    --empty-text-color: {{ section.settings.empty_text_color | default: '#6B7280' }};
+    --empty-icon-color: {{ section.settings.empty_icon_color | default: '#9CA3AF' }};
+    
+    /* Continue Button Colors */
     --continue-bg: {{ section.settings.continue_bg | default: '#000000' }};
     --continue-hover: {{ section.settings.continue_hover | default: '#1F2937' }};
     --continue-text: {{ section.settings.continue_text | default: '#FFFFFF' }};
+    
+    /* Sizes */
+    --summary-radius: {{ section.settings.summary_radius | default: '12' }}px;
+    --image-radius: {{ section.settings.image_radius | default: '8' }}px;
+    --button-radius: {{ section.settings.button_radius | default: '6' }}px;
   }
 
   @media (min-width: 640px) {
@@ -54,12 +81,38 @@
     background-color: var(--cart-bg);
   }
 
+  /* Text Colors */
+  .cart-heading-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: {{ section.settings.heading_size | default: '30' }}px;
+    font-weight: {{ section.settings.heading_weight | default: '700' }};
+    margin-bottom: {{ section.settings.heading_margin | default: '32' }}px;
+  }
+
   .cart-title-{{ section.id }} {
     color: var(--title-color);
-    font-size: var(--title-size);
-    font-weight: {{ section.settings.title_weight | default: '700' }};
-    text-align: {{ section.settings.title_align | default: 'left' }};
-    margin-bottom: {{ section.settings.title_margin | default: '32' }}px;
+    font-size: {{ section.settings.title_size | default: '18' }}px;
+    font-weight: {{ section.settings.title_weight | default: '500' }};
+  }
+
+  .cart-title-{{ section.id }} a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .cart-title-{{ section.id }} a:hover {
+    color: var(--link-hover);
+  }
+
+  .cart-text-{{ section.id }} {
+    color: var(--body-text-color);
+    font-size: {{ section.settings.body_size | default: '16' }}px;
+  }
+
+  .cart-light-text-{{ section.id }} {
+    color: var(--light-text-color);
+    font-size: {{ section.settings.light_size | default: '14' }}px;
   }
 
   .cart-grid-{{ section.id }} {
@@ -90,7 +143,7 @@
     height: {{ section.settings.image_size | default: '96' }}px;
     flex-shrink: 0;
     background-color: var(--item-bg);
-    border-radius: {{ section.settings.image_radius | default: '8' }}px;
+    border-radius: var(--image-radius);
     overflow: hidden;
   }
 
@@ -102,28 +155,6 @@
 
   .item-details-{{ section.id }} {
     flex: 1;
-  }
-
-  .item-title-{{ section.id }} {
-    color: var(--title-color);
-    font-size: {{ section.settings.item_title_size | default: '18' }}px;
-    font-weight: {{ section.settings.item_title_weight | default: '500' }};
-    margin-bottom: {{ section.settings.item_title_margin | default: '4' }}px;
-  }
-
-  .item-title-{{ section.id }} a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .item-title-{{ section.id }} a:hover {
-    color: var(--quantity-btn-hover);
-  }
-
-  .item-variant-{{ section.id }} {
-    color: var(--text-color);
-    font-size: {{ section.settings.variant_size | default: '14' }}px;
-    margin-bottom: {{ section.settings.variant_margin | default: '8' }}px;
   }
 
   .item-price-{{ section.id }} {
@@ -155,6 +186,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
   }
 
   .quantity-btn-{{ section.id }}:hover {
@@ -168,7 +200,7 @@
     padding: {{ section.settings.quantity_padding | default: '8' }}px 0;
     border-left: 1px solid var(--border-color);
     border-right: 1px solid var(--border-color);
-    color: var(--text-color);
+    color: var(--body-text-color);
   }
 
   .remove-link-{{ section.id }} {
@@ -176,7 +208,7 @@
     color: var(--remove-color);
     font-size: {{ section.settings.remove_size | default: '14' }}px;
     text-decoration: none;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: {{ section.settings.remove_icon_gap | default: '4' }}px;
     transition: color {{ section.settings.transition_speed | default: '200' }}ms ease;
@@ -195,7 +227,7 @@
   }
 
   .summary-title-{{ section.id }} {
-    color: var(--title-color);
+    color: var(--summary-heading);
     font-size: {{ section.settings.summary_title_size | default: '20' }}px;
     font-weight: {{ section.settings.summary_title_weight | default: '700' }};
     margin-bottom: {{ section.settings.summary_title_margin | default: '16' }}px;
@@ -204,7 +236,7 @@
   .summary-row-{{ section.id }} {
     display: flex;
     justify-content: space-between;
-    color: var(--text-color);
+    color: var(--summary-text);
     font-size: {{ section.settings.summary_text_size | default: '16' }}px;
     margin-bottom: {{ section.settings.summary_row_spacing | default: '12' }}px;
   }
@@ -218,7 +250,7 @@
   .summary-total-{{ section.id }} {
     display: flex;
     justify-content: space-between;
-    color: var(--title-color);
+    color: var(--total-color);
     font-size: {{ section.settings.total_size | default: '20' }}px;
     font-weight: {{ section.settings.total_weight | default: '700' }};
     margin-bottom: {{ section.settings.total_margin | default: '24' }}px;
@@ -230,14 +262,15 @@
     color: var(--checkout-text);
     font-weight: {{ section.settings.checkout_weight | default: '500' }};
     padding: {{ section.settings.checkout_padding | default: '12' }}px {{ section.settings.checkout_padding_x | default: '24' }}px;
-    border-radius: {{ section.settings.checkout_radius | default: '6' }}px;
+    border-radius: var(--button-radius);
     border: none;
     cursor: pointer;
     transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: {{ section.settings.checkout_icon_gap | default: '8' }}px;
+    text-decoration: none;
   }
 
   .checkout-btn-{{ section.id }}:hover {
@@ -252,14 +285,14 @@
   }
 
   .empty-title-{{ section.id }} {
-    color: var(--title-color);
+    color: var(--empty-title-color);
     font-size: {{ section.settings.empty_title_size | default: '24' }}px;
     font-weight: {{ section.settings.empty_title_weight | default: '700' }};
     margin: {{ section.settings.empty_title_margin | default: '16' }}px 0 {{ section.settings.empty_text_margin | default: '8' }}px;
   }
 
   .empty-text-{{ section.id }} {
-    color: var(--empty-cart-color);
+    color: var(--empty-text-color);
     font-size: {{ section.settings.empty_text_size | default: '16' }}px;
     margin-bottom: {{ section.settings.empty_text_bottom_margin | default: '24' }}px;
   }
@@ -272,7 +305,7 @@
     color: var(--continue-text);
     font-weight: {{ section.settings.continue_weight | default: '500' }};
     padding: {{ section.settings.continue_padding | default: '12' }}px {{ section.settings.continue_padding_x | default: '32' }}px;
-    border-radius: {{ section.settings.continue_radius | default: '6' }}px;
+    border-radius: var(--button-radius);
     text-decoration: none;
     transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
   }
@@ -300,7 +333,7 @@
   {% if cart.item_count > 0 %}
     
     <!-- Cart Title -->
-    <h1 class="cart-title-{{ section.id }}">
+    <h1 class="cart-heading-{{ section.id }}">
       {{ section.settings.cart_title | default: 'Your Shopping Cart' }}
     </h1>
 
@@ -327,11 +360,11 @@
               <div class="item-details-{{ section.id }}">
                 <div class="flex justify-between items-start">
                   <div>
-                    <h3 class="item-title-{{ section.id }}">
+                    <h3 class="cart-title-{{ section.id }}">
                       <a href="{{ item.url }}">{{ item.product.title }}</a>
                     </h3>
                     {% unless item.product.has_only_default_variant %}
-                      <p class="item-variant-{{ section.id }}">{{ item.variant.title }}</p>
+                      <p class="cart-light-text-{{ section.id }}">{{ item.variant.title }}</p>
                     {% endunless %}
                   </div>
                   <div class="item-price-{{ section.id }}">
@@ -392,7 +425,7 @@
             </div>
             
             {% if cart.total_discounts > 0 %}
-              <div class="summary-row-{{ section.id }}" style="color: {{ section.settings.discount_color | default: '#059669' }};">
+              <div class="summary-row-{{ section.id }}" style="color: var(--discount-color);">
                 <span>{{ section.settings.discount_text | default: 'Discounts' }}</span>
                 <span>-{{ cart.total_discounts | money }}</span>
               </div>
@@ -434,7 +467,8 @@
         {{ section.settings.empty_message | default: 'Looks like you haven\'t added anything to your cart yet.' }}
       </p>
       
-      <a href="{% if single_product.url != blank %}{{ single_product.url }}{% else %}/collections/all{% endif %}" 
+      <!-- Redirect to specific product page -->
+      <a href="{% if single_product.url != blank %}{{ single_product.url }}{% else %}{{ section.settings.fallback_url | default: '/collections/all' }}{% endif %}" 
          class="continue-btn-{{ section.id }}">
         {% render 'icon-arrow-left', 
           size: section.settings.icon_size | default: 5, 
@@ -450,6 +484,27 @@
 {
   "name": "Cart Page",
   "settings": [
+    {
+      "type": "header",
+      "content": "⚠️ IMPORTANT: Product Redirect"
+    },
+    {
+      "type": "paragraph",
+      "content": "Set the product handle for your LED mask below. Current handle: '14-silicone-face-neck-photon-mask'"
+    },
+    {
+      "type": "text",
+      "id": "product_handle",
+      "label": "Product Handle",
+      "default": "14-silicone-face-neck-photon-mask",
+      "info": "The URL handle of your product (e.g., 'product-name' from myshopify.com/products/product-name)"
+    },
+    {
+      "type": "url",
+      "id": "fallback_url",
+      "label": "Fallback URL",
+      "info": "URL to redirect to if product is not found"
+    },
     {
       "type": "header",
       "content": "Layout Settings"
@@ -535,25 +590,55 @@
     },
     {
       "type": "header",
-      "content": "Colors"
+      "content": "Colors - Text"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Main heading color",
+      "default": "#111827",
+      "info": "Your Shopping Cart text"
     },
     {
       "type": "color",
       "id": "title_color",
-      "label": "Title color",
+      "label": "Product title color",
       "default": "#111827"
     },
     {
       "type": "color",
-      "id": "text_color",
-      "label": "Text color",
+      "id": "body_text_color",
+      "label": "Body text color",
       "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "light_text_color",
+      "label": "Light text color",
+      "default": "#6B7280",
+      "info": "For variant options and secondary text"
     },
     {
       "type": "color",
       "id": "border_color",
       "label": "Border color",
       "default": "#E5E7EB"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#2563EB"
+    },
+    {
+      "type": "color",
+      "id": "link_hover",
+      "label": "Link hover color",
+      "default": "#1D4ED8"
+    },
+    {
+      "type": "header",
+      "content": "Colors - Item"
     },
     {
       "type": "color",
@@ -592,6 +677,10 @@
       "default": "#B91C1C"
     },
     {
+      "type": "header",
+      "content": "Colors - Summary"
+    },
+    {
       "type": "color",
       "id": "summary_bg",
       "label": "Summary background",
@@ -599,9 +688,27 @@
     },
     {
       "type": "color",
+      "id": "summary_text",
+      "label": "Summary text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "summary_heading",
+      "label": "Summary heading color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
       "id": "discount_color",
-      "label": "Discount color",
+      "label": "Discount text color",
       "default": "#059669"
+    },
+    {
+      "type": "color",
+      "id": "total_color",
+      "label": "Total price color",
+      "default": "#111827"
     },
     {
       "type": "color",
@@ -622,6 +729,10 @@
       "default": "#FFFFFF"
     },
     {
+      "type": "header",
+      "content": "Colors - Empty Cart"
+    },
+    {
       "type": "color",
       "id": "empty_cart_bg",
       "label": "Empty cart background",
@@ -629,14 +740,20 @@
     },
     {
       "type": "color",
-      "id": "empty_cart_color",
-      "label": "Empty cart text color",
+      "id": "empty_title_color",
+      "label": "Empty title color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "empty_text_color",
+      "label": "Empty message color",
       "default": "#6B7280"
     },
     {
       "type": "color",
       "id": "empty_icon_color",
-      "label": "Empty cart icon color",
+      "label": "Empty icon color",
       "default": "#9CA3AF"
     },
     {
@@ -669,8 +786,8 @@
     },
     {
       "type": "range",
-      "id": "title_size",
-      "label": "Title size",
+      "id": "heading_size",
+      "label": "Heading size",
       "min": 20,
       "max": 48,
       "step": 2,
@@ -679,8 +796,8 @@
     },
     {
       "type": "select",
-      "id": "title_weight",
-      "label": "Title weight",
+      "id": "heading_weight",
+      "label": "Heading weight",
       "options": [
         { "value": "600", "label": "Semibold" },
         { "value": "700", "label": "Bold" },
@@ -689,23 +806,54 @@
       "default": "700"
     },
     {
-      "type": "select",
-      "id": "title_align",
-      "label": "Title alignment",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "center", "label": "Center" }
-      ],
-      "default": "left"
-    },
-    {
       "type": "range",
-      "id": "title_margin",
-      "label": "Title bottom margin",
+      "id": "heading_margin",
+      "label": "Heading bottom margin",
       "min": 16,
       "max": 64,
       "step": 4,
       "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Product title size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Product title weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body text size",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "light_size",
+      "label": "Light text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
       "unit": "px"
     },
     {
@@ -759,57 +907,6 @@
       "min": 0,
       "max": 24,
       "step": 2,
-      "default": 8,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "item_title_size",
-      "label": "Item title size",
-      "min": 14,
-      "max": 24,
-      "step": 1,
-      "default": 18,
-      "unit": "px"
-    },
-    {
-      "type": "select",
-      "id": "item_title_weight",
-      "label": "Item title weight",
-      "options": [
-        { "value": "400", "label": "Normal" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" }
-      ],
-      "default": "500"
-    },
-    {
-      "type": "range",
-      "id": "item_title_margin",
-      "label": "Title bottom margin",
-      "min": 2,
-      "max": 12,
-      "step": 1,
-      "default": 4,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "variant_size",
-      "label": "Variant text size",
-      "min": 12,
-      "max": 16,
-      "step": 1,
-      "default": 14,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "variant_margin",
-      "label": "Variant bottom margin",
-      "min": 2,
-      "max": 12,
-      "step": 1,
       "default": 8,
       "unit": "px"
     },
@@ -1075,19 +1172,15 @@
       "unit": "px"
     },
     {
-      "type": "header",
-      "content": "Checkout Button"
-    },
-    {
       "type": "text",
       "id": "checkout_text",
-      "label": "Button text",
+      "label": "Checkout button text",
       "default": "Proceed to Checkout"
     },
     {
       "type": "select",
       "id": "checkout_weight",
-      "label": "Button weight",
+      "label": "Checkout button weight",
       "options": [
         { "value": "400", "label": "Normal" },
         { "value": "500", "label": "Medium" },
@@ -1098,7 +1191,7 @@
     {
       "type": "range",
       "id": "checkout_padding",
-      "label": "Button padding (vertical)",
+      "label": "Checkout padding (vertical)",
       "min": 8,
       "max": 24,
       "step": 2,
@@ -1108,7 +1201,7 @@
     {
       "type": "range",
       "id": "checkout_padding_x",
-      "label": "Button padding (horizontal)",
+      "label": "Checkout padding (horizontal)",
       "min": 12,
       "max": 40,
       "step": 4,
@@ -1117,8 +1210,8 @@
     },
     {
       "type": "range",
-      "id": "checkout_radius",
-      "label": "Button radius",
+      "id": "button_radius",
+      "label": "Button border radius",
       "min": 0,
       "max": 12,
       "step": 2,
@@ -1128,7 +1221,7 @@
     {
       "type": "range",
       "id": "checkout_icon_gap",
-      "label": "Icon spacing",
+      "label": "Checkout icon spacing",
       "min": 4,
       "max": 16,
       "step": 2,
@@ -1189,7 +1282,7 @@
       "max": 24,
       "step": 2,
       "default": 16,
-      "unit": "Tailwind scale"
+      "info": "Tailwind scale (8=32px, 12=48px, 16=64px)"
     },
     {
       "type": "range",
@@ -1253,19 +1346,15 @@
       "unit": "px"
     },
     {
-      "type": "header",
-      "content": "Continue Button"
-    },
-    {
       "type": "text",
       "id": "continue_text",
-      "label": "Button text",
+      "label": "Continue button text",
       "default": "Continue Shopping"
     },
     {
       "type": "select",
       "id": "continue_weight",
-      "label": "Button weight",
+      "label": "Continue button weight",
       "options": [
         { "value": "400", "label": "Normal" },
         { "value": "500", "label": "Medium" },
@@ -1276,7 +1365,7 @@
     {
       "type": "range",
       "id": "continue_padding",
-      "label": "Button padding (vertical)",
+      "label": "Continue padding (vertical)",
       "min": 8,
       "max": 24,
       "step": 2,
@@ -1286,7 +1375,7 @@
     {
       "type": "range",
       "id": "continue_padding_x",
-      "label": "Button padding (horizontal)",
+      "label": "Continue padding (horizontal)",
       "min": 16,
       "max": 48,
       "step": 4,
@@ -1295,18 +1384,8 @@
     },
     {
       "type": "range",
-      "id": "continue_radius",
-      "label": "Button radius",
-      "min": 0,
-      "max": 12,
-      "step": 2,
-      "default": 6,
-      "unit": "px"
-    },
-    {
-      "type": "range",
       "id": "continue_icon_gap",
-      "label": "Icon spacing",
+      "label": "Continue icon spacing",
       "min": 4,
       "max": 16,
       "step": 2,
