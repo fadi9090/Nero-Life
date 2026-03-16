@@ -1,0 +1,18 @@
+{% comment %}
+  Icon: Wave / Wavelength
+  Usage: {% render 'icon-wave', size: 6, color: '#8B5CF6', class: '' %}
+{% endcomment %}
+
+{%- assign size = size | default: 6 -%}
+{%- assign color = color | default: 'currentColor' -%}
+{%- assign stroke = stroke_width | default: 1.5 -%}
+{%- assign custom_class = class | default: '' -%}
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     class="w-{{ size }} h-{{ size }} {{ custom_class }}" 
+     fill="none" 
+     viewBox="0 0 24 24" 
+     stroke="{{ color }}" 
+     stroke-width="{{ stroke }}">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5 5 5M7 17l5-5 5 5" />
+</svg>

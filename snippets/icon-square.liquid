@@ -1,0 +1,18 @@
+{% comment %}
+  Icon: Square / Box
+  Usage: {% render 'icon-square', size: 8, color: '#3B82F6', class: '' %}
+{% endcomment %}
+
+{%- assign size = size | default: 8 -%}
+{%- assign color = color | default: 'currentColor' -%}
+{%- assign stroke = stroke_width | default: 2 -%}
+{%- assign custom_class = class | default: '' -%}
+
+<svg xmlns="http://www.w3.org/2000/svg" 
+     class="w-{{ size }} h-{{ size }} {{ custom_class }}" 
+     fill="none" 
+     viewBox="0 0 24 24" 
+     stroke="{{ color }}" 
+     stroke-width="{{ stroke }}">
+  <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" fill="none" />
+</svg>

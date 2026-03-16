@@ -1,288 +1,1767 @@
-<div class="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
-  <!-- Header Card - Smaller on mobile -->
-  <div class="bg-white rounded-xl shadow-sm p-5 sm:p-8 border border-gray-100 mb-6 sm:mb-8">
-    <div class="text-center max-w-4xl mx-auto">
-      <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-        <span class="text-blue-500 text-xl sm:text-2xl">💡</span>
+{% comment %}
+  How It Works Page - Fully customizable through Shopify editor
+  Features: Product showcase, step-by-step guide, feature cards, comfort features
+{% endcomment %}
+
+<style>
+  #how-it-works-{{ section.id }} {
+    /* Page Colors */
+    --page-bg: {{ section.settings.page_bg | default: '#F9FAFB' }};
+    --card-bg: {{ section.settings.card_bg | default: '#FFFFFF' }};
+    --card-border: {{ section.settings.card_border | default: '#F3F4F6' }};
+    --card-shadow: {{ section.settings.card_shadow | default: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }};
+    --card-hover-shadow: {{ section.settings.card_hover_shadow | default: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }};
+    
+    /* Text Colors */
+    --heading-color: {{ section.settings.heading_color | default: '#111827' }};
+    --subheading-color: {{ section.settings.subheading_color | default: '#374151' }};
+    --text-color: {{ section.settings.text_color | default: '#4B5563' }};
+    --light-text: {{ section.settings.light_text | default: '#6B7280' }};
+    
+    /* Accent Colors */
+    --primary-color: {{ section.settings.primary_color | default: '#3B82F6' }};
+    --primary-light: {{ section.settings.primary_light | default: '#EFF6FF' }};
+    --secondary-color: {{ section.settings.secondary_color | default: '#8B5CF6' }};
+    --secondary-light: {{ section.settings.secondary_light | default: '#EDE9FE' }};
+    --success-color: {{ section.settings.success_color | default: '#10B981' }};
+    --success-light: {{ section.settings.success_light | default: '#D1FAE5' }};
+    --warning-color: {{ section.settings.warning_color | default: '#F59E0B' }};
+    --warning-light: {{ section.settings.warning_light | default: '#FEF3C7' }};
+    --danger-color: {{ section.settings.danger_color | default: '#EF4444' }};
+    --danger-light: {{ section.settings.danger_light | default: '#FEE2E2' }};
+    
+    /* Spacing */
+    --container-padding-x: {{ section.settings.container_padding_x | default: '16' }}px;
+    --container-padding-y: {{ section.settings.container_padding_y | default: '24' }}px;
+    --section-spacing: {{ section.settings.section_spacing | default: '32' }}px;
+    --card-padding: {{ section.settings.card_padding | default: '20' }}px;
+    --border-radius: {{ section.settings.border_radius | default: '12' }}px;
+    --icon-size: {{ section.settings.icon_size | default: '12' }}px;
+    
+    /* Transitions */
+    --transition-speed: {{ section.settings.transition_speed | default: '200' }}ms;
+  }
+
+  @media (min-width: 640px) {
+    #how-it-works-{{ section.id }} {
+      --container-padding-x: {{ section.settings.container_padding_x_sm | default: '24' }}px;
+      --container-padding-y: {{ section.settings.container_padding_y_sm | default: '32' }}px;
+      --card-padding: {{ section.settings.card_padding_sm | default: '24' }}px;
+      --section-spacing: {{ section.settings.section_spacing_sm | default: '48' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #how-it-works-{{ section.id }} {
+      --container-padding-x: {{ section.settings.container_padding_x_lg | default: '32' }}px;
+    }
+  }
+
+  .how-it-works-{{ section.id }} {
+    background-color: var(--page-bg);
+    padding: var(--container-padding-y) var(--container-padding-x);
+  }
+
+  .how-container-{{ section.id }} {
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  /* Header Card */
+  .header-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: {{ section.settings.header_padding | default: '32' }}px {{ section.settings.header_padding_x | default: '32' }}px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    margin-bottom: var(--section-spacing);
+  }
+
+  .header-icon-{{ section.id }} {
+    width: {{ section.settings.header_icon_size | default: '64' }}px;
+    height: {{ section.settings.header_icon_size | default: '64' }}px;
+    background-color: var(--primary-light);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto {{ section.settings.header_icon_margin | default: '16' }}px;
+  }
+
+  .header-icon-{{ section.id }} svg {
+    color: var(--primary-color);
+    width: {{ section.settings.header_icon_svg | default: '32' }}px;
+    height: {{ section.settings.header_icon_svg | default: '32' }}px;
+  }
+
+  .header-title-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: {{ section.settings.header_title_size | default: '36' }}px;
+    font-weight: {{ section.settings.header_title_weight | default: '700' }};
+    text-align: center;
+    margin-bottom: {{ section.settings.header_title_margin | default: '12' }}px;
+    line-height: {{ section.settings.header_title_line_height | default: '1.2' }};
+  }
+
+  @media (max-width: 640px) {
+    .header-title-{{ section.id }} {
+      font-size: {{ section.settings.header_title_size_mobile | default: '24' }}px;
+    }
+  }
+
+  .header-subtitle-{{ section.id }} {
+    color: var(--text-color);
+    font-size: {{ section.settings.header_subtitle_size | default: '18' }}px;
+    text-align: center;
+    max-width: {{ section.settings.header_subtitle_width | default: '800' }}px;
+    margin: 0 auto;
+    line-height: {{ section.settings.header_subtitle_line_height | default: '1.6' }};
+  }
+
+  @media (max-width: 640px) {
+    .header-subtitle-{{ section.id }} {
+      font-size: {{ section.settings.header_subtitle_size_mobile | default: '16' }}px;
+    }
+  }
+
+  /* Two Column Layout */
+  .two-column-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.two_column_gap | default: '32' }}px;
+    margin-bottom: var(--section-spacing);
+  }
+
+  @media (min-width: 1024px) {
+    .two-column-{{ section.id }} {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Product Card */
+  .product-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+  }
+
+  .product-title-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: {{ section.settings.product_title_size | default: '24' }}px;
+    font-weight: {{ section.settings.product_title_weight | default: '700' }};
+    text-align: center;
+    margin-bottom: {{ section.settings.product_title_margin | default: '20' }}px;
+  }
+
+  .product-image-container-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    height: {{ section.settings.product_image_height | default: '320' }}px;
+    background: linear-gradient(to bottom right, var(--primary-light), var(--card-bg));
+    border-radius: {{ section.settings.product_image_radius | default: '12' }}px;
+    margin-bottom: {{ section.settings.product_image_margin | default: '20' }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .product-image-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .product-badge-{{ section.id }} {
+    position: absolute;
+    top: {{ section.settings.badge_top | default: '12' }}px;
+    left: {{ section.settings.badge_left | default: '12' }}px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: {{ section.settings.badge_size | default: '12' }}px;
+    padding: {{ section.settings.badge_padding_y | default: '4' }}px {{ section.settings.badge_padding_x | default: '12' }}px;
+    border-radius: {{ section.settings.badge_radius | default: '9999' }}px;
+    font-weight: {{ section.settings.badge_weight | default: '700' }};
+  }
+
+  .product-badge-right-{{ section.id }} {
+    position: absolute;
+    bottom: {{ section.settings.badge_bottom | default: '12' }}px;
+    right: {{ section.settings.badge_right | default: '12' }}px;
+    background-color: {{ section.settings.badge_right_bg | default: '#1F2937' }};
+    color: white;
+    font-size: {{ section.settings.badge_size | default: '12' }}px;
+    padding: {{ section.settings.badge_padding_y | default: '4' }}px {{ section.settings.badge_padding_x | default: '12' }}px;
+    border-radius: {{ section.settings.badge_radius | default: '9999' }}px;
+    font-weight: {{ section.settings.badge_weight | default: '700' }};
+  }
+
+  .product-info-{{ section.id }} {
+    space-y: {{ section.settings.product_info_spacing | default: '12' }}px;
+  }
+
+  .product-info-item-{{ section.id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: {{ section.settings.product_info_padding | default: '12' }}px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .product-info-item-{{ section.id }}:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .product-info-label-{{ section.id }} {
+    color: var(--subheading-color);
+    font-weight: {{ section.settings.product_info_label_weight | default: '500' }};
+    font-size: {{ section.settings.product_info_label_size | default: '16' }}px;
+  }
+
+  .product-info-value-{{ section.id }} {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-size: {{ section.settings.product_info_value_size | default: '14' }}px;
+    padding: {{ section.settings.product_info_value_padding | default: '4' }}px {{ section.settings.product_info_value_padding_x | default: '12' }}px;
+    border-radius: 9999px;
+  }
+
+  /* Steps Card */
+  .steps-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+  }
+
+  .steps-header-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    margin-bottom: {{ section.settings.steps_header_margin | default: '24' }}px;
+  }
+
+  .steps-icon-{{ section.id }} {
+    width: {{ section.settings.steps_icon_size | default: '48' }}px;
+    height: {{ section.settings.steps_icon_size | default: '48' }}px;
+    background-color: var(--secondary-light);
+    border-radius: {{ section.settings.steps_icon_radius | default: '8' }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: {{ section.settings.steps_icon_margin | default: '16' }}px;
+  }
+
+  .steps-icon-{{ section.id }} svg {
+    color: var(--secondary-color);
+    width: {{ section.settings.steps_icon_svg | default: '24' }}px;
+    height: {{ section.settings.steps_icon_svg | default: '24' }}px;
+  }
+
+  .steps-title-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: {{ section.settings.steps_title_size | default: '24' }}px;
+    font-weight: {{ section.settings.steps_title_weight | default: '700' }};
+  }
+
+  .step-item-{{ section.id }} {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: {{ section.settings.step_spacing | default: '24' }}px;
+  }
+
+  .step-number-{{ section.id }} {
+    width: {{ section.settings.step_number_size | default: '40' }}px;
+    height: {{ section.settings.step_number_size | default: '40' }}px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: {{ section.settings.step_number_weight | default: '700' }};
+    margin-right: {{ section.settings.step_number_margin | default: '16' }}px;
+    flex-shrink: 0;
+    font-size: {{ section.settings.step_number_font_size | default: '16' }}px;
+  }
+
+  .step-content-{{ section.id }} {
+    flex: 1;
+  }
+
+  .step-heading-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: {{ section.settings.step_heading_size | default: '18' }}px;
+    font-weight: {{ section.settings.step_heading_weight | default: '600' }};
+    margin-bottom: {{ section.settings.step_heading_margin | default: '4' }}px;
+  }
+
+  .step-text-{{ section.id }} {
+    color: var(--text-color);
+    font-size: {{ section.settings.step_text_size | default: '16' }}px;
+    line-height: {{ section.settings.step_text_line_height | default: '1.6' }};
+    margin-bottom: {{ section.settings.step_text_margin | default: '8' }}px;
+  }
+
+  .step-tags-{{ section.id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.tag_gap | default: '6' }}px;
+  }
+
+  .step-tag-{{ section.id }} {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-size: {{ section.settings.tag_size | default: '14' }}px;
+    padding: {{ section.settings.tag_padding_y | default: '4' }}px {{ section.settings.tag_padding_x | default: '12' }}px;
+    border-radius: 9999px;
+  }
+
+  .step-tag-{{ section.id }}.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: {{ section.settings.tag_active_weight | default: '500' }};
+  }
+
+  .step-tip-{{ section.id }} {
+    margin-top: {{ section.settings.tip_margin | default: '24' }}px;
+    padding: {{ section.settings.tip_padding | default: '12' }}px {{ section.settings.tip_padding_x | default: '16' }}px;
+    background-color: var(--primary-light);
+    border-radius: {{ section.settings.tip_radius | default: '8' }}px;
+    border: 1px solid var(--primary-light);
+  }
+
+  .step-tip-{{ section.id }} p {
+    color: {{ section.settings.tip_color | default: '#1E40AF' }};
+    font-size: {{ section.settings.tip_size | default: '14' }}px;
+  }
+
+  .step-tip-{{ section.id }} strong {
+    color: {{ section.settings.tip_strong_color | default: '#1E3A8A' }};
+    font-weight: {{ section.settings.tip_strong_weight | default: '700' }};
+  }
+
+  /* Cards Grid */
+  .cards-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.cards_gap | default: '20' }}px;
+    margin-bottom: var(--section-spacing);
+  }
+
+  @media (min-width: 768px) {
+    .cards-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.cards_columns_md | default: '2' }}, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .cards-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.cards_columns_lg | default: '3' }}, 1fr);
+    }
+  }
+
+  .info-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    transition: all var(--transition-speed) ease;
+  }
+
+  .info-card-{{ section.id }}:hover {
+    box-shadow: var(--card-hover-shadow);
+    transform: translateY(-{{ section.settings.card_hover_offset | default: '4' }}px);
+  }
+
+  .card-icon-{{ section.id }} {
+    width: {{ section.settings.card_icon_size | default: '48' }}px;
+    height: {{ section.settings.card_icon_size | default: '48' }}px;
+    border-radius: {{ section.settings.card_icon_radius | default: '8' }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: {{ section.settings.card_icon_margin | default: '12' }}px;
+    margin-bottom: {{ section.settings.card_icon_margin_bottom | default: '12' }}px;
+  }
+
+  .card-icon-{{ section.id }}.blue {
+    background-color: var(--primary-light);
+  }
+  .card-icon-{{ section.id }}.blue svg {
+    color: var(--primary-color);
+  }
+  .card-icon-{{ section.id }}.purple {
+    background-color: var(--secondary-light);
+  }
+  .card-icon-{{ section.id }}.purple svg {
+    color: var(--secondary-color);
+  }
+  .card-icon-{{ section.id }}.green {
+    background-color: var(--success-light);
+  }
+  .card-icon-{{ section.id }}.green svg {
+    color: var(--success-color);
+  }
+  .card-icon-{{ section.id }}.red {
+    background-color: var(--danger-light);
+  }
+  .card-icon-{{ section.id }}.red svg {
+    color: var(--danger-color);
+  }
+  .card-icon-{{ section.id }}.yellow {
+    background-color: var(--warning-light);
+  }
+  .card-icon-{{ section.id }}.yellow svg {
+    color: var(--warning-color);
+  }
+
+  .card-header-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    margin-bottom: {{ section.settings.card_header_margin | default: '12' }}px;
+  }
+
+  .card-header-title-{{ section.id }} {
+    color: var(--heading-color);
+    font-size: {{ section.settings.card_title_size | default: '18' }}px;
+    font-weight: {{ section.settings.card_title_weight | default: '600' }};
+  }
+
+  .card-content-{{ section.id }} {
+    color: var(--text-color);
+    font-size: {{ section.settings.card_text_size | default: '16' }}px;
+    line-height: {{ section.settings.card_text_line_height | default: '1.6' }};
+  }
+
+  .card-bullet-list-{{ section.id }} {
+    list-style: disc;
+    padding-left: {{ section.settings.bullet_padding | default: '20' }}px;
+    margin-top: {{ section.settings.bullet_margin | default: '12' }}px;
+    color: var(--text-color);
+    font-size: {{ section.settings.card_text_size | default: '16' }}px;
+    line-height: {{ section.settings.card_text_line_height | default: '1.6' }};
+  }
+
+  .card-bullet-list-{{ section.id }} li {
+    margin-bottom: {{ section.settings.bullet_spacing | default: '6' }}px;
+  }
+
+  .card-bullet-list-{{ section.id }} strong {
+    color: var(--heading-color);
+  }
+
+  .card-tags-{{ section.id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.card_tag_gap | default: '8' }}px;
+    margin-top: {{ section.settings.card_tag_margin | default: '12' }}px;
+  }
+
+  .card-tag-{{ section.id }} {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-size: {{ section.settings.card_tag_size | default: '14' }}px;
+    padding: {{ section.settings.card_tag_padding_y | default: '6' }}px {{ section.settings.card_tag_padding_x | default: '16' }}px;
+    border-radius: 9999px;
+  }
+
+  .card-tag-{{ section.id }}.red {
+    background-color: var(--danger-light);
+    color: var(--danger-color);
+  }
+  .card-tag-{{ section.id }}.blue {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+  }
+  .card-tag-{{ section.id }}.amber {
+    background-color: var(--warning-light);
+    color: var(--warning-color);
+  }
+
+  .card-highlight-{{ section.id }} {
+    background-color: {{ section.settings.highlight_bg | default: '#F9FAFB' }};
+    padding: {{ section.settings.highlight_padding | default: '12' }}px {{ section.settings.highlight_padding_x | default: '16' }}px;
+    border-radius: {{ section.settings.highlight_radius | default: '8' }}px;
+    border-left: {{ section.settings.highlight_border_width | default: '4' }}px solid;
+    margin-top: {{ section.settings.highlight_margin | default: '12' }}px;
+  }
+
+  .card-highlight-{{ section.id }}.green {
+    border-left-color: var(--success-color);
+  }
+  .card-highlight-{{ section.id }}.red {
+    border-left-color: var(--danger-color);
+  }
+  .card-highlight-{{ section.id }}.pink {
+    border-left-color: var(--secondary-color);
+  }
+
+  .card-highlight-{{ section.id }} strong {
+    color: var(--heading-color);
+  }
+
+  .card-highlight-{{ section.id }} p {
+    color: var(--text-color);
+    font-size: {{ section.settings.highlight_size | default: '14' }}px;
+  }
+
+  /* 4-Step Process Card */
+  .process-card-{{ section.id }} {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--card-padding);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    grid-column: span 2;
+  }
+
+  @media (min-width: 1024px) {
+    .process-card-{{ section.id }} {
+      grid-column: span 1;
+    }
+  }
+
+  .process-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.process_columns | default: '4' }}, 1fr);
+    gap: {{ section.settings.process_gap | default: '16' }}px;
+    margin-top: {{ section.settings.process_margin_top | default: '16' }}px;
+  }
+
+  @media (max-width: 640px) {
+    .process-grid-{{ section.id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .process-step-{{ section.id }} {
+    text-align: center;
+  }
+
+  .process-step-number-{{ section.id }} {
+    width: {{ section.settings.process_number_size | default: '40' }}px;
+    height: {{ section.settings.process_number_size | default: '40' }}px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto {{ section.settings.process_number_margin | default: '8' }}px;
+    font-weight: {{ section.settings.process_number_weight | default: '700' }};
+    font-size: {{ section.settings.process_number_font | default: '16' }}px;
+  }
+
+  .process-step-title-{{ section.id }} {
+    color: var(--heading-color);
+    font-weight: {{ section.settings.process_title_weight | default: '500' }};
+    font-size: {{ section.settings.process_title_size | default: '16' }}px;
+    margin-bottom: {{ section.settings.process_title_margin | default: '4' }}px;
+  }
+
+  .process-step-text-{{ section.id }} {
+    color: var(--text-color);
+    font-size: {{ section.settings.process_text_size | default: '14' }}px;
+    line-height: {{ section.settings.process_text_line_height | default: '1.5' }};
+  }
+
+  /* Comfort Features Grid */
+  .comfort-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.comfort_columns | default: '4' }}, 1fr);
+    gap: {{ section.settings.comfort_gap | default: '16' }}px;
+    margin: {{ section.settings.comfort_margin | default: '24' }}px 0;
+  }
+
+  @media (max-width: 640px) {
+    .comfort-grid-{{ section.id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .comfort-item-{{ section.id }} {
+    text-align: center;
+  }
+
+  .comfort-icon-{{ section.id }} {
+    width: {{ section.settings.comfort_icon_size | default: '64' }}px;
+    height: {{ section.settings.comfort_icon_size | default: '64' }}px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto {{ section.settings.comfort_icon_margin | default: '12' }}px;
+  }
+
+  .comfort-icon-{{ section.id }}.blue {
+    background-color: var(--primary-light);
+  }
+  .comfort-icon-{{ section.id }}.blue svg {
+    color: var(--primary-color);
+  }
+  .comfort-icon-{{ section.id }}.green {
+    background-color: var(--success-light);
+  }
+  .comfort-icon-{{ section.id }}.green svg {
+    color: var(--success-color);
+  }
+  .comfort-icon-{{ section.id }}.purple {
+    background-color: var(--secondary-light);
+  }
+  .comfort-icon-{{ section.id }}.purple svg {
+    color: var(--secondary-color);
+  }
+  .comfort-icon-{{ section.id }}.amber {
+    background-color: var(--warning-light);
+  }
+  .comfort-icon-{{ section.id }}.amber svg {
+    color: var(--warning-color);
+  }
+
+  .comfort-title-{{ section.id }} {
+    color: var(--heading-color);
+    font-weight: {{ section.settings.comfort_title_weight | default: '500' }};
+    font-size: {{ section.settings.comfort_title_size | default: '16' }}px;
+    margin-bottom: {{ section.settings.comfort_title_margin | default: '4' }}px;
+  }
+
+  .comfort-text-{{ section.id }} {
+    color: var(--text-color);
+    font-size: {{ section.settings.comfort_text_size | default: '14' }}px;
+    line-height: {{ section.settings.comfort_text_line_height | default: '1.5' }};
+  }
+
+  .comfort-note-{{ section.id }} {
+    background-color: {{ section.settings.comfort_note_bg | default: '#F9FAFB' }};
+    padding: {{ section.settings.comfort_note_padding | default: '12' }}px {{ section.settings.comfort_note_padding_x | default: '20' }}px;
+    border-radius: {{ section.settings.comfort_note_radius | default: '8' }}px;
+    margin-top: {{ section.settings.comfort_note_margin | default: '16' }}px;
+    color: var(--text-color);
+    font-size: {{ section.settings.comfort_note_size | default: '14' }}px;
+  }
+
+  .comfort-note-{{ section.id }} strong {
+    color: var(--heading-color);
+  }
+
+  .comfort-badge-{{ section.id }} {
+    background-color: {{ section.settings.comfort_badge_bg | default: '#F9FAFB' }};
+    padding: {{ section.settings.comfort_badge_padding | default: '12' }}px;
+    border-radius: {{ section.settings.comfort_badge_radius | default: '8' }}px;
+    margin-top: {{ section.settings.comfort_badge_margin | default: '12' }}px;
+    color: var(--text-color);
+    font-size: {{ section.settings.comfort_badge_size | default: '14' }}px;
+  }
+
+  .comfort-badge-{{ section.id }} strong {
+    color: var(--heading-color);
+  }
+</style>
+
+<div id="how-it-works-{{ section.id }}" class="how-it-works-{{ section.id }}" {{ section.shopify_attributes }}>
+  <div class="how-container-{{ section.id }}">
+    
+    <!-- Header Card -->
+    <div class="header-card-{{ section.id }}">
+      <div class="header-icon-{{ section.id }}">
+        {% render 'icon-lightbulb', size: 8, color: 'currentColor' %}
       </div>
-      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">How It Works: Advanced LED Skin Therapy</h1>
-      <p class="text-base sm:text-lg md:text-xl text-gray-600">
-        Discover the science behind professional-grade LED therapy that delivers visible results from the comfort of your home.
+      <h1 class="header-title-{{ section.id }}">
+        {{ section.settings.header_title | default: 'How It Works: Advanced LED Skin Therapy' }}
+      </h1>
+      <p class="header-subtitle-{{ section.id }}">
+        {{ section.settings.header_subtitle | default: 'Discover the science behind professional-grade LED therapy that delivers visible results from the comfort of your home.' }}
       </p>
     </div>
-  </div>
 
-  <!-- Product Image & Steps Section - Adjusted for mobile -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-12">
-    <!-- Product Image Card - More compact on mobile -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100">
-      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">FACE MASK</h2>
+    <!-- Two Column Layout - Product Image & Steps -->
+    <div class="two-column-{{ section.id }}">
       
-      <!-- Image Container -->
-      <div class="relative w-full h-60 sm:h-80 bg-gradient-to-br from-blue-50 to-gray-100 rounded-xl mb-4 sm:mb-6 flex items-center justify-center overflow-hidden">
-        <!-- Placeholder for your product image -->
-        <img src="{{ 'how-to-use-it.png' | asset_url }}" alt="FACE MASK - LED Skin Therapy" class="w-full h-full object-contain">
+      <!-- Product Image Card -->
+      <div class="product-card-{{ section.id }}">
+        <h2 class="product-title-{{ section.id }}">
+          {{ section.settings.product_title | default: 'FACE MASK' }}
+        </h2>
         
-        <!-- Product labels for visual reference -->
-        <div class="absolute top-3 left-3 sm:top-4 sm:left-4 bg-blue-600 text-white text-xs px-2 sm:px-3 py-1 rounded-full font-bold">
-          Smart Nutrientation
+        <!-- Product Image -->
+        <div class="product-image-container-{{ section.id }}">
+          {% if section.settings.product_image != blank %}
+            <img src="{{ section.settings.product_image | image_url: width: 600 }}" 
+                 alt="{{ section.settings.product_image_alt | default: 'FACE MASK - LED Skin Therapy' }}" 
+                 class="product-image-{{ section.id }}"
+                 width="600"
+                 height="400"
+                 loading="lazy">
+          {% else %}
+            <img src="{{ 'how-to-use-it.png' | asset_url }}" 
+                 alt="FACE MASK - LED Skin Therapy" 
+                 class="product-image-{{ section.id }}"
+                 width="600"
+                 height="400"
+                 loading="lazy">
+          {% endif %}
+          
+          <!-- Product Badges -->
+          <div class="product-badge-{{ section.id }}">
+            {{ section.settings.badge_left_text | default: 'Smart Nutrientation' }}
+          </div>
+          <div class="product-badge-right-{{ section.id }}">
+            {{ section.settings.badge_right_text | default: 'Pace Mixer' }}
+          </div>
         </div>
-        <div class="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-gray-800 text-white text-xs px-2 sm:px-3 py-1 rounded-full font-bold">
-          Pace Mixer
+        
+        <!-- Product Info -->
+        <div class="product-info-{{ section.id }}">
+          <div class="product-info-item-{{ section.id }}">
+            <span class="product-info-label-{{ section.id }}">
+              {{ section.settings.product_info_1_label | default: 'Church Smart Nutrientation' }}
+            </span>
+            <span class="product-info-value-{{ section.id }}">
+              {{ section.settings.product_info_1_value | default: 'Advanced' }}
+            </span>
+          </div>
+          <div class="product-info-item-{{ section.id }}">
+            <span class="product-info-label-{{ section.id }}">
+              {{ section.settings.product_info_2_label | default: 'Lifelong Rancher' }}
+            </span>
+            <span class="product-info-value-{{ section.id }}">
+              {{ section.settings.product_info_2_value | default: 'Professional' }}
+            </span>
+          </div>
         </div>
       </div>
+
+      <!-- Steps Card -->
+      <div class="steps-card-{{ section.id }}">
+        <div class="steps-header-{{ section.id }}">
+          <div class="steps-icon-{{ section.id }}">
+            {% render 'icon-clipboard', size: 6, color: 'currentColor' %}
+          </div>
+          <h2 class="steps-title-{{ section.id }}">
+            {{ section.settings.steps_title | default: 'Step-by-Step Usage Guide' }}
+          </h2>
+        </div>
+        
+        <div class="steps-container-{{ section.id }}">
+          
+          <!-- Step 1 -->
+          <div class="step-item-{{ section.id }}">
+            <div class="step-number-{{ section.id }}">1</div>
+            <div class="step-content-{{ section.id }}">
+              <h3 class="step-heading-{{ section.id }}">
+                {{ section.settings.step1_title | default: 'Clean & Prepare' }}
+              </h3>
+              <p class="step-text-{{ section.id }}">
+                {{ section.settings.step1_text | default: 'Clean your face and apply an appropriate amount of essence for optimal absorption.' }}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Step 2 -->
+          <div class="step-item-{{ section.id }}">
+            <div class="step-number-{{ section.id }}">2</div>
+            <div class="step-content-{{ section.id }}">
+              <h3 class="step-heading-{{ section.id }}">
+                {{ section.settings.step2_title | default: 'Prepare the Mask' }}
+              </h3>
+              <p class="step-text-{{ section.id }}">
+                {{ section.settings.step2_text | default: 'Peel off the eye mask and protective film, then install the eye mask and adjust the straps for a secure fit.' }}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Step 3 -->
+          <div class="step-item-{{ section.id }}">
+            <div class="step-number-{{ section.id }}">3</div>
+            <div class="step-content-{{ section.id }}">
+              <h3 class="step-heading-{{ section.id }}">
+                {{ section.settings.step3_title | default: 'Activate & Customize' }}
+              </h3>
+              <p class="step-text-{{ section.id }}">
+                {{ section.settings.step3_text | default: 'Put it on your face and press the power button. Use the remote control to turn on the device, with 5 adjustable brightness levels for personalized treatment.' }}
+              </p>
+              <div class="step-tags-{{ section.id }}">
+                <span class="step-tag-{{ section.id }}">Level 1</span>
+                <span class="step-tag-{{ section.id }}">Level 2</span>
+                <span class="step-tag-{{ section.id }} active">Level 3</span>
+                <span class="step-tag-{{ section.id }}">Level 4</span>
+                <span class="step-tag-{{ section.id }}">Level 5</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Step 4 -->
+          <div class="step-item-{{ section.id }}">
+            <div class="step-number-{{ section.id }}">4</div>
+            <div class="step-content-{{ section.id }}">
+              <h3 class="step-heading-{{ section.id }}">
+                {{ section.settings.step4_title | default: 'Complete Your Routine' }}
+              </h3>
+              <p class="step-text-{{ section.id }}">
+                {{ section.settings.step4_text | default: 'After treatment, apply moisture-locking serum and facial cream to seal in benefits and complete your skincare routine.' }}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tip Box -->
+        <div class="step-tip-{{ section.id }}">
+          <p>
+            <strong>{{ section.settings.tip_label | default: 'Tip:' }}</strong>
+            {{ section.settings.tip_text | default: 'For best results, use daily as part of your skincare routine. Each session typically lasts 10-20 minutes.' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="cards-grid-{{ section.id }}">
       
-      <!-- Product Info -->
-      <div class="space-y-3 sm:space-y-4">
-        <div class="flex justify-between items-center pb-3 sm:pb-4 border-b border-gray-100">
-          <span class="font-medium text-gray-700 text-sm sm:text-base">Church Smart Nutrientation</span>
-          <span class="text-xs sm:text-sm bg-blue-50 text-blue-700 px-2 sm:px-3 py-1 rounded-full">Advanced</span>
+      <!-- Card 1: Skin Therapy Simplified -->
+      <div class="info-card-{{ section.id }}">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }} blue">
+            {% render 'icon-lightbulb', size: 6, color: 'currentColor' %}
+          </div>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card1_title | default: 'Skin Therapy Simplified' }}
+          </h2>
         </div>
-        <div class="flex justify-between items-center">
-          <span class="font-medium text-gray-700 text-sm sm:text-base">Lifelong Rancher</span>
-          <span class="text-xs sm:text-sm bg-gray-100 text-gray-700 px-2 sm:px-3 py-1 rounded-full">Professional</span>
+        <div class="card-content-{{ section.id }}">
+          <h3 class="font-medium text-gray-800 mb-2">{{ section.settings.card1_subtitle | default: 'The Science of LED Phototherapy' }}</h3>
+          <p>{{ section.settings.card1_text | default: 'Our Advanced LED Skin Therapy utilizes specific wavelengths of light to penetrate skin at different depths, stimulating natural cellular processes for rejuvenation and repair.' }}</p>
         </div>
       </div>
-    </div>
 
-    <!-- Steps Card - More compact on mobile -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100">
-      <div class="flex items-center mb-4 sm:mb-6">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-indigo-500 text-lg sm:text-xl">📋</span>
+      <!-- Card 2: 7 Targeted Wavelengths -->
+      <div class="info-card-{{ section.id }}">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }} purple">
+            {% render 'icon-wave', size: 6, color: 'currentColor' %}
+          </div>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card2_title | default: '7 Targeted Wavelengths' }}
+          </h2>
         </div>
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Step-by-Step Usage Guide</h2>
+        <div class="card-content-{{ section.id }}">
+          <p class="mb-4">{{ section.settings.card2_text | default: 'Each wavelength addresses specific skin concerns, from acne to aging.' }}</p>
+          <div class="card-tags-{{ section.id }}">
+            <span class="card-tag-{{ section.id }} red">{{ section.settings.card2_tag1 | default: 'Red Light' }}</span>
+            <span class="card-tag-{{ section.id }} blue">{{ section.settings.card2_tag2 | default: 'Blue Light' }}</span>
+            <span class="card-tag-{{ section.id }} amber">{{ section.settings.card2_tag3 | default: 'Amber Light' }}</span>
+          </div>
+        </div>
       </div>
-      
-      <div class="space-y-4 sm:space-y-6">
-        <!-- Step 1 -->
-        <div class="flex items-start">
-          <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3 sm:mr-4 mt-0.5 sm:mt-1 text-sm sm:text-base">
-            1
+
+      <!-- Card 3: 309 High-Intensity LEDs -->
+      <div class="info-card-{{ section.id }}">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }} green">
+            {% render 'icon-microscope', size: 6, color: 'currentColor' %}
           </div>
-          <div>
-            <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1">Clean & Prepare</h3>
-            <p class="text-gray-600 text-sm sm:text-base">Clean your face and apply an appropriate amount of essence for optimal absorption.</p>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card3_title | default: '309 High-Intensity LEDs' }}
+          </h2>
+        </div>
+        <div class="card-content-{{ section.id }}">
+          <p class="mb-4">{{ section.settings.card3_text | default: 'Complete coverage for face and neck ensures comprehensive treatment.' }}</p>
+          <div class="card-highlight-{{ section.id }} green">
+            <strong>{{ section.settings.card3_highlight | default: 'Full Coverage' }}</strong>
           </div>
         </div>
-        
-        <!-- Step 2 -->
-        <div class="flex items-start">
-          <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3 sm:mr-4 mt-0.5 sm:mt-1 text-sm sm:text-base">
-            2
+      </div>
+
+      <!-- Card 4: Professional-Grade Technology -->
+      <div class="info-card-{{ section.id }}">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }} red">
+            {% render 'icon-shield-check', size: 6, color: 'currentColor' %}
           </div>
-          <div>
-            <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1">Prepare the Mask</h3>
-            <p class="text-gray-600 text-sm sm:text-base">Peel off the eye mask and protective film, then install the eye mask and adjust the straps for a secure fit.</p>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card4_title | default: 'Professional-Grade Technology' }}
+          </h2>
+        </div>
+        <div class="card-content-{{ section.id }}">
+          <p class="mb-4">{{ section.settings.card4_text | default: 'Delivers safe powerful light treatment to reduce acne, smooth wrinkles, and boost hydration.' }}</p>
+          <div class="card-highlight-{{ section.id }} red">
+            <strong>{{ section.settings.card4_highlight | default: 'Safe for Daily Home Use' }}</strong>
           </div>
         </div>
-        
-        <!-- Step 3 -->
-        <div class="flex items-start">
-          <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3 sm:mr-4 mt-0.5 sm:mt-1 text-sm sm:text-base">
-            3
+      </div>
+
+      <!-- Card 5: Targets & Results -->
+      <div class="info-card-{{ section.id }}">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }} yellow">
+            {% render 'icon-target', size: 6, color: 'currentColor' %}
           </div>
-          <div>
-            <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1">Activate & Customize</h3>
-            <p class="text-gray-600 text-sm sm:text-base mb-2 sm:mb-3">Put it on your face and press the power button. Use the remote control to turn on the device, with 5 adjustable brightness levels for personalized treatment.</p>
-            <div class="flex flex-wrap gap-1.5 sm:gap-2">
-              <span class="px-2 sm:px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs sm:text-sm">Level 1</span>
-              <span class="px-2 sm:px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs sm:text-sm">Level 2</span>
-              <span class="px-2 sm:px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm font-medium">Level 3</span>
-              <span class="px-2 sm:px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs sm:text-sm">Level 4</span>
-              <span class="px-2 sm:px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs sm:text-sm">Level 5</span>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card5_title | default: 'Targets & Results' }}
+          </h2>
+        </div>
+        <div class="card-content-{{ section.id }}">
+          <ul class="card-bullet-list-{{ section.id }}">
+            <li>{{ section.settings.card5_bullet1 | default: 'Targets acne, signs of aging, and dehydration.' }}</li>
+            <li><strong>{{ section.settings.card5_bullet2_strong | default: 'Boosts Collagen' }}</strong> & <strong>{{ section.settings.card5_bullet2_strong2 | default: 'Skin Elasticity' }}</strong>.</li>
+            <li>{{ section.settings.card5_bullet3 | default: 'Improves Texture & Glow.' }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 6: 4-Step Treatment Process -->
+      <div class="process-card-{{ section.id }}">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }} purple">
+            {% render 'icon-clipboard', size: 6, color: 'currentColor' %}
+          </div>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card6_title | default: 'Simple 4-Step Treatment Process' }}
+          </h2>
+        </div>
+        <div class="card-content-{{ section.id }}">
+          <p class="mb-6">{{ section.settings.card6_text | default: 'Experience professional-level skin therapy in just four simple steps that fit into your daily routine.' }}</p>
+          
+          <div class="process-grid-{{ section.id }}">
+            <div class="process-step-{{ section.id }}">
+              <div class="process-step-number-{{ section.id }}">1</div>
+              <h4 class="process-step-title-{{ section.id }}">{{ section.settings.card6_step1_title | default: 'Cleanse & Prep' }}</h4>
+              <p class="process-step-text-{{ section.id }}">{{ section.settings.card6_step1_text | default: 'Start with clean, dry skin. Apply serum if desired for enhanced results.' }}</p>
+            </div>
+            <div class="process-step-{{ section.id }}">
+              <div class="process-step-number-{{ section.id }}">2</div>
+              <h4 class="process-step-title-{{ section.id }}">{{ section.settings.card6_step2_title | default: 'Wear the Mask' }}</h4>
+              <p class="process-step-text-{{ section.id }}">{{ section.settings.card6_step2_text | default: 'Position comfortably, adjust straps, and secure eye pads for complete protection.' }}</p>
+            </div>
+            <div class="process-step-{{ section.id }}">
+              <div class="process-step-number-{{ section.id }}">3</div>
+              <h4 class="process-step-title-{{ section.id }}">{{ section.settings.card6_step3_title | default: 'Select & Activate' }}</h4>
+              <p class="process-step-text-{{ section.id }}">{{ section.settings.card6_step3_text | default: 'Choose treatment mode and power on. Sessions last 10-20 minutes.' }}</p>
+            </div>
+            <div class="process-step-{{ section.id }}">
+              <div class="process-step-number-{{ section.id }}">4</div>
+              <h4 class="process-step-title-{{ section.id }}">{{ section.settings.card6_step4_title | default: 'Relax & Rejuvenate' }}</h4>
+              <p class="process-step-text-{{ section.id }}">{{ section.settings.card6_step4_text | default: 'Sit back while LED therapy works. Use daily for optimal results.' }}</p>
             </div>
           </div>
         </div>
-        
-        <!-- Step 4 -->
-        <div class="flex items-start">
-          <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3 sm:mr-4 mt-0.5 sm:mt-1 text-sm sm:text-base">
-            4
+      </div>
+
+      <!-- Card 7: Engineered for Comfort -->
+      <div class="info-card-{{ section.id }}" style="grid-column: span 2; @media (min-width: 1024px) { grid-column: span 3; }">
+        <div class="card-header-{{ section.id }}">
+          <div class="card-icon-{{ section.id }}" style="background-color: #FCE7F3;">
+            {% render 'icon-couch', size: 6, color: '#EC4899' %}
           </div>
-          <div>
-            <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1">Complete Your Routine</h3>
-            <p class="text-gray-600 text-sm sm:text-base">After treatment, apply moisture-locking serum and facial cream to seal in benefits and complete your skincare routine.</p>
-          </div>
+          <h2 class="card-header-title-{{ section.id }}">
+            {{ section.settings.card7_title | default: 'Engineered for Ultimate Comfort' }}
+          </h2>
         </div>
-      </div>
-      
-      <div class="mt-6 sm:mt-8 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-100">
-        <p class="text-blue-800 text-xs sm:text-sm"><span class="font-bold">Tip:</span> For best results, use daily as part of your skincare routine. Each session typically lasts 10-20 minutes.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cards Grid - Adjusted for mobile -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10 sm:mb-12">
-    
-    <!-- Card 1: Skin Therapy Simplified -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow">
-      <div class="flex items-center mb-3 sm:mb-4">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-blue-500 text-lg sm:text-xl">💡</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Skin Therapy Simplified</h2>
-      </div>
-      <div>
-        <h3 class="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-3">The Science of LED Phototherapy</h3>
-        <p class="text-gray-600 text-sm sm:text-base">
-          Our Advanced LED Skin Therapy utilizes specific wavelengths of light to penetrate skin at different depths, stimulating natural cellular processes for rejuvenation and repair.
-        </p>
-      </div>
-    </div>
-
-    <!-- Card 2: 7 Targeted Wavelengths -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow">
-      <div class="flex items-center mb-3 sm:mb-4">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-purple-500 text-lg sm:text-xl">🌊</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">7 Targeted Wavelengths</h2>
-      </div>
-      <div>
-        <p class="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Each wavelength addresses specific skin concerns, from acne to aging.</p>
-        <div class="flex flex-wrap gap-1.5 sm:gap-2">
-          <span class="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-50 text-red-700 rounded-full text-xs sm:text-sm font-medium">Red Light</span>
-          <span class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-50 text-blue-700 rounded-full text-xs sm:text-sm font-medium">Blue Light</span>
-          <span class="px-3 py-1.5 sm:px-4 sm:py-2 bg-amber-50 text-amber-700 rounded-full text-xs sm:text-sm font-medium">Amber Light</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 3: 309 High-Intensity LEDs -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow">
-      <div class="flex items-center mb-3 sm:mb-4">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-green-500 text-lg sm:text-xl">🔬</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">309 High-Intensity LEDs</h2>
-      </div>
-      <div>
-        <p class="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Complete coverage for face and neck ensures comprehensive treatment.</p>
-        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border-l-4 border-green-500">
-          <strong class="text-gray-900 text-sm sm:text-base">Full Coverage</strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 4: Professional-Grade Technology -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow">
-      <div class="flex items-center mb-3 sm:mb-4">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-red-500 text-lg sm:text-xl">🛡️</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Professional-Grade Technology</h2>
-      </div>
-      <div>
-        <p class="text-gray-600 text-sm sm:text-base mb-3 sm:mb-4">Delivers safe powerful light treatment to reduce acne, smooth wrinkles, and boost hydration.</p>
-        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border-l-4 border-red-500">
-          <strong class="text-gray-900 text-sm sm:text-base">Safe for Daily Home Use</strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 5: Targets & Results -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow">
-      <div class="flex items-center mb-3 sm:mb-4">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-yellow-500 text-lg sm:text-xl">🎯</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Targets & Results</h2>
-      </div>
-      <div>
-        <ul class="list-disc pl-4 sm:pl-5 space-y-1.5 sm:space-y-2 text-gray-600 text-sm sm:text-base">
-          <li>Targets acne, signs of aging, and dehydration.</li>
-          <li><strong class="text-gray-900">Boosts Collagen</strong> & <strong class="text-gray-900">Skin Elasticity</strong>.</li>
-          <li>Improves Texture & Glow.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Card 6: 4-Step Treatment Process -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
-      <div class="flex items-center mb-3 sm:mb-4">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-indigo-500 text-lg sm:text-xl">📋</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Simple 4-Step Treatment Process</h2>
-      </div>
-      <div>
-        <p class="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6">Experience professional-level skin therapy in just four simple steps that fit into your daily routine.</p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div class="text-center">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3 font-bold text-sm sm:text-base">1</div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Cleanse & Prep</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Start with clean, dry skin. Apply serum if desired for enhanced results.</p>
-          </div>
-          <div class="text-center">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3 font-bold text-sm sm:text-base">2</div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Wear the Mask</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Position comfortably, adjust straps, and secure eye pads for complete protection.</p>
-          </div>
-          <div class="text-center">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3 font-bold text-sm sm:text-base">3</div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Select & Activate</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Choose treatment mode and power on. Sessions last 10-20 minutes.</p>
-          </div>
-          <div class="text-center">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3 font-bold text-sm sm:text-base">4</div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Relax & Rejuvenate</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Sit back while LED therapy works. Use daily for optimal results.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 7: Engineered for Comfort -->
-    <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-3">
-      <div class="flex items-center mb-4 sm:mb-6">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-pink-50 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
-          <span class="text-pink-500 text-lg sm:text-xl">🛋️</span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Engineered for Ultimate Comfort</h2>
-      </div>
-      <div>
-        <p class="text-gray-600 text-sm sm:text-base mb-6 sm:mb-8">We've designed every element to ensure a comfortable, personalized experience that makes daily skin care a pleasure.</p>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div class="text-center">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <span class="text-blue-500 text-xl sm:text-2xl">□</span>
+        <div class="card-content-{{ section.id }}">
+          <p class="mb-8">{{ section.settings.card7_text | default: 'We\'ve designed every element to ensure a comfortable, personalized experience that makes daily skin care a pleasure.' }}</p>
+          
+          <div class="comfort-grid-{{ section.id }}">
+            <div class="comfort-item-{{ section.id }}">
+              <div class="comfort-icon-{{ section.id }} blue">
+                {% render 'icon-square', size: 8, color: 'currentColor' %}
+              </div>
+              <h4 class="comfort-title-{{ section.id }}">{{ section.settings.comfort1_title | default: 'Soft Silicone Film' }}</h4>
+              <p class="comfort-text-{{ section.id }}">{{ section.settings.comfort1_text | default: 'Enhances comfort and fits facial contours perfectly' }}</p>
             </div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Soft Silicone Film</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Enhances comfort and fits facial contours perfectly</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <span class="text-green-500 text-xl sm:text-2xl">⚙️</span>
+            <div class="comfort-item-{{ section.id }}">
+              <div class="comfort-icon-{{ section.id }} green">
+                {% render 'icon-gear', size: 8, color: 'currentColor' %}
+              </div>
+              <h4 class="comfort-title-{{ section.id }}">{{ section.settings.comfort2_title | default: 'Adjustable Strap' }}</h4>
+              <p class="comfort-text-{{ section.id }}">{{ section.settings.comfort2_text | default: 'Customizable for a secure, comfortable fit' }}</p>
             </div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Adjustable Strap</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Customizable for a secure, comfortable fit</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <span class="text-purple-500 text-xl sm:text-2xl">👁️</span>
+            <div class="comfort-item-{{ section.id }}">
+              <div class="comfort-icon-{{ section.id }} purple">
+                {% render 'icon-eye', size: 8, color: 'currentColor' %}
+              </div>
+              <h4 class="comfort-title-{{ section.id }}">{{ section.settings.comfort3_title | default: 'Soft Eye Pad' }}</h4>
+              <p class="comfort-text-{{ section.id }}">{{ section.settings.comfort3_text | default: 'Blocks light completely for eye protection' }}</p>
             </div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Soft Eye Pad</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Blocks light completely for eye protection</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <span class="text-amber-500 text-xl sm:text-2xl">🔋</span>
+            <div class="comfort-item-{{ section.id }}">
+              <div class="comfort-icon-{{ section.id }} amber">
+                {% render 'icon-battery', size: 8, color: 'currentColor' %}
+              </div>
+              <h4 class="comfort-title-{{ section.id }}">{{ section.settings.comfort4_title | default: 'Portable Power' }}</h4>
+              <p class="comfort-text-{{ section.id }}">{{ section.settings.comfort4_text | default: 'Wireless power for treatment anywhere' }}</p>
             </div>
-            <h4 class="font-medium text-gray-900 mb-1 text-sm sm:text-base">Portable Power</h4>
-            <p class="text-xs sm:text-sm text-gray-600">Wireless power for treatment anywhere</p>
           </div>
-        </div>
-        
-        <div class="bg-gray-50 p-3 sm:p-5 rounded-lg border-l-4 border-pink-500">
-          <p class="text-gray-800 text-sm sm:text-base"><strong class="text-gray-900">Designed for Daily Use:</strong> The mask's design prioritizes both effectiveness and user comfort, making daily, at-home therapy simple and enjoyable.</p>
-        </div>
-        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg mt-3 sm:mt-4">
-          <strong class="text-gray-900 text-sm sm:text-base">10-20 Minute Sessions</strong>
+          
+          <div class="comfort-note-{{ section.id }}">
+            <p><strong>{{ section.settings.comfort_note_strong | default: 'Designed for Daily Use:' }}</strong> {{ section.settings.comfort_note_text | default: 'The mask\'s design prioritizes both effectiveness and user comfort, making daily, at-home therapy simple and enjoyable.' }}</p>
+          </div>
+          
+          <div class="comfort-badge-{{ section.id }}">
+            <strong>{{ section.settings.comfort_badge_text | default: '10-20 Minute Sessions' }}</strong>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+{% schema %}
+{
+  "name": "How It Works",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "page_bg",
+      "label": "Page background",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Card border",
+      "default": "#F3F4F6"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "label": "Small" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" }
+      ],
+      "default": "0 4px 6px -1px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "select",
+      "id": "card_hover_shadow",
+      "label": "Card hover shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)", "label": "Medium" },
+        { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1)", "label": "Large" },
+        { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1)", "label": "XL" }
+      ],
+      "default": "0 10px 15px -3px rgb(0 0 0 / 0.1)"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#374151"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "light_text",
+      "label": "Light text",
+      "default": "#6B7280"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary color",
+      "default": "#3B82F6"
+    },
+    {
+      "type": "color",
+      "id": "primary_light",
+      "label": "Primary light",
+      "default": "#EFF6FF"
+    },
+    {
+      "type": "color",
+      "id": "secondary_color",
+      "label": "Secondary color",
+      "default": "#8B5CF6"
+    },
+    {
+      "type": "color",
+      "id": "secondary_light",
+      "label": "Secondary light",
+      "default": "#EDE9FE"
+    },
+    {
+      "type": "color",
+      "id": "success_color",
+      "label": "Success color",
+      "default": "#10B981"
+    },
+    {
+      "type": "color",
+      "id": "success_light",
+      "label": "Success light",
+      "default": "#D1FAE5"
+    },
+    {
+      "type": "color",
+      "id": "warning_color",
+      "label": "Warning color",
+      "default": "#F59E0B"
+    },
+    {
+      "type": "color",
+      "id": "warning_light",
+      "label": "Warning light",
+      "default": "#FEF3C7"
+    },
+    {
+      "type": "color",
+      "id": "danger_color",
+      "label": "Danger color",
+      "default": "#EF4444"
+    },
+    {
+      "type": "color",
+      "id": "danger_light",
+      "label": "Danger light",
+      "default": "#FEE2E2"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "container_padding_x",
+      "label": "Horizontal padding (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_padding_x_sm",
+      "label": "Horizontal padding (tablet)",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_padding_x_lg",
+      "label": "Horizontal padding (desktop)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_padding_y",
+      "label": "Vertical padding (mobile)",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "container_padding_y_sm",
+      "label": "Vertical padding (desktop)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Section spacing (mobile)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing_sm",
+      "label": "Section spacing (desktop)",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Card padding (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding_sm",
+      "label": "Card padding (desktop)",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
+    {
+      "type": "text",
+      "id": "header_title",
+      "label": "Header title",
+      "default": "How It Works: Advanced LED Skin Therapy"
+    },
+    {
+      "type": "textarea",
+      "id": "header_subtitle",
+      "label": "Header subtitle",
+      "default": "Discover the science behind professional-grade LED therapy that delivers visible results from the comfort of your home."
+    },
+    {
+      "type": "range",
+      "id": "header_title_size",
+      "label": "Title size (desktop)",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "header_title_size_mobile",
+      "label": "Title size (mobile)",
+      "min": 18,
+      "max": 32,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "header_subtitle_size",
+      "label": "Subtitle size (desktop)",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "header_subtitle_size_mobile",
+      "label": "Subtitle size (mobile)",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "header_padding",
+      "label": "Header padding",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Product Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "text",
+      "id": "product_image_alt",
+      "label": "Image alt text",
+      "default": "FACE MASK - LED Skin Therapy"
+    },
+    {
+      "type": "text",
+      "id": "product_title",
+      "label": "Product title",
+      "default": "FACE MASK"
+    },
+    {
+      "type": "range",
+      "id": "product_image_height",
+      "label": "Image height",
+      "min": 200,
+      "max": 500,
+      "step": 20,
+      "default": 320,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "badge_left_text",
+      "label": "Left badge text",
+      "default": "Smart Nutrientation"
+    },
+    {
+      "type": "text",
+      "id": "badge_right_text",
+      "label": "Right badge text",
+      "default": "Pace Mixer"
+    },
+    {
+      "type": "text",
+      "id": "product_info_1_label",
+      "label": "Product info 1 label",
+      "default": "Church Smart Nutrientation"
+    },
+    {
+      "type": "text",
+      "id": "product_info_1_value",
+      "label": "Product info 1 value",
+      "default": "Advanced"
+    },
+    {
+      "type": "text",
+      "id": "product_info_2_label",
+      "label": "Product info 2 label",
+      "default": "Lifelong Rancher"
+    },
+    {
+      "type": "text",
+      "id": "product_info_2_value",
+      "label": "Product info 2 value",
+      "default": "Professional"
+    },
+    {
+      "type": "header",
+      "content": "Steps"
+    },
+    {
+      "type": "text",
+      "id": "steps_title",
+      "label": "Steps title",
+      "default": "Step-by-Step Usage Guide"
+    },
+    {
+      "type": "text",
+      "id": "step1_title",
+      "label": "Step 1 title",
+      "default": "Clean & Prepare"
+    },
+    {
+      "type": "textarea",
+      "id": "step1_text",
+      "label": "Step 1 text",
+      "default": "Clean your face and apply an appropriate amount of essence for optimal absorption."
+    },
+    {
+      "type": "text",
+      "id": "step2_title",
+      "label": "Step 2 title",
+      "default": "Prepare the Mask"
+    },
+    {
+      "type": "textarea",
+      "id": "step2_text",
+      "label": "Step 2 text",
+      "default": "Peel off the eye mask and protective film, then install the eye mask and adjust the straps for a secure fit."
+    },
+    {
+      "type": "text",
+      "id": "step3_title",
+      "label": "Step 3 title",
+      "default": "Activate & Customize"
+    },
+    {
+      "type": "textarea",
+      "id": "step3_text",
+      "label": "Step 3 text",
+      "default": "Put it on your face and press the power button. Use the remote control to turn on the device, with 5 adjustable brightness levels for personalized treatment."
+    },
+    {
+      "type": "text",
+      "id": "step4_title",
+      "label": "Step 4 title",
+      "default": "Complete Your Routine"
+    },
+    {
+      "type": "textarea",
+      "id": "step4_text",
+      "label": "Step 4 text",
+      "default": "After treatment, apply moisture-locking serum and facial cream to seal in benefits and complete your skincare routine."
+    },
+    {
+      "type": "text",
+      "id": "tip_label",
+      "label": "Tip label",
+      "default": "Tip:"
+    },
+    {
+      "type": "textarea",
+      "id": "tip_text",
+      "label": "Tip text",
+      "default": "For best results, use daily as part of your skincare routine. Each session typically lasts 10-20 minutes."
+    },
+    {
+      "type": "header",
+      "content": "Card 1"
+    },
+    {
+      "type": "text",
+      "id": "card1_title",
+      "label": "Card 1 title",
+      "default": "Skin Therapy Simplified"
+    },
+    {
+      "type": "text",
+      "id": "card1_subtitle",
+      "label": "Card 1 subtitle",
+      "default": "The Science of LED Phototherapy"
+    },
+    {
+      "type": "textarea",
+      "id": "card1_text",
+      "label": "Card 1 text",
+      "default": "Our Advanced LED Skin Therapy utilizes specific wavelengths of light to penetrate skin at different depths, stimulating natural cellular processes for rejuvenation and repair."
+    },
+    {
+      "type": "header",
+      "content": "Card 2"
+    },
+    {
+      "type": "text",
+      "id": "card2_title",
+      "label": "Card 2 title",
+      "default": "7 Targeted Wavelengths"
+    },
+    {
+      "type": "text",
+      "id": "card2_text",
+      "label": "Card 2 text",
+      "default": "Each wavelength addresses specific skin concerns, from acne to aging."
+    },
+    {
+      "type": "text",
+      "id": "card2_tag1",
+      "label": "Card 2 tag 1",
+      "default": "Red Light"
+    },
+    {
+      "type": "text",
+      "id": "card2_tag2",
+      "label": "Card 2 tag 2",
+      "default": "Blue Light"
+    },
+    {
+      "type": "text",
+      "id": "card2_tag3",
+      "label": "Card 2 tag 3",
+      "default": "Amber Light"
+    },
+    {
+      "type": "header",
+      "content": "Card 3"
+    },
+    {
+      "type": "text",
+      "id": "card3_title",
+      "label": "Card 3 title",
+      "default": "309 High-Intensity LEDs"
+    },
+    {
+      "type": "text",
+      "id": "card3_text",
+      "label": "Card 3 text",
+      "default": "Complete coverage for face and neck ensures comprehensive treatment."
+    },
+    {
+      "type": "text",
+      "id": "card3_highlight",
+      "label": "Card 3 highlight",
+      "default": "Full Coverage"
+    },
+    {
+      "type": "header",
+      "content": "Card 4"
+    },
+    {
+      "type": "text",
+      "id": "card4_title",
+      "label": "Card 4 title",
+      "default": "Professional-Grade Technology"
+    },
+    {
+      "type": "text",
+      "id": "card4_text",
+      "label": "Card 4 text",
+      "default": "Delivers safe powerful light treatment to reduce acne, smooth wrinkles, and boost hydration."
+    },
+    {
+      "type": "text",
+      "id": "card4_highlight",
+      "label": "Card 4 highlight",
+      "default": "Safe for Daily Home Use"
+    },
+    {
+      "type": "header",
+      "content": "Card 5"
+    },
+    {
+      "type": "text",
+      "id": "card5_title",
+      "label": "Card 5 title",
+      "default": "Targets & Results"
+    },
+    {
+      "type": "text",
+      "id": "card5_bullet1",
+      "label": "Bullet 1",
+      "default": "Targets acne, signs of aging, and dehydration."
+    },
+    {
+      "type": "text",
+      "id": "card5_bullet2_strong",
+      "label": "Bullet 2 - strong 1",
+      "default": "Boosts Collagen"
+    },
+    {
+      "type": "text",
+      "id": "card5_bullet2_strong2",
+      "label": "Bullet 2 - strong 2",
+      "default": "Skin Elasticity"
+    },
+    {
+      "type": "text",
+      "id": "card5_bullet3",
+      "label": "Bullet 3",
+      "default": "Improves Texture & Glow."
+    },
+    {
+      "type": "header",
+      "content": "Card 6 (4-Step Process)"
+    },
+    {
+      "type": "text",
+      "id": "card6_title",
+      "label": "Card 6 title",
+      "default": "Simple 4-Step Treatment Process"
+    },
+    {
+      "type": "text",
+      "id": "card6_text",
+      "label": "Card 6 text",
+      "default": "Experience professional-level skin therapy in just four simple steps that fit into your daily routine."
+    },
+    {
+      "type": "text",
+      "id": "card6_step1_title",
+      "label": "Step 1 title",
+      "default": "Cleanse & Prep"
+    },
+    {
+      "type": "text",
+      "id": "card6_step1_text",
+      "label": "Step 1 text",
+      "default": "Start with clean, dry skin. Apply serum if desired for enhanced results."
+    },
+    {
+      "type": "text",
+      "id": "card6_step2_title",
+      "label": "Step 2 title",
+      "default": "Wear the Mask"
+    },
+    {
+      "type": "text",
+      "id": "card6_step2_text",
+      "label": "Step 2 text",
+      "default": "Position comfortably, adjust straps, and secure eye pads for complete protection."
+    },
+    {
+      "type": "text",
+      "id": "card6_step3_title",
+      "label": "Step 3 title",
+      "default": "Select & Activate"
+    },
+    {
+      "type": "text",
+      "id": "card6_step3_text",
+      "label": "Step 3 text",
+      "default": "Choose treatment mode and power on. Sessions last 10-20 minutes."
+    },
+    {
+      "type": "text",
+      "id": "card6_step4_title",
+      "label": "Step 4 title",
+      "default": "Relax & Rejuvenate"
+    },
+    {
+      "type": "text",
+      "id": "card6_step4_text",
+      "label": "Step 4 text",
+      "default": "Sit back while LED therapy works. Use daily for optimal results."
+    },
+    {
+      "type": "header",
+      "content": "Card 7 (Comfort)"
+    },
+    {
+      "type": "text",
+      "id": "card7_title",
+      "label": "Card 7 title",
+      "default": "Engineered for Ultimate Comfort"
+    },
+    {
+      "type": "textarea",
+      "id": "card7_text",
+      "label": "Card 7 text",
+      "default": "We've designed every element to ensure a comfortable, personalized experience that makes daily skin care a pleasure."
+    },
+    {
+      "type": "text",
+      "id": "comfort1_title",
+      "label": "Comfort feature 1 title",
+      "default": "Soft Silicone Film"
+    },
+    {
+      "type": "text",
+      "id": "comfort1_text",
+      "label": "Comfort feature 1 text",
+      "default": "Enhances comfort and fits facial contours perfectly"
+    },
+    {
+      "type": "text",
+      "id": "comfort2_title",
+      "label": "Comfort feature 2 title",
+      "default": "Adjustable Strap"
+    },
+    {
+      "type": "text",
+      "id": "comfort2_text",
+      "label": "Comfort feature 2 text",
+      "default": "Customizable for a secure, comfortable fit"
+    },
+    {
+      "type": "text",
+      "id": "comfort3_title",
+      "label": "Comfort feature 3 title",
+      "default": "Soft Eye Pad"
+    },
+    {
+      "type": "text",
+      "id": "comfort3_text",
+      "label": "Comfort feature 3 text",
+      "default": "Blocks light completely for eye protection"
+    },
+    {
+      "type": "text",
+      "id": "comfort4_title",
+      "label": "Comfort feature 4 title",
+      "default": "Portable Power"
+    },
+    {
+      "type": "text",
+      "id": "comfort4_text",
+      "label": "Comfort feature 4 text",
+      "default": "Wireless power for treatment anywhere"
+    },
+    {
+      "type": "text",
+      "id": "comfort_note_strong",
+      "label": "Comfort note strong text",
+      "default": "Designed for Daily Use:"
+    },
+    {
+      "type": "textarea",
+      "id": "comfort_note_text",
+      "label": "Comfort note text",
+      "default": "The mask's design prioritizes both effectiveness and user comfort, making daily, at-home therapy simple and enjoyable."
+    },
+    {
+      "type": "text",
+      "id": "comfort_badge_text",
+      "label": "Comfort badge text",
+      "default": "10-20 Minute Sessions"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition speed",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    }
+  ],
+  "presets": [
+    {
+      "name": "How It Works Page"
+    }
+  ]
+}
+{% endschema %}

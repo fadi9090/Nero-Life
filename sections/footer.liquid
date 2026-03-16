@@ -1,40 +1,1120 @@
-<!-- Improved Footer -->
-<div class="bg-black text-white py-12 mt-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+{% comment %}
+  Footer - Fully customizable through Shopify editor
+  Features: Brand info, navigation links, newsletter signup, social media icons
+{% endcomment %}
+
+<style>
+  #footer-{{ section.id }} {
+    --footer-bg: {{ section.settings.footer_bg | default: '#000000' }};
+    --footer-text: {{ section.settings.footer_text | default: '#FFFFFF' }};
+    --footer-text-muted: {{ section.settings.footer_text_muted | default: '#9CA3AF' }};
+    --footer-border: {{ section.settings.footer_border | default: '#1F2937' }};
+    --footer-link-hover: {{ section.settings.footer_link_hover | default: '#FA8072' }};
+    
+    --footer-padding-y: {{ section.settings.padding_y | default: '48' }}px;
+    --footer-padding-x: {{ section.settings.padding_x | default: '16' }}px;
+    --footer-margin-top: {{ section.settings.margin_top | default: '48' }}px;
+    
+    --brand-title-size: {{ section.settings.brand_title_size | default: '20' }}px;
+    --heading-size: {{ section.settings.heading_size | default: '16' }}px;
+    --text-size: {{ section.settings.text_size | default: '14' }}px;
+    
+    --social-icon-size: {{ section.settings.social_icon_size | default: '5' }};
+    --social-icon-color: {{ section.settings.social_icon_color | default: '#FFFFFF' }};
+    --social-icon-hover: {{ section.settings.social_icon_hover | default: '#FA8072' }};
+    
+    --newsletter-button-bg: {{ section.settings.newsletter_button_bg | default: '#FA8072' }};
+    --newsletter-button-hover: {{ section.settings.newsletter_button_hover | default: '#E57366' }};
+    --newsletter-button-text: {{ section.settings.newsletter_button_text | default: '#FFFFFF' }};
+    --newsletter-input-bg: {{ section.settings.newsletter_input_bg | default: '#1F2937' }};
+    --newsletter-input-text: {{ section.settings.newsletter_input_text | default: '#FFFFFF' }};
+    --newsletter-input-border: {{ section.settings.newsletter_input_border | default: '#374151' }};
+    --newsletter-focus-ring: {{ section.settings.newsletter_focus_ring | default: '#FA8072' }};
+  }
+
+  @media (min-width: 640px) {
+    #footer-{{ section.id }} {
+      --footer-padding-x: {{ section.settings.padding_x_sm | default: '24' }}px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #footer-{{ section.id }} {
+      --footer-padding-x: {{ section.settings.padding_x_lg | default: '32' }}px;
+    }
+  }
+
+  .footer-{{ section.id }} {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: var(--footer-padding-y) var(--footer-padding-x);
+    margin-top: var(--footer-margin-top);
+  }
+
+  .footer-container-{{ section.id }} {
+    max-width: {{ section.settings.max_width | default: '1280' }}px;
+    margin: 0 auto;
+  }
+
+  .footer-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: {{ section.settings.grid_gap | default: '32' }}px;
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.columns | default: '4' }}, 1fr);
+    }
+  }
+
+  /* Brand Section */
+  .brand-title-{{ section.id }} {
+    font-size: var(--brand-title-size);
+    font-weight: {{ section.settings.brand_title_weight | default: '700' }};
+    margin-bottom: {{ section.settings.brand_margin | default: '16' }}px;
+    color: var(--footer-text);
+  }
+
+  .brand-description-{{ section.id }} {
+    color: var(--footer-text-muted);
+    font-size: var(--text-size);
+    line-height: {{ section.settings.brand_line_height | default: '1.6' }};
+    max-width: {{ section.settings.brand_max_width | default: '300' }}px;
+  }
+
+  /* Headings */
+  .footer-heading-{{ section.id }} {
+    font-size: var(--heading-size);
+    font-weight: {{ section.settings.heading_weight | default: '500' }};
+    margin-bottom: {{ section.settings.heading_margin | default: '16' }}px;
+    color: var(--footer-text);
+    letter-spacing: {{ section.settings.heading_spacing | default: 'normal' }};
+  }
+
+  /* Links */
+  .footer-links-{{ section.id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-links-{{ section.id }} li {
+    margin-bottom: {{ section.settings.link_spacing | default: '8' }}px;
+  }
+
+  .footer-link-{{ section.id }} {
+    color: var(--footer-text-muted);
+    font-size: var(--text-size);
+    text-decoration: none;
+    transition: color {{ section.settings.transition_speed | default: '200' }}ms ease;
+    display: inline-block;
+  }
+
+  .footer-link-{{ section.id }}:hover {
+    color: var(--footer-link-hover);
+  }
+
+  /* Social Icons */
+  .social-icons-{{ section.id }} {
+    display: flex;
+    gap: {{ section.settings.social_icon_gap | default: '12' }}px;
+    margin-top: {{ section.settings.social_margin_top | default: '20' }}px;
+  }
+
+  .social-icon-{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
+  }
+
+  .social-icon-{{ section.id }}:hover {
+    transform: translateY(-{{ section.settings.social_hover_offset | default: '2' }}px);
+  }
+
+  .social-icon-{{ section.id }} svg {
+    fill: var(--social-icon-color);
+    transition: fill {{ section.settings.transition_speed | default: '200' }}ms ease;
+  }
+
+  .social-icon-{{ section.id }}:hover svg {
+    fill: var(--social-icon-hover);
+  }
+
+  /* Newsletter */
+  .newsletter-text-{{ section.id }} {
+    color: var(--footer-text-muted);
+    font-size: var(--text-size);
+    margin-bottom: {{ section.settings.newsletter_text_margin | default: '16' }}px;
+    line-height: {{ section.settings.newsletter_line_height | default: '1.5' }};
+  }
+
+  .newsletter-form-{{ section.id }} {
+    display: flex;
+    flex-direction: {% if section.settings.newsletter_layout == 'stacked' %}column{% else %}row{% endif %};
+    gap: {{ section.settings.newsletter_gap | default: '8' }}px;
+  }
+
+  .newsletter-input-{{ section.id }} {
+    flex: 1;
+    background-color: var(--newsletter-input-bg);
+    color: var(--newsletter-input-text);
+    border: 1px solid var(--newsletter-input-border);
+    border-radius: {{ section.settings.input_radius | default: '6' }}px;
+    padding: {{ section.settings.input_padding_y | default: '8' }}px {{ section.settings.input_padding_x | default: '16' }}px;
+    font-size: var(--text-size);
+    transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
+  }
+
+  .newsletter-input-{{ section.id }}:focus {
+    outline: none;
+    border-color: var(--newsletter-focus-ring);
+    box-shadow: 0 0 0 2px {{ section.settings.focus_ring_opacity | default: 'rgba(250, 128, 114, 0.2)' }};
+  }
+
+  .newsletter-input-{{ section.id }}::placeholder {
+    color: {{ section.settings.placeholder_color | default: '#6B7280' }};
+  }
+
+  .newsletter-button-{{ section.id }} {
+    background-color: var(--newsletter-button-bg);
+    color: var(--newsletter-button-text);
+    font-weight: {{ section.settings.button_weight | default: '500' }};
+    padding: {{ section.settings.button_padding_y | default: '8' }}px {{ section.settings.button_padding_x | default: '16' }}px;
+    border: none;
+    border-radius: {{ section.settings.button_radius | default: '6' }}px;
+    cursor: pointer;
+    transition: all {{ section.settings.transition_speed | default: '200' }}ms ease;
+    white-space: nowrap;
+    font-size: var(--text-size);
+    width: {% if section.settings.newsletter_layout == 'stacked' %}100%{% else %}auto{% endif %};
+  }
+
+  .newsletter-button-{{ section.id }}:hover {
+    background-color: var(--newsletter-button-hover);
+    transform: translateY(-{{ section.settings.button_hover_offset | default: '1' }}px);
+  }
+
+  /* Copyright */
+  .copyright-{{ section.id }} {
+    border-top: 1px solid var(--footer-border);
+    margin-top: {{ section.settings.copyright_margin_top | default: '48' }}px;
+    padding-top: {{ section.settings.copyright_padding_top | default: '32' }}px;
+    text-align: {{ section.settings.copyright_align | default: 'center' }};
+    color: var(--footer-text-muted);
+    font-size: {{ section.settings.copyright_size | default: '14' }}px;
+  }
+
+  @media (max-width: 640px) {
+    .newsletter-form-{{ section.id }} {
+      flex-direction: column;
+    }
+    
+    .newsletter-button-{{ section.id }} {
+      width: 100%;
+    }
+  }
+</style>
+
+<footer id="footer-{{ section.id }}" class="footer-{{ section.id }}" {{ section.shopify_attributes }}>
+  <div class="footer-container-{{ section.id }}">
+    <div class="footer-grid-{{ section.id }}">
+      
+      <!-- Brand Column -->
       <div>
-        <h3 class="text-xl font-bold mb-4">NERO LIFE</h3>
-        <p class="text-gray-400 text-sm">Elevating everyday style with timeless pieces and modern elegance.</p>
+        <h3 class="brand-title-{{ section.id }}">
+          {{ section.settings.brand_title | default: 'NERO LIFE' }}
+        </h3>
+        <p class="brand-description-{{ section.id }}">
+          {{ section.settings.brand_description | default: 'Elevating everyday style with timeless pieces and modern elegance.' }}
+        </p>
+        
+        <!-- Social Icons -->
+        {% if section.settings.show_social_icons %}
+          <div class="social-icons-{{ section.id }}">
+            {% if section.settings.social_facebook != blank %}
+              <a href="{{ section.settings.social_facebook }}" class="social-icon-{{ section.id }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                {% render 'icon-facebook', 
+                  size: section.settings.social_icon_size,
+                  color: 'currentColor'
+                %}
+              </a>
+            {% endif %}
+            
+            {% if section.settings.social_instagram != blank %}
+              <a href="{{ section.settings.social_instagram }}" class="social-icon-{{ section.id }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                {% render 'icon-instagram', 
+                  size: section.settings.social_icon_size,
+                  color: 'currentColor'
+                %}
+              </a>
+            {% endif %}
+            
+            {% if section.settings.social_twitter != blank %}
+              <a href="{{ section.settings.social_twitter }}" class="social-icon-{{ section.id }}" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                {% render 'icon-twitter', 
+                  size: section.settings.social_icon_size,
+                  color: 'currentColor'
+                %}
+              </a>
+            {% endif %}
+            
+            {% if section.settings.social_youtube != blank %}
+              <a href="{{ section.settings.social_youtube }}" class="social-icon-{{ section.id }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                {% render 'icon-youtube', 
+                  size: section.settings.social_icon_size,
+                  color: 'currentColor'
+                %}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
       </div>
+
+      <!-- Help Column -->
       <div>
-        <h4 class="font-medium mb-4">Help</h4>
-        <ul class="space-y-2 text-sm text-gray-400">
-          <li><a href="/privacy-policy" class="hover:text-white transition-colors">Privacy Policy</a></li>
-          <li><a href="/terms-of-service" class="hover:text-white transition-colors">Terms of Service</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+        <h4 class="footer-heading-{{ section.id }}">
+          {{ section.settings.help_title | default: 'Help' }}
+        </h4>
+        <ul class="footer-links-{{ section.id }}">
+          {% if section.settings.privacy_link != blank %}
+            <li>
+              <a href="{{ section.settings.privacy_link }}" class="footer-link-{{ section.id }}">
+                {{ section.settings.privacy_text | default: 'Privacy Policy' }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {% if section.settings.terms_link != blank %}
+            <li>
+              <a href="{{ section.settings.terms_link }}" class="footer-link-{{ section.id }}">
+                {{ section.settings.terms_text | default: 'Terms of Service' }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {% if section.settings.contact_link != blank %}
+            <li>
+              <a href="{{ section.settings.contact_link }}" class="footer-link-{{ section.id }}">
+                {{ section.settings.contact_text | default: 'Contact Us' }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {% if section.settings.faq_link != blank %}
+            <li>
+              <a href="{{ section.settings.faq_link }}" class="footer-link-{{ section.id }}">
+                {{ section.settings.faq_text | default: 'FAQ' }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {% if section.settings.shipping_link != blank %}
+            <li>
+              <a href="{{ section.settings.shipping_link }}" class="footer-link-{{ section.id }}">
+                {{ section.settings.shipping_text | default: 'Shipping Policy' }}
+              </a>
+            </li>
+          {% endif %}
+          
+          {% if section.settings.returns_link != blank %}
+            <li>
+              <a href="{{ section.settings.returns_link }}" class="footer-link-{{ section.id }}">
+                {{ section.settings.returns_text | default: 'Returns & Exchanges' }}
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </div>
+
+      <!-- Newsletter Column -->
       <div>
-        <h4 class="font-medium mb-4">Newsletter</h4>
-        <p class="text-gray-400 text-sm mb-4">Subscribe for updates and exclusive offers</p>
-        {% form 'customer' %}
+        <h4 class="footer-heading-{{ section.id }}">
+          {{ section.settings.newsletter_title | default: 'Newsletter' }}
+        </h4>
+        <p class="newsletter-text-{{ section.id }}">
+          {{ section.settings.newsletter_description | default: 'Subscribe for updates and exclusive offers' }}
+        </p>
+        
+        {% form 'customer', id: 'footer-newsletter', class: 'newsletter-form-{{ section.id }}' %}
           <input type="hidden" name="contact[tags]" value="newsletter">
-          <div class="flex">
-            <input type="email" 
-                   name="contact[email]"
-                   placeholder="Your email" 
-                   class="bg-gray-800 text-white px-4 py-2 w-full rounded-l-md focus:outline-none focus:ring-1 focus:ring-[#FA8072]"
-                   aria-label="Email address for newsletter"
-                   required>
-            <button type="submit" class="bg-[#FA8072] text-white px-4 py-2 rounded-r-md font-medium hover:bg-[#e57366] transition-colors">
-              Subscribe
-            </button>
-          </div>
+          
+          <input type="email"
+                 name="contact[email]"
+                 placeholder="{{ section.settings.newsletter_placeholder | default: 'Your email' }}"
+                 class="newsletter-input-{{ section.id }}"
+                 aria-label="{{ section.settings.newsletter_aria | default: 'Email address for newsletter' }}"
+                 required>
+                 
+          <button type="submit" class="newsletter-button-{{ section.id }}">
+            {{ section.settings.newsletter_button | default: 'Subscribe' }}
+          </button>
         {% endform %}
+
+        <!-- Newsletter success message (hidden by default, shown after submission) -->
+        {% if form.posted_successfully? %}
+          <p class="mt-4 text-green-400 text-sm">
+            {{ section.settings.newsletter_success | default: 'Thanks for subscribing!' }}
+          </p>
+        {% endif %}
       </div>
     </div>
-    <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
-      <p>&copy; {{ 'now' | date: '%Y' }} Nero Life Sciences. All rights reserved.</p>
+
+    <!-- Copyright -->
+    <div class="copyright-{{ section.id }}">
+      <p>
+        {{ section.settings.copyright_text | default: '© 2024 Nero Life Sciences. All rights reserved.' | replace: '[year]', 'now' | date: '%Y' }}
+      </p>
+      
+      {% if section.settings.show_payment_icons %}
+        <div class="payment-icons-{{ section.id }} mt-4">
+          <!-- Add payment icons here if needed -->
+          <span class="text-sm">{{ section.settings.payment_text | default: 'Secure payments' }}</span>
+        </div>
+      {% endif %}
     </div>
   </div>
-</div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "color",
+      "id": "footer_bg",
+      "label": "Footer background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "footer_text",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "footer_text_muted",
+      "label": "Muted text color",
+      "default": "#9CA3AF"
+    },
+    {
+      "type": "color",
+      "id": "footer_border",
+      "label": "Border color",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "footer_link_hover",
+      "label": "Link hover color",
+      "default": "#FA8072"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1280,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding (mobile)",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_sm",
+      "label": "Horizontal padding (tablet)",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_x_lg",
+      "label": "Horizontal padding (desktop)",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between columns",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Number of columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Brand Column"
+    },
+    {
+      "type": "text",
+      "id": "brand_title",
+      "label": "Brand title",
+      "default": "NERO LIFE"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_description",
+      "label": "Brand description",
+      "default": "Elevating everyday style with timeless pieces and modern elegance."
+    },
+    {
+      "type": "range",
+      "id": "brand_title_size",
+      "label": "Brand title size",
+      "min": 16,
+      "max": 28,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "brand_title_weight",
+      "label": "Brand title weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "brand_margin",
+      "label": "Brand title bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "brand_line_height",
+      "label": "Description line height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "brand_max_width",
+      "label": "Description max width",
+      "min": 200,
+      "max": 400,
+      "step": 20,
+      "default": 300,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Social Media Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_icons",
+      "label": "Show social media icons",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "social_twitter",
+      "label": "Twitter URL"
+    },
+    {
+      "type": "url",
+      "id": "social_youtube",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "social_pinterest",
+      "label": "Pinterest URL"
+    },
+    {
+      "type": "range",
+      "id": "social_icon_size",
+      "label": "Social icon size",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "info": "Tailwind scale (4=16px, 5=20px, 6=24px)"
+    },
+    {
+      "type": "color",
+      "id": "social_icon_color",
+      "label": "Social icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "social_icon_hover",
+      "label": "Social icon hover color",
+      "default": "#FA8072"
+    },
+    {
+      "type": "range",
+      "id": "social_icon_gap",
+      "label": "Gap between icons",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "social_margin_top",
+      "label": "Social icons top margin",
+      "min": 4,
+      "max": 32,
+      "step": 4,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "social_hover_offset",
+      "label": "Hover lift amount",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Links"
+    },
+    {
+      "type": "text",
+      "id": "help_title",
+      "label": "Help section title",
+      "default": "Help"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Heading bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_spacing",
+      "label": "Heading letter spacing",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" },
+        { "value": "wider", "label": "Wider" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "link_spacing",
+      "label": "Space between links",
+      "min": 2,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Link 1 - Privacy"
+    },
+    {
+      "type": "url",
+      "id": "privacy_link",
+      "label": "Privacy policy URL"
+    },
+    {
+      "type": "text",
+      "id": "privacy_text",
+      "label": "Privacy link text",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "header",
+      "content": "Link 2 - Terms"
+    },
+    {
+      "type": "url",
+      "id": "terms_link",
+      "label": "Terms of service URL"
+    },
+    {
+      "type": "text",
+      "id": "terms_text",
+      "label": "Terms link text",
+      "default": "Terms of Service"
+    },
+    {
+      "type": "header",
+      "content": "Link 3 - Contact"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact page URL"
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Contact link text",
+      "default": "Contact Us"
+    },
+    {
+      "type": "header",
+      "content": "Link 4 - FAQ"
+    },
+    {
+      "type": "url",
+      "id": "faq_link",
+      "label": "FAQ URL"
+    },
+    {
+      "type": "text",
+      "id": "faq_text",
+      "label": "FAQ text",
+      "default": "FAQ"
+    },
+    {
+      "type": "header",
+      "content": "Link 5 - Shipping"
+    },
+    {
+      "type": "url",
+      "id": "shipping_link",
+      "label": "Shipping policy URL"
+    },
+    {
+      "type": "text",
+      "id": "shipping_text",
+      "label": "Shipping text",
+      "default": "Shipping Policy"
+    },
+    {
+      "type": "header",
+      "content": "Link 6 - Returns"
+    },
+    {
+      "type": "url",
+      "id": "returns_link",
+      "label": "Returns policy URL"
+    },
+    {
+      "type": "text",
+      "id": "returns_text",
+      "label": "Returns text",
+      "default": "Returns & Exchanges"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Newsletter title",
+      "default": "Newsletter"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_description",
+      "label": "Newsletter description",
+      "default": "Subscribe for updates and exclusive offers"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button",
+      "label": "Button text",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Input placeholder",
+      "default": "Your email"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_aria",
+      "label": "ARIA label",
+      "default": "Email address for newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_success",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "select",
+      "id": "newsletter_layout",
+      "label": "Newsletter layout",
+      "options": [
+        { "value": "row", "label": "Inline (row)" },
+        { "value": "stacked", "label": "Stacked (column)" }
+      ],
+      "default": "row"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_gap",
+      "label": "Gap between input and button",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_text_margin",
+      "label": "Text bottom margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_line_height",
+      "label": "Text line height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Newsletter Colors"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_button_bg",
+      "label": "Button background",
+      "default": "#FA8072"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_button_hover",
+      "label": "Button hover",
+      "default": "#E57366"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_input_bg",
+      "label": "Input background",
+      "default": "#1F2937"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_input_text",
+      "label": "Input text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_input_border",
+      "label": "Input border",
+      "default": "#374151"
+    },
+    {
+      "type": "color",
+      "id": "newsletter_focus_ring",
+      "label": "Focus ring color",
+      "default": "#FA8072"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_color",
+      "label": "Placeholder color",
+      "default": "#6B7280"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter Input"
+    },
+    {
+      "type": "range",
+      "id": "input_padding_y",
+      "label": "Input vertical padding",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "input_padding_x",
+      "label": "Input horizontal padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "input_radius",
+      "label": "Input border radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter Button"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Button vertical padding",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Button horizontal padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "button_weight",
+      "label": "Button font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "button_hover_offset",
+      "label": "Button hover lift",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Copyright"
+    },
+    {
+      "type": "textarea",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© [year] Nero Life Sciences. All rights reserved.",
+      "info": "Use [year] to automatically insert current year"
+    },
+    {
+      "type": "range",
+      "id": "copyright_size",
+      "label": "Copyright text size",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "copyright_align",
+      "label": "Copyright alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "copyright_margin_top",
+      "label": "Copyright top margin",
+      "min": 16,
+      "max": 64,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "copyright_padding_top",
+      "label": "Copyright top padding",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons section",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "payment_text",
+      "label": "Payment text",
+      "default": "Secure payments"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "Transition speed",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "default": 200,
+      "unit": "ms"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "category": "Footer"
+    }
+  ]
+}
+{% endschema %}
