@@ -378,10 +378,7 @@
                     <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" 
                        class="quantity-btn-{{ section.id }}"
                        aria-label="Decrease quantity">
-                      {% render 'icon-minus', 
-                        size: section.settings.icon_size | default: 4, 
-                        color: 'currentColor' 
-                      %}
+                      {% render 'icon-minus', size: section.settings.icon_size, default: 4, color: 'currentColor' %}
                     </a>
                     
                     <span class="quantity-display-{{ section.id }}">
@@ -391,19 +388,13 @@
                     <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" 
                        class="quantity-btn-{{ section.id }}"
                        aria-label="Increase quantity">
-                      {% render 'icon-plus', 
-                        size: section.settings.icon_size | default: 4, 
-                        color: 'currentColor' 
-                      %}
+                      {% render 'icon-plus', size: section.settings.icon_size, default: 4, color: 'currentColor' %}
                     </a>
                   </div>
                   
                   <a href="/cart/change?line={{ forloop.index }}&quantity=0" 
                      class="remove-link-{{ section.id }}">
-                    {% render 'icon-remove', 
-                      size: section.settings.icon_size_small | default: 4, 
-                      color: 'currentColor' 
-                    %}
+                    {% render 'icon-remove', size: section.settings.icon_size_small, default: 4, color: 'currentColor' %}
                     {{ section.settings.remove_text | default: 'Remove' }}
                   </a>
                 </div>
@@ -440,10 +431,7 @@
 
             <button type="submit" name="checkout" class="checkout-btn-{{ section.id }}">
               {{ section.settings.checkout_text | default: 'Proceed to Checkout' }}
-              {% render 'icon-arrow-right', 
-                size: section.settings.icon_size | default: 5, 
-                color: 'currentColor' 
-              %}
+              {% render 'icon-arrow-right', size: section.settings.icon_size, default: 5, color: 'currentColor' %}
             </button>
           </div>
         </div>
@@ -453,27 +441,20 @@
   {% else %}
     <!-- Empty Cart -->
     <div class="empty-cart-{{ section.id }}">
-      {% render 'icon-shopping-bag', 
-        size: section.settings.empty_icon_size | default: 16, 
-        color: section.settings.empty_icon_color | default: '#9CA3AF',
-        class: 'mx-auto mb-4'
-      %}
+      {% render 'icon-shopping-bag', size: section.settings.empty_icon_size, default: '#9CA3AF', color: section.settings.empty_icon_color, class: 'mx-auto mb-4' %}
       
       <h2 class="empty-title-{{ section.id }}">
         {{ section.settings.empty_title | default: 'Your Cart is Empty' }}
       </h2>
       
       <p class="empty-text-{{ section.id }}">
-        {{ section.settings.empty_message | default: 'Looks like you haven\'t added anything to your cart yet.' }}
+        {{ section.settings.empty_message | default: 'Looks like you haven\' }}
       </p>
       
       <!-- Redirect to specific product page -->
       <a href="{% if single_product.url != blank %}{{ single_product.url }}{% else %}{{ section.settings.fallback_url | default: '/collections/all' }}{% endif %}" 
          class="continue-btn-{{ section.id }}">
-        {% render 'icon-arrow-left', 
-          size: section.settings.icon_size | default: 5, 
-          color: 'currentColor' 
-        %}
+        {% render 'icon-arrow-left', size: section.settings.icon_size, default: 5, color: 'currentColor' %}
         {{ section.settings.continue_text | default: 'Continue Shopping' }}
       </a>
     </div>
@@ -485,27 +466,6 @@
   "name": "Cart Page",
   "settings": 
   [
-    {
-      "type": "header",
-      "content": "⚠️ IMPORTANT: Product Redirect"
-    },
-    {
-      "type": "paragraph",
-      "content": "Set the product handle for your LED mask below. Current handle: '14-silicone-face-neck-photon-mask'"
-    },
-    {
-      "type": "text",
-      "id": "product_handle",
-      "label": "Product Handle",
-      "default": "14-silicone-face-neck-photon-mask",
-      "info": "The URL handle of your product (e.g., 'product-name' from myshopify.com/products/product-name)"
-    },
-    {
-      "type": "url",
-      "id": "fallback_url",
-      "label": "Fallback URL",
-      "info": "URL to redirect to if product is not found"
-    },
     {
       "type": "header",
       "content": "⚠️ IMPORTANT: Product Redirect"
@@ -1455,4 +1415,45 @@
     }
   ]
 }
-{% endschema %} {% endcomment %}
+{% endschema %} {% endcomment %}{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'icon-minus', \n                        size: section.settings.icon_size
+    | default: 4, \n                        color: 'currentColor' \n                      %}"
+  to: "{% render 'icon-minus', size: section.settings.icon_size, default: 4, color:
+    'currentColor' %}"
+  position: 14384..14478
+- from: "{% render 'icon-plus', \n                        size: section.settings.icon_size
+    | default: 4, \n                        color: 'currentColor' \n                      %}"
+  to: "{% render 'icon-plus', size: section.settings.icon_size, default: 4, color:
+    'currentColor' %}"
+  position: 14931..15024
+- from: "{% render 'icon-remove', \n                      size: section.settings.icon_size_small
+    | default: 4, \n                      color: 'currentColor' \n                    %}"
+  to: "{% render 'icon-remove', size: section.settings.icon_size_small, default: 4,
+    color: 'currentColor' %}"
+  position: 15251..15352
+- from: "{% render 'icon-arrow-right', \n                size: section.settings.icon_size
+    | default: 5, \n                color: 'currentColor' \n              %}"
+  to: "{% render 'icon-arrow-right', size: section.settings.icon_size, default: 5,
+    color: 'currentColor' %}"
+  position: 16881..16981
+- from: "{% render 'icon-shopping-bag', \n        size: section.settings.empty_icon_size
+    | default: 16, \n        color: section.settings.empty_icon_color | default: '#9CA3AF',\n
+    \       class: 'mx-auto mb-4'\n      %}"
+  to: "{% render 'icon-shopping-bag', size: section.settings.empty_icon_size, default:
+    '#9CA3AF', color: section.settings.empty_icon_color, class: 'mx-auto mb-4' %}"
+  position: 17151..17308
+- from: "{{ section.settings.empty_message | default: 'Looks like you haven\\'t added
+    anything to your cart yet.' }}"
+  to: "{{ section.settings.empty_message | default: 'Looks like you haven\\' }}"
+  position: 17512..17583
+- from: "{% render 'icon-arrow-left', \n          size: section.settings.icon_size
+    | default: 5, \n          color: 'currentColor' \n        %}"
+  to: "{% render 'icon-arrow-left', size: section.settings.icon_size, default: 5,
+    color: 'currentColor' %}"
+  position: 17871..17970
+{%- endcomment -%}

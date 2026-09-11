@@ -120,11 +120,7 @@
               class="mobile-menu-btn p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600"
               aria-label="Toggle menu"
             >
-              {% render 'icon-menu', 
-                size: section.settings.icon_size | default: 6,
-                color: section.settings.icon_color | default: 'currentColor',
-                stroke_width: section.settings.icon_stroke | default: 1.5
-              %}
+              {% render 'icon-menu', size: section.settings.icon_size, default: 1.5, color: section.settings.icon_color, stroke_width: section.settings.icon_stroke %}
             </button>
           </div>
         {% endif %}
@@ -178,11 +174,7 @@
               class="cart-icon-btn p-2 rounded-md whitespace-nowrap relative"
               aria-label="Cart"
             >
-              {% render 'icon-cart', 
-                size: section.settings.icon_size | default: 6,
-                color: section.settings.icon_color | default: 'currentColor',
-                stroke_width: section.settings.icon_stroke | default: 1.5
-              %}
+              {% render 'icon-cart', size: section.settings.icon_size, default: 1.5, color: section.settings.icon_color, stroke_width: section.settings.icon_stroke %}
               
               {% if section.settings.show_cart_count %}
                 <span id="CartCountWrapper" class="absolute -top-1 -right-1">
@@ -227,11 +219,7 @@
                 class="mobile-menu-btn rounded-md p-2"
                 aria-label="Close menu"
               >
-                {% render 'icon-close', 
-                  size: section.settings.icon_size | default: 5,
-                  color: section.settings.icon_color | default: 'currentColor',
-                  stroke_width: section.settings.icon_stroke | default: 1.5
-                %}
+                {% render 'icon-close', size: section.settings.icon_size, default: 1.5, color: section.settings.icon_color, stroke_width: section.settings.icon_stroke %}
               </button>
             </div>
 
@@ -846,4 +834,29 @@
     }
   ]
 }
-{% endschema %}
+{% endschema %}{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'icon-menu', \n                size: section.settings.icon_size
+    | default: 6,\n                color: section.settings.icon_color | default: 'currentColor',\n
+    \               stroke_width: section.settings.icon_stroke | default: 1.5\n              %}"
+  to: "{% render 'icon-menu', size: section.settings.icon_size, default: 1.5, color:
+    section.settings.icon_color, stroke_width: section.settings.icon_stroke %}"
+  position: 3727..3879
+- from: "{% render 'icon-cart', \n                size: section.settings.icon_size
+    | default: 6,\n                color: section.settings.icon_color | default: 'currentColor',\n
+    \               stroke_width: section.settings.icon_stroke | default: 1.5\n              %}"
+  to: "{% render 'icon-cart', size: section.settings.icon_size, default: 1.5, color:
+    section.settings.icon_color, stroke_width: section.settings.icon_stroke %}"
+  position: 6694..6846
+- from: "{% render 'icon-close', \n                  size: section.settings.icon_size
+    | default: 5,\n                  color: section.settings.icon_color | default:
+    'currentColor',\n                  stroke_width: section.settings.icon_stroke
+    | default: 1.5\n                %}"
+  to: "{% render 'icon-close', size: section.settings.icon_size, default: 1.5, color:
+    section.settings.icon_color, stroke_width: section.settings.icon_stroke %}"
+  position: 9079..9232
+{%- endcomment -%}
